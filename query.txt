@@ -1,0 +1,78 @@
+ALTER TABLE `busket` CHANGE `year` `year` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+UPDATE `busket` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `centre_statement_account` CHANGE `year` `year` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+UPDATE `centre_statement_account` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `class` CHANGE `year` `year` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+UPDATE `class` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `collection` CHANGE `year` `year` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+UPDATE `collection` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `declaration` CHANGE `year` `year` VARCHAR(10) NOT NULL;
+
+UPDATE `declaration` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `fee` CHANGE `extend_year` `extend_year` VARCHAR(10) NOT NULL;
+
+ALTER TABLE `group` CHANGE `year` `year` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+UPDATE `group` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `slot_collection` CHANGE `year` `year` VARCHAR(10) NOT NULL;
+
+UPDATE `slot_collection` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `student` CHANGE `extend_year` `extend_year` VARCHAR(10) NOT NULL;
+
+UPDATE `student` SET `extend_year` = '2022-2023' WHERE `extend_year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `tmp_busket` CHANGE `year` `year` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+UPDATE `tmp_busket` SET `year` = '2022-2023' WHERE `year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `fee_structure` CHANGE `extend_year` `extend_year` VARCHAR(10) NULL DEFAULT NULL;
+
+UPDATE `fee_structure` SET `extend_year` = '2022-2023' WHERE `extend_year` = '2022' AND `centre_code` = 'MYQWESTC1C10282';
+
+ALTER TABLE `buffer_stock` CHANGE `year` `year` VARCHAR(10) NOT NULL;
+
+ALTER TABLE `codes` CHANGE `year` `year` VARCHAR(10) NOT NULL;
+
+
+
+ALTER TABLE `allocation` CHANGE `allocated_date_time` `allocated_date_time` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE `allocation` CHANGE `year` `year` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+delivered_to_logistic_on
+allocated_date_time
+
+0000-00-00 00:00:00
+
+ALTER TABLE `schedule_term`  ADD `term_num` INT(2) NOT NULL DEFAULT '0'  AFTER `term`;
+
+ALTER TABLE `schedule_term` ADD `centre_code` VARCHAR(50) NOT NULL AFTER `id`;
+
+
+
+
+ALTER TABLE `student_fee_list`  ADD `registration_default` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `afternoon_programme`,  ADD `registration_adjust` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `registration_default`,  ADD `insurance_default` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `registration_adjust`,  ADD `insurance_adjust` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `insurance_default`,  ADD `uniform_default` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `insurance_adjust`,  ADD `uniform_adjust` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `uniform_default`,  ADD `gymwear_default` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `uniform_adjust`,  ADD `gymwear_adjust` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `gymwear_default`,  ADD `q_dees_default` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `gymwear_adjust`,  ADD `q_dees_adjust` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `q_dees_default`,  ADD `q_bag_default` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `q_dees_adjust`,  ADD `q_bag_adjust` DECIMAL(10,2) NOT NULL DEFAULT '0'  AFTER `q_bag_default`;
+
+ALTER TABLE `student_fee_list` ADD `created_at` TIMESTAMP NULL AFTER `q_bag_adjust`;
+
+ALTER TABLE `student_fee_list` CHANGE `created_at` `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE `programme_selection` ADD `created_at` TIMESTAMP NULL AFTER `afternoon_programme`;
+
+ALTER TABLE `programme_selection` CHANGE `created_at` `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
+
+UPDATE `fee_structure` SET `uniform_default` = 98, `uniform_adjust` = 98, `gymwear_default` = 37, `gymwear_adjust` = 37 WHERE `extend_year` = '2022' OR `extend_year` = '2022-2023'
+
+
+ALTER TABLE `collection` ADD `insurance_year` VARCHAR(10) NULL AFTER `collection_pattern`;

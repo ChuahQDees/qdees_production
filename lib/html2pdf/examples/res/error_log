@@ -1,0 +1,45 @@
+[23-Apr-2017 16:18:00 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/web10001/public_html/myhr.com.my/lib/html2pdf/examples/res/exemple07b.php on line 79
+[06-May-2017 14:29:15 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/web10001/public_html/myhr.com.my/lib/html2pdf/examples/res/exemple07b.php on line 79
+[10-Jun-2017 22:39:10 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[12-Jul-2017 01:12:18 America/Chicago] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[12-Jul-2017 01:12:18 America/Chicago] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[12-Jul-2017 01:12:40 America/Chicago] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[12-Jul-2017 01:12:40 America/Chicago] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[25-Jul-2017 01:20:49 America/Chicago] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[25-Jul-2017 01:20:49 America/Chicago] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[25-Jul-2017 01:21:09 America/Chicago] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[25-Jul-2017 01:21:09 America/Chicago] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[30-Sep-2017 22:26:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[30-Sep-2017 22:26:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[30-Sep-2017 22:26:47 Asia/Kuala_Lumpur] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[30-Sep-2017 22:26:47 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[13-Oct-2017 12:50:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[13-Oct-2017 12:50:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[13-Oct-2017 12:51:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[13-Oct-2017 12:51:16 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[19-Dec-2017 14:50:31 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[19-Dec-2017 14:50:31 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[01-Jan-2018 17:31:20 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[01-Jan-2018 17:31:20 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[01-Jan-2018 17:31:35 Asia/Kuala_Lumpur] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[01-Jan-2018 17:31:35 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[09-Mar-2018 12:57:04 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[09-Mar-2018 12:57:04 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[22-Mar-2018 11:53:42 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[22-Mar-2018 11:53:42 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[22-Mar-2018 11:54:08 Asia/Kuala_Lumpur] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[22-Mar-2018 11:54:08 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[03-Apr-2018 06:05:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[03-Apr-2018 06:05:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[04-Apr-2018 02:08:22 Asia/Kuala_Lumpur] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[04-Apr-2018 02:08:22 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[08-Apr-2018 10:27:22 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[08-Apr-2018 10:27:22 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[21-Apr-2018 12:20:26 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[21-Apr-2018 12:20:26 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[21-Apr-2018 12:20:47 Asia/Kuala_Lumpur] PHP Notice:  Undefined variable: produits in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[21-Apr-2018 12:20:47 Asia/Kuala_Lumpur] PHP Warning:  Invalid argument supplied for foreach() in /home/myhrcomm/public_html/lib/html2pdf/examples/res/exemple07b.php on line 79
+[25-Apr-2018 02:39:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[25-Apr-2018 02:39:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43
+[25-Apr-2018 02:39:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 20
+[25-Apr-2018 02:39:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant __CLASS_HTML2PDF__ - assumed '__CLASS_HTML2PDF__' in /home/myhrcomm/public_html/lib/html2pdf/examples/res/about.php on line 43

@@ -1,0 +1,897 @@
+[16-Mar-2020 14:19:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 14:19:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 14:19:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[16-Mar-2020 14:19:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[16-Mar-2020 14:19:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[16-Mar-2020 14:19:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[16-Mar-2020 16:34:47 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[16-Mar-2020 16:34:47 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[16-Mar-2020 16:35:41 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[16-Mar-2020 16:35:41 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[16-Mar-2020 16:36:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Mar-2020 16:36:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Mar-2020 16:36:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Mar-2020 16:36:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/class_list.php on line 54
+[16-Mar-2020 16:36:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Mar-2020 16:36:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Mar-2020 16:36:02 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/payment_list.php on line 10
+[16-Mar-2020 16:36:02 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/payment_list.php on line 10
+[16-Mar-2020 16:36:02 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/payment_list.php on line 10
+[16-Mar-2020 16:36:02 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/payment_list.php on line 54
+[16-Mar-2020 16:36:02 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: batch_no in /home/getright/scholars.getright.asia/api/payment_list.php on line 55
+[16-Mar-2020 16:36:02 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: student_code in /home/getright/scholars.getright.asia/api/payment_list.php on line 56
+[16-Mar-2020 18:52:48 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 18:52:48 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 18:52:48 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[16-Mar-2020 18:52:48 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[16-Mar-2020 18:52:48 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[16-Mar-2020 18:52:48 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[16-Mar-2020 19:46:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 19:46:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 19:46:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[16-Mar-2020 19:46:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[16-Mar-2020 19:46:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[16-Mar-2020 19:46:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[16-Mar-2020 20:01:45 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:01:45 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:01:45 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[16-Mar-2020 20:01:45 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[16-Mar-2020 20:01:45 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[16-Mar-2020 20:01:45 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[16-Mar-2020 20:07:13 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:07:13 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:07:13 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[16-Mar-2020 20:07:13 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[16-Mar-2020 20:07:13 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[16-Mar-2020 20:07:13 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[16-Mar-2020 20:09:10 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:09:10 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:09:10 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[16-Mar-2020 20:09:10 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[16-Mar-2020 20:09:10 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[16-Mar-2020 20:09:10 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[16-Mar-2020 20:49:41 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:49:41 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:49:41 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[16-Mar-2020 20:49:41 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[16-Mar-2020 20:49:41 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[16-Mar-2020 20:49:41 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[16-Mar-2020 20:57:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 20:57:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 21:07:55 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 21:07:55 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 21:18:18 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 21:18:18 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 21:19:03 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[16-Mar-2020 21:19:03 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:27:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:27:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:27:33 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:27:33 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:45:06 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:45:06 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:46:08 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 09:46:08 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 10:34:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 10:34:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 10:34:45 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 10:34:45 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 10:41:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 10:41:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 16:42:19 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 16:42:19 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 16:42:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 16:42:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 16:42:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 16:42:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 16:43:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 16:43:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 16:43:17 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 16:43:17 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 16:43:17 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 16:43:17 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 17:04:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 17:04:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:06:47 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:06:47 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:06:47 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 20:06:47 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 20:06:47 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 20:06:47 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 20:07:53 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:07:53 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:07:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 20:07:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 20:07:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 20:07:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 20:13:18 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:13:18 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:13:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 20:13:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 20:13:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 20:13:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 20:13:54 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:13:54 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:13:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 20:13:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 20:13:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 20:13:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 20:14:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:14:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:14:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 20:14:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 20:14:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 20:14:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 20:36:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:36:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:36:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 20:36:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 20:36:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 20:36:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 20:37:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:37:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 20:37:52 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[17-Mar-2020 20:37:52 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[17-Mar-2020 20:37:52 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[17-Mar-2020 20:37:52 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[17-Mar-2020 21:12:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 21:12:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 21:12:53 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 21:12:53 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 21:15:37 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[17-Mar-2020 21:15:37 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:12:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:12:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:12:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:12:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:23:46 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:23:46 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:36:22 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:36:22 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:37:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:37:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:58:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:58:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:58:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 09:58:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 09:58:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 09:58:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 09:59:49 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:59:49 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:59:58 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 09:59:58 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 10:16:22 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 10:16:22 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/class_list.php on line 54
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/payment_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/payment_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/payment_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/payment_list.php on line 54
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: batch_no in /home/getright/scholars.getright.asia/api/payment_list.php on line 55
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: student_code in /home/getright/scholars.getright.asia/api/payment_list.php on line 56
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[18-Mar-2020 11:46:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[18-Mar-2020 12:06:00 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:06:00 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:11:31 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:11:31 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:12:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:12:34 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:12:39 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:12:39 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:13:06 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:13:06 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:13:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:13:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:13:37 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:13:37 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:44:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:44:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:44:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 12:44:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 12:44:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 12:44:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 12:45:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:45:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:45:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 12:45:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 12:45:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 12:45:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 12:50:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:50:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:53:26 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:53:26 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 12:53:26 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 12:53:26 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 12:53:26 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 12:53:26 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 13:32:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:32:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:37:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:37:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:37:36 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:37:36 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:40:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:40:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:07 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:07 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:14 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:14 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:41:21 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:43:07 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:43:07 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:43:07 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 13:43:07 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 13:43:07 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 13:43:07 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 13:53:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:53:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 13:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 13:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 13:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 13:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 14:06:53 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 14:06:53 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 14:06:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 14:06:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 14:06:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 14:06:53 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 17:44:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 17:44:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 17:44:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 17:44:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 17:44:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 17:44:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 18:19:29 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 18:19:29 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 18:19:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 18:19:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 18:19:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 18:19:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[18-Mar-2020 18:45:50 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 18:45:50 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[18-Mar-2020 18:45:50 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[18-Mar-2020 18:45:50 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[18-Mar-2020 18:45:50 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[18-Mar-2020 18:45:50 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[19-Mar-2020 15:53:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[19-Mar-2020 15:53:15 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[19-Mar-2020 15:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[19-Mar-2020 15:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[19-Mar-2020 15:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[19-Mar-2020 15:53:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[24-Mar-2020 02:13:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:13:16 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:13:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[24-Mar-2020 02:13:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[24-Mar-2020 02:13:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[24-Mar-2020 02:13:16 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[24-Mar-2020 02:14:11 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:14:11 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:19:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:19:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:23:42 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:23:42 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:24:23 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:24:23 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:28:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:28:51 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:28:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[24-Mar-2020 02:28:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[24-Mar-2020 02:28:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[24-Mar-2020 02:28:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[24-Mar-2020 02:29:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:29:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:29:35 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:29:35 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:39:37 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:39:37 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:40:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:40:01 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:40:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[24-Mar-2020 02:40:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[24-Mar-2020 02:40:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[24-Mar-2020 02:40:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 67
+[24-Mar-2020 02:41:11 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:41:11 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:20 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:20 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:36 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:36 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:45 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:44:45 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:48:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:48:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:49:56 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:49:56 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:50:35 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:50:35 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:55:04 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:55:04 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:55:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:55:52 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:56:14 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 02:56:14 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 09:32:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 09:32:28 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 09:35:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[24-Mar-2020 09:35:17 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:29:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:29:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:36:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:36:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:20 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:20 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:24 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:24 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:38 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[25-Mar-2020 15:39:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[25-Mar-2020 15:39:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[25-Mar-2020 15:39:38 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[25-Mar-2020 15:39:46 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[25-Mar-2020 15:39:46 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[27-Mar-2020 09:44:24 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[27-Mar-2020 09:44:24 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[28-Mar-2020 23:48:18 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[28-Mar-2020 23:48:18 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[28-Mar-2020 23:48:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[28-Mar-2020 23:48:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[28-Mar-2020 23:48:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[28-Mar-2020 23:48:18 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[30-Mar-2020 14:43:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[30-Mar-2020 14:43:25 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[30-Mar-2020 14:43:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[30-Mar-2020 14:43:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[30-Mar-2020 14:43:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[30-Mar-2020 14:43:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[03-Apr-2020 00:27:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[03-Apr-2020 00:27:32 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[03-Apr-2020 00:27:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[03-Apr-2020 00:27:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[03-Apr-2020 00:27:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[03-Apr-2020 00:27:32 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[03-Apr-2020 00:37:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[03-Apr-2020 00:37:43 Asia/Kuala_Lumpur] PHP Notice:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[03-Apr-2020 00:37:43 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[03-Apr-2020 00:37:43 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[03-Apr-2020 00:37:43 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[03-Apr-2020 00:37:43 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[19-May-2020 19:34:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[19-May-2020 19:34:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[19-May-2020 19:34:11 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[19-May-2020 19:34:11 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[19-May-2020 19:34:11 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[19-May-2020 19:34:11 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 08:57:12 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:57:12 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:57:56 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:57:56 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:58:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:58:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:58:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:58:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:58:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 08:58:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:15:29 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:15:29 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:15:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[21-May-2020 09:15:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[21-May-2020 09:15:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[21-May-2020 09:15:29 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 09:15:51 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:15:51 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:15:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[21-May-2020 09:15:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[21-May-2020 09:15:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[21-May-2020 09:15:51 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 09:29:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:29:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:29:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[21-May-2020 09:29:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[21-May-2020 09:29:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[21-May-2020 09:29:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 09:31:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:31:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:31:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[21-May-2020 09:31:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[21-May-2020 09:31:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[21-May-2020 09:31:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 09:31:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:31:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:31:37 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[21-May-2020 09:31:37 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[21-May-2020 09:31:37 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[21-May-2020 09:31:37 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 09:33:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:33:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:33:14 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[21-May-2020 09:33:14 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[21-May-2020 09:33:14 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[21-May-2020 09:33:14 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 09:47:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:47:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:47:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[21-May-2020 09:47:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[21-May-2020 09:47:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[21-May-2020 09:47:54 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[21-May-2020 09:50:43 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 09:50:43 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:12:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:12:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:10 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:10 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:12 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:12 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:20 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:20 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[21-May-2020 10:15:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:24 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:24 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:41 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:41 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:04:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:05:00 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:05:00 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:05:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:05:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:10 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:10 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:12 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:12 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:16 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:16 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:18 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:18 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:20 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:20 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:39 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:39 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:39 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:24:42 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:42 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:42 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:24:45 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:45 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:24:45 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:17 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:23 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:25 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:26 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:28 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:28 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:28 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:46 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:46 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:46 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:48 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:50 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:50 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:50 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:27:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:27:52 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:28:34 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:34 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:34 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:28:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:37 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:28:39 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:39 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:39 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:28:41 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:41 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:41 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:28:43 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:43 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:43 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:28:46 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:46 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:46 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:28:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:28:48 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:01 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:04 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:07 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:11 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:14 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[22-May-2020 13:30:20 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:20 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[22-May-2020 13:30:20 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[31-May-2020 20:21:05 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:21:05 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:21:05 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[31-May-2020 20:21:05 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[31-May-2020 20:21:05 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[31-May-2020 20:21:05 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[31-May-2020 20:30:35 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:30:35 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:30:35 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[31-May-2020 20:30:35 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[31-May-2020 20:30:35 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[31-May-2020 20:30:35 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[31-May-2020 20:40:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:40:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:40:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[31-May-2020 20:40:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[31-May-2020 20:40:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[31-May-2020 20:40:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[31-May-2020 20:51:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:51:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 20:51:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[31-May-2020 20:51:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[31-May-2020 20:51:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[31-May-2020 20:51:06 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[31-May-2020 21:19:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:19:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:19:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[31-May-2020 21:19:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:19:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:19:21 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[31-May-2020 21:20:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:20:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:20:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:20:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:27:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:27:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:39:50 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:39:50 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:39:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:39:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:39:57 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:39:57 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:55:57 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[31-May-2020 21:55:57 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 11:34:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 11:34:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 11:34:39 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 11:34:39 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 11:34:39 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[01-Jun-2020 11:34:39 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[01-Jun-2020 11:34:39 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[01-Jun-2020 11:34:39 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[01-Jun-2020 11:35:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 11:35:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:41:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:41:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:45:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:45:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:45:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:45:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:46:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:46:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:46:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:46:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:46:33 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[01-Jun-2020 15:46:33 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:48:40 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:48:40 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:46 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:46 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:49 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:49 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:56 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:49:56 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:00 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:00 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:07 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:50:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:51:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:51:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:55:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 09:55:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 11:40:35 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 11:40:35 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 11:48:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 11:48:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 11:48:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 11:48:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 13:09:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 13:09:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 16:38:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 16:38:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 16:39:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 16:39:01 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 16:43:16 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 16:43:16 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:13:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:13:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:21:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:21:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:21:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:21:44 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:21:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:21:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:22:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:22:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:28:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:28:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:37:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:37:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:48:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:48:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:48:22 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[02-Jun-2020 20:48:22 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[02-Jun-2020 20:48:22 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[02-Jun-2020 20:48:22 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[02-Jun-2020 20:51:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:51:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:52:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:52:58 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:53:13 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:53:13 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:55:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:55:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:56:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:56:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:58:40 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 20:58:40 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:01:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:01:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:18 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:18 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:36 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:36 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:55 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:07:55 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:11:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:11:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:17:18 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[02-Jun-2020 21:17:18 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:29:33 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:29:33 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:29:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:29:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:30:00 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:30:00 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:30:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:30:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 16:30:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[04-Jun-2020 16:30:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[04-Jun-2020 16:30:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[04-Jun-2020 16:30:19 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[04-Jun-2020 18:18:57 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 18:18:57 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 18:28:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 18:28:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 18:31:42 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 18:31:42 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:18:51 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:18:51 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:26:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:26:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:27:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:27:06 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:27:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:27:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:28:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:28:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:28:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:28:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:29:13 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:29:13 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:29:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:29:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:30:05 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:30:05 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:30:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:30:37 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:30:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:30:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:34:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:34:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:41:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:41:26 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:43:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:43:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:43:10 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:43:10 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:43:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:43:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:57:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 19:57:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:10:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:10:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:12:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:12:03 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:12:30 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:12:30 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:13:13 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:13:13 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:13:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:13:21 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:15:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:15:53 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:27:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:27:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:30:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:30:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:31:29 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:31:29 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:45:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:45:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:53:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 20:53:23 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:32:47 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:32:47 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:36:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:36:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:39:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:39:54 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:48:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:48:17 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:48:28 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:48:28 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:51:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:51:52 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:56:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:56:22 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:56:31 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[04-Jun-2020 23:56:31 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 00:03:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 00:03:15 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 00:03:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/student_list.php on line 50
+[05-Jun-2020 00:03:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 51
+[05-Jun-2020 00:03:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: order_by in /home/getright/scholars.getright.asia/api/student_list.php on line 52
+[05-Jun-2020 00:03:15 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: page in /home/getright/scholars.getright.asia/api/student_list.php on line 71
+[05-Jun-2020 09:47:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 09:47:48 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 09:50:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 09:50:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 09:50:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 09:50:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:04 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:11 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:49:25 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:27 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:34 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:34 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:38 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:45 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 10:52:45 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[05-Jun-2020 12:34:10 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[05-Jun-2020 12:34:10 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[10-Jun-2020 22:09:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[10-Jun-2020 22:09:19 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/student_list.php on line 10
+[11-Jun-2020 12:31:14 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[11-Jun-2020 12:31:14 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/class_list.php on line 54
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:31:36 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 11:44:00 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[16-Jun-2020 11:44:00 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[16-Jun-2020 11:45:08 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/centre_list.php on line 10
+[16-Jun-2020 11:45:08 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/centre_list.php on line 21
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Warning:  Use of undefined constant PHP_SELF - assumed 'PHP_SELF' (this will throw an Error in a future version of PHP) in /home/getright/scholars.getright.asia/api/class_list.php on line 10
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: centre_code in /home/getright/scholars.getright.asia/api/class_list.php on line 54
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125
+[16-Jun-2020 13:19:09 Asia/Kuala_Lumpur] PHP Notice:  Undefined index: group in /home/getright/scholars.getright.asia/api/class_list.php on line 125

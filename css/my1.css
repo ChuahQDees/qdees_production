@@ -1,0 +1,20 @@
+.sidenav {
+	background-color:#FFFFFF;
+	height:100%;
+}
+
+.myheader {
+	background-color:#69a6f7;
+}
+
+.myheader-text-color {
+	color:white;
+}
+
+a#add-student-photo {
+    ccc: ;
+    display: inline-block;
+}
+.ui-widget-content{
+	display:none;
+}

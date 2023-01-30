@@ -1,0 +1,24 @@
+<?php
+//  $host="localhost";
+//  $user="root";
+//  $password="";
+//  $db="xkyqfvfekd";
+
+// $connection=mysqli_connect($host, $user, $password, $db);
+// if (mysqli_connect_errno()) {
+//    echo "Failed to connect to MySQL: ".mysqli_connect_error();
+// }
+
+$host="localhost";
+$user="xkyqfvfekd";
+$password="cbNKD7VF6c";
+$db="xkyqfvfekd";
+
+$connection=mysqli_connect($host, $user, $password, $db);
+if (mysqli_connect_errno()) {
+   echo "Failed to connect to MySQL: ".mysqli_connect_error();
+}
+
+date_default_timezone_set("Asia/Kuala_Lumpur");
+
+?>

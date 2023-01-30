@@ -1,0 +1,72 @@
+
+<?php
+include_once("../mysql.php");
+include_once("functions.php");
+
+if ($_SESSION["isLogin"]==1) {
+    //if ((($_SESSION["UserType"]=="A") || ($_SESSION["UserType"]=="O") || ($_SESSION["UserType"]=="S") || ($_SESSION["UserType"]=="H") || ($_SESSION["UserType"]=="C") || ($_SESSION["UserType"]=="R") || ($_SESSION["UserType"]=="CM") || ($_SESSION["UserType"]=="T")) & (hasRightGroupXOR($_SESSION["UserName"], "StockBalancesView"))) {
+?>
+<a id="back_stock" href="/">                 
+         <span class="btn-qdees"><i class="fa fa-arrow-left" style="margin-right: 20px;"></i>Back</span>
+</a>
+  <span class="page_title"><img src="/images/title_Icons/Student Population-1.png">Stock Balances</span>
+
+<!-- <div class="uk-margin-right uk-margin-top uk-form"> -->
+   <div class="uk-width-1-1 myheader">
+      <h2 class="uk-text-center myheader-text-color myheader-text-style">SEARCHING</h2>
+   </div>
+   <div class="uk-overflow-container">
+   <div style="background-color: white; padding: 8px" class="d-flex justify-content-center">
+        <div>
+        <input type="text" name="cut_off_date" id="cut_off_date" placeholder="Cut Off Date" data-uk-datepicker="{format: 'DD/MM/YYYY'}" value="<?php echo date("d/m/Y");?>">
+        <a class="uk-button" onclick="generateBalReport('')">Generate</a>
+        <a onclick="printint()" target="_blank" class="uk-button">Print</a>
+        </div>
+    </div>
+   </div>
+  
+<!-- </div> -->
+    <script>
+        function printint() {
+            var cut_off_date=$("#cut_off_date").val();
+            window.open('admin/stock_balance_report.php?cut_off_date='+cut_off_date);
+        }
+
+        function generateBalReport(sub_category) {
+            var cut_off_date=$("#cut_off_date").val();
+
+            if (cut_off_date!="") {
+                $.ajax({
+                    url : "admin/generateBalReport.php",
+                    type : "POST",
+                    data : "cut_off_date="+cut_off_date+"&sub_category="+sub_category,
+                    dataType : "text",
+                    success : function(response, status, http) {						
+					if(sub_category!=""){							
+					$("#back_stock").attr("href", window.location.href);						
+					}
+                        $("#sctResult").html(response);
+                    },
+                    error : function(http, status, error) {
+                        UIkit.notify("Error:"+error);
+                    }
+                });
+            } else {
+                UIkit.notify("Please enter a cut off date");
+            }
+        }
+
+        $(document).ready(function () {
+            generateBalReport('');
+        });
+        
+        
+        
+    </script>
+   <div id="sctResult" style="border-top-right-radius: 15px;border-top-left-radius: 15px;"></div>
+
+
+<?php
+  // }
+}
+?>

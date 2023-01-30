@@ -1,0 +1,126 @@
+<a href="/">                 
+				 <!-- <span class="btn-qdees"><i class="fa fa-arrow-left" style="margin-right: 20px;"></i>Back</span> -->
+</a>
+<span>
+    <span class="page_title"><img src="/images/title_Icons/Centre Stock Balance.png">Centre Stock Balance Report</span>
+</span>
+
+<?php
+include_once("../mysql.php");
+include_once("functions.php");
+
+if ($_SESSION["isLogin"]==1) {
+   if ((($_SESSION["UserType"]=="A") || ($_SESSION["UserType"]=="O")) & (hasRightGroupXOR($_SESSION["UserName"], "StockBalancesView"))) {
+?>
+
+<div class="uk-margin-right uk-margin-top uk-form">
+   <div class="uk-width-1-1 myheader">
+      <h2 class="uk-text-center myheader-text-color myheader-text-style">Centre Stock Balance Report</h2>
+   </div>
+    <!-- <div style="background-color: white; padding: 8px" class="d-flex justify-content-center">
+        <div>
+        <input type="text" name="cut_off_date" id="cut_off_date" placeholder="Cut Off Date" data-uk-datepicker="{format: 'DD/MM/YYYY'}" value="<?php echo date("d/m/Y");?>">
+        <a class="uk-button" onclick="generateBalReport('')">Generate</a>
+        </div>
+    </div> -->
+    <div class="uk-overflow-container uk-form nice-form">
+   <div class="d-flex uk-grid uk-grid-small">
+        <div class="uk-width-medium-2-10">
+        Centre Name<br>
+        <?php 
+        $sql="SELECT * from centre where centre_code='".$_SESSION["CentreCode"]."' order by centre_code";
+        $result=mysqli_query($connection, $sql);
+        while ($row=mysqli_fetch_assoc($result)) {
+            ?>
+        <span type="text" class="uk-width-medium-1-1 uk-text-bold"><?php echo $row["company_name"]; ?></span>
+        <?php 
+            }
+            ?>
+        </div>
+        
+        <!-- <input type="text" name="from_date" id="from_date" placeholder="From Date" data-uk-datepicker="{format: 'DD/MM/YYYY'}" value="<?php echo date("d/m/Y");?>">
+        <input type="text" name="to_date" id="to_date" placeholder="To Date" data-uk-datepicker="{format: 'DD/MM/YYYY'}" value="<?php echo date("d/m/Y");?>"> -->
+        <div class="uk-width-medium-2-10">
+        Term<br>
+        <?php 
+             $month = date('m');
+        ?>
+        <select name="term" id="term" class="uk-width-medium-1-1">
+            <option value="">Select Term</option>
+            <option <?php if($month <= 3){ echo "selected"; }?> value="1">Term 1</option>
+            <option <?php if($month >= 4 && $month <= 6){ echo "selected"; }?> value="2">Term 2</option>
+            <option <?php if($month >= 7 && $month <= 9){ echo "selected"; }?> value="3">Term 3</option>
+            <option <?php if($month >= 10 && $month <= 12){ echo "selected"; }?> value="4">Term 4</option>
+        </select>
+        </div>
+        <div class="uk-width-medium-2-10">
+        Products<br>
+        <select name="product" id="product" class="uk-width-medium-1-1">
+            <option value="">Select	Products</option>
+            <option value="Other products">Other products</option>
+            <option value="Marketing set">Marketing set</option>
+            <!-- <option value="E-readers">E-readers</option> -->
+        </select>
+        </div>
+        <div class="uk-width-medium-2-10"><br>
+            <button class="uk-button" onclick="generateBalReport('screen')">Show on screen</button>
+            <button onclick="generateBalReport('print')" class="uk-button">Print</button> 
+        </div>
+        
+    </div>
+   </div>
+    <script>
+        function generateBalReport(method) {
+            //var cut_off_date=$("#cut_off_date").val();
+            var product=$("#product").val();
+            //var cut_off_date="30/07/2021";
+            var term=$("#term").val();
+            if (term!="") {
+                if (method=="screen") {
+                    $.ajax({
+                        url : "admin/generateBalReport.php",
+                        type : "POST",
+                        data : "product="+product+"&term="+term,
+                        dataType : "text",
+                        success : function(response, status, http) {
+                            $("#sctBal").html(response);
+                        },
+                        error : function(http, status, error) {
+                            UIkit.notify("Error:"+error);
+                        }
+                    });
+                } else {
+                    $("#frmPrintproduct").val(product);
+                    $("#frmPrintterm").val(term);
+                    $("#frmPrint").submit();
+                }
+            } else {
+                UIkit.notify("Please enter a cut off date");
+            }
+        }
+
+        $(document).ready(function () {
+            generateBalReport('screen');
+        });
+    </script>
+   <div id="sctBal"></div>
+</div>
+<form id="frmPrint" action="admin/generateBalReport.php" method="post" target="_blank" style="background: none!important; box-shadow: none!important; padding: 0;">
+   <input type="hidden" name="method" value="print">
+   <input type="hidden" id="frmPrintproduct" name="product" value="">
+   <input type="hidden" id="frmPrintterm" name="term" value="">
+</form>
+<?php
+   }
+}
+
+?>
+<style>
+    .rpt-table tr td{
+        border:1px solid #80808082;
+    }
+    .rpt-table{
+        border-collapse: unset;
+        border-spacing: 0px;
+    }
+</style>
