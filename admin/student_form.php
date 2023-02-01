@@ -1603,6 +1603,12 @@ if($status==1){
                         <br>
                         <button type="submit" id="submit" name="submit"
                             class="uk-button uk-button-primary form_btn uk-text-center">Save</button>
+
+                            <?php if($_GET['mode'] == 'EDIT') { ?>
+
+                                <a type="button" id="print_to_pdf" target="_blank" href="admin/student_detail_print.php?id=<?php echo $_GET['id']; ?>" name="print_to_pdf" class="uk-button uk-button-primary form_btn uk-text-center">Print to PDF</a>
+
+                            <?php } ?>
                     </div>
 
                 </div>
