@@ -38,15 +38,15 @@ if($m >= date('m',strtotime($year_start_date))) {
 }
 ?>
 $(document).ready(function() {
- /*   var date = new Date();
+   var date = new Date();
        //y = date.getFullYear();
        var y = '<?php echo $y; ?>';
        var m = date.getMonth();
        var day = date.getDate();
        firstDay = ("0" + (new Date(y, m, 1)).getDate()).slice(-2);
-       lastDay = (new Date(y, m + 1, 0)).getDate(); */
-   $("#df").val('<?php echo $year_start_date; ?>');
-   $("#dt").val('<?php echo $year_end_date; ?>');
+       lastDay = (new Date(y, m + 1, 0)).getDate();
+   $("#df").val(y+'/'+ (("0" + (m+1)).slice(-2)) +'/'+'01');
+   $("#dt").val(y+'/'+(("0" + (m+1)).slice(-2))+'/'+lastDay);
    generateReport('screen');
 });
    
@@ -71,6 +71,7 @@ function generateReport(method) {
             beforeSend : function(http) {
             },
             success : function(response, status, http) {
+				//console.log(response.from_date);
 			$("#aBack").attr("href", "/index.php?p=rpt_centre_subject_enrl");
                $("#sctResult").html(response);
             },
@@ -91,6 +92,23 @@ function generateReport(method) {
    }
 }
 
+$(function() {
+   $('#yearMonth').monthpicker({
+      years: [2021,2020,2019],
+      topOffset: 6,
+      onMonthSelect: function(m, y) {
+         var month=m+1;
+
+         if (month<10) {
+            month="0"+month;
+         }
+
+         $("#selected_month").val(y+month);
+         $("#selected_year").val(y);
+
+      }
+   });
+});
 </script>
 <!--<a href="/" id="aBack">     <span class="btn-qdees"><i class="fa fa-arrow-left" style="margin-right: 20px;"></i>Back</span></a>-->
 <div class="uk-width-1-1 myheader">
@@ -119,6 +137,7 @@ if ($sql=="") {
    $sqlCentre = "SELECT centre_code, company_name from centre where centre_code = '$centrecode'  limit 1 ";
    $resultCentre=mysqli_query($connection, $sqlCentre);
    $rowCentre=mysqli_fetch_assoc($resultCentre);
+   // var_dump($rowCentre["kindergarten_name"]);die; 
 ?>
    <div class="uk-width-medium-2-10">
       Centre Name<br>	  <input type="hidden" name="centre_code" id="centre_code" value="<?php echo $_SESSION['CentreCode']?>">	<span type="text" class="uk-width-medium-1-1 uk-text-bold" ><?php echo $rowCentre['company_name']?></span>	
@@ -154,8 +173,10 @@ if ($sql=="") {
       <script>
                       var objCompanyName = document.getElementById('screens.screenid');
                       $(document).on('change', objCompanyName, function(){
+                       // console.log("options[i].text")
                           var options = $('datalist')[0].options;
                           for (var i=0;i<options.length;i++){
+                         // console.log($(objCompanyName).val())
                             if (options[i].value == $(objCompanyName).val()) 
                               {
                                 $("#hfCenterCode").val(options[i].text);
@@ -186,12 +207,19 @@ if ($sql=="") {
 <div class="uk-width-medium-2-10">
    Date From<br>
    <input type="text" class="uk-width-1-1" name="df" id="df" placeholder="Date From" data-uk-datepicker="{format: 'YYYY-MM-DD'}" value="" autocomplete="off">
+   <!-- <select class="uk-width-1-1" name="df" id="df"></select> -->
 </div>
 <div class="uk-width-medium-2-10">
    Date To<br>
    <input type="text" class="uk-width-1-1" name="dt" id="dt" placeholder="Date To" data-uk-datepicker="{format: 'YYYY-MM-DD'}" value="" autocomplete="off">
+   <!-- <select class="uk-width-1-1" name="dt" id="dt"></select> -->
 </div>
-   
+   <!--<div style="width: 15%;" class="uk-width-medium-2-10">
+         Months selection<br>
+         <a class="uk-button" id="yearMonth">Pick a Month</a>
+         <input type="hidden" name="selected_month" id="selected_month" value="">
+         <input type="hidden" name="selected_year" id="selected_year" value="">
+      </div>-->
       
 	<div class="uk-width-medium-2-10">
 		 <br>
@@ -201,7 +229,6 @@ if ($sql=="") {
 
 </div>
 <div id="sctResult" class="" style="border-top-right-radius: 15px;border-top-left-radius: 15px;"></div>
-<div id="student-dialog"></div>
 <form id="frmPrint" action="admin/a_rptCentreSubjectEnroll.php" method="post" target="_blank" style="background: none!important; box-shadow: none!important; padding: 0;" >
    <input type="hidden" name="method" value="print">
    <input type="hidden" id="frmPrintCentreCode" name="centre_code" value="">

@@ -967,7 +967,7 @@ if (hasRightGroupXOR($_SESSION["UserName"], "SalesView|SalesEdit")) {
 }
 ?>
 </div>
-
+<div id="student-dialog"></div>
 <?php
    }
 }
@@ -1363,6 +1363,61 @@ jQuery(document).ready(function() {
     }
 });
 </script>
+
+<?php 
+$totalAmt = 0;
+$sql = "SELECT count(id) total
+			FROM (
+SELECT DISTINCT ps.student_entry_level, s.id
+				FROM student s
+				INNER JOIN programme_selection ps ON ps.student_id = s.id
+				INNER JOIN student_fee_list fl ON fl.programme_selection_id = ps.id
+				INNER JOIN fee_structure f ON f.id = fl.fee_id
+				WHERE (fl.programme_date >= '2023-03-01' AND fl.programme_date <= '2024-02-29') 
+				AND ps.student_entry_level != '' AND s.student_status = 'A' 
+				AND s.centre_code='".$_SESSION["CentreCode"]."'
+				AND ((fl.programme_date >= '2023-04-01' AND fl.programme_date <= '2023-04-30') OR (fl.programme_date_end >= '2023-04-01' 
+				AND fl.programme_date_end >= '2023-04-30')) AND s.deleted = '0' 
+			) ab ";
+  $result=mysqli_query($connection, $sql);
+  //$sub_categories = array();
+  if ($result) {
+    while($row=mysqli_fetch_assoc($result)){
+		$totalAmt = $row['total'];
+    }
+  }
+ 
+if ($totalAmt < 50){
+	//Remove access to ordering
+	$sql = "DELETE FROM `user_right` WHERE user_name = '".$_SESSION["UserName"]."' 
+	AND (`right` = 'OrderEdit' OR `right` = 'OrderView')";
+	$result=mysqli_query($connection, $sql);
+?>
+<script>
+$(document).ready(function(){
+    $.ajax({ url: "warningError.php",
+        dataType : "text",
+        beforeSend : function(http) {
+      },
+      async: false,
+      success : function(response, status, http) {
+         $("#student-dialog").html(response);
+		 $("#student-dialog").dialog({
+               dialogClass:"no-close",
+               title:"ATTENTION",
+               modal:true,
+               height:'auto',
+               width:'60%',
+            });
+      },
+      error : function(http, status, error) {
+         UIkit.notify("Error:"+error);
+      }
+   });
+});
+</script>
+<?php } ?>
+
 <style>
 .home {
     background: #ffffff33;
@@ -1421,5 +1476,8 @@ jQuery(document).ready(function() {
     width: 90px;
     color: #3399ff;
     font-size: 12px;
+}
+.ui-dialog .ui-dialog-titlebar {
+	background: #ef5350;
 }
 </style>

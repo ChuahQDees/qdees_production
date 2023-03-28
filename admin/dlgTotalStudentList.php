@@ -3,8 +3,8 @@ session_start();
 include_once("../mysql.php");
 
     $centre_code = isset($_REQUEST['centre_code']) ? $_REQUEST['centre_code'] : '';
-    $from_date = isset($_REQUEST['from_date']) ? $_REQUEST['from_date'] : '';
-    $to_date = isset($_REQUEST['to_date']) ? $_REQUEST['to_date'] : '';
+    $from_date = isset($_REQUEST['from_date']) ? date('Y-m-d',strtotime($_REQUEST['from_date'])) : '';
+    $to_date = isset($_REQUEST['to_date']) ? date('Y-m-d',strtotime($_REQUEST['to_date'])) : '';
     $project = isset($_REQUEST['project']) ? $_REQUEST['project'] : '';
     $year = $_SESSION['Year'];
 	
@@ -25,7 +25,7 @@ include_once("../mysql.php");
         $sql.=" and s.centre_code='$centre_code' ";
     }
 
-    $sql .= " and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0'";
+    $sql .= " and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0'";
 
     if($project == 'Foundation')
     {
@@ -56,6 +56,7 @@ include_once("../mysql.php");
         $sql.=" and fl.afternoon_programme =1 group by ps.student_entry_level, s.id";
     } 
 
+    
     $result_student=mysqli_query($connection, $sql);
     $num_row=mysqli_num_rows($result_student);
 

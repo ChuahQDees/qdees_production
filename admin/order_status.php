@@ -583,7 +583,11 @@ $current_year=date("Y");
 if ($_SESSION["UserType"]=="S") {
    $sql="SELECT * from `order` where (CAST(`ordered_on` AS DATE) BETWEEN '".$year_start_date."' AND '".$year_end_date."')";
 } else {
-   $sql="SELECT o.* from `order` o where o.centre_code='".$_SESSION["CentreCode"]."' and (CAST(o.ordered_on AS DATE) BETWEEN '".$year_start_date."' AND '".$year_end_date."')";
+   //CHS Edit: Why does it not show the listing if you change new Academic Year?
+   //$sql="SELECT o.* from `order` o where o.centre_code='".$_SESSION["CentreCode"]."' and (CAST(o.ordered_on AS DATE) BETWEEN '".$year_start_date."' AND '".$year_end_date."')";
+   
+   $sql="SELECT o.* from `order` o where o.centre_code='".$_SESSION["CentreCode"]."'";
+   
    //$sql="SELECT o.*, d.sales_order_no, d.order_no as defective_no, d.courier from `order` o, `defective` d where o.order_no=d.sales_order_no and o.centre_code='".$_SESSION["CentreCode"]."' and year(o.ordered_on) = '$year'";
 
    //$sql="SELECT distinct order_no, sales_order_no, ordered_by, ordered_on, delivered_to_logistic_by,delivered_to_logistic_on, courier, defective_reason, doc, remarks from `defective` where centre_code='".$_SESSION["CentreCode"]."' and year(ordered_on) = '$year'";

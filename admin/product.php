@@ -461,7 +461,7 @@ if ($_SESSION["isLogin"] == 1) {
             <h2 class="uk-text-center myheader-text-color">Searching</h2>
          </div>
          <?php
-         $numperpage = 2000000;
+         $numperpage = 10;
          $query = "p=$p&m=$m&s=$s";
          $pagination = getPagination($pg, $numperpage, $query, $browse_sql, $start_record, $num_row);
          $browse_sql .= " order by id desc limit $start_record, $numperpage";

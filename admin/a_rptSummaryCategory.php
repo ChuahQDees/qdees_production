@@ -12,12 +12,18 @@ if ($method=="print") {
    include_once("../uikit1.php");
 }
 $str_length = strlen($selected_month);
-$month = str_split($selected_month,($str_length - 2))[1];
-$year = str_split($selected_month,($str_length - 2))[0];
+$month = ($selected_month == '13') ? '13' : str_split($selected_month,($str_length - 2))[1];
+$year = ($selected_month == '13') ? $_SESSION['Year'] : str_split($selected_month,($str_length - 2))[0];
 $grand_total = $sub_total = 0;
 $addOn = $products = $tuition = $placement = $registration = [];
 if ($student != '') {
    $student = strtolower($student);
+}
+
+if($month != '13')
+{
+   $month_start_date = date('Y-m-01',strtotime($year.'-'.$month)); 
+   $month_end_date  = date('Y-m-t',strtotime($year.'-'.$month));
 }
 
 function filtering($row, $typeSchoolFees, $num) {
@@ -68,76 +74,7 @@ function getCourseName($allocationID) {
    return $row['course_name'];
 }
 
-// if ($month == '13') {
-//    $base_sql2="SELECT c.course_name, c.subject, c.placement, c.registration, a.fees, c.payment_type, g.start_date, g.end_date from `group` g LEFT JOIN allocation a on a.group_id=g.id LEFT JOIN course c on a.course_id = c.id
-//             where year(g.start_date)='$year'";
-// }else{
-//    $base_sql2="SELECT c.course_name, c.subject, c.placement, c.registration, a.fees, c.payment_type, g.start_date, g.end_date from `group` g LEFT JOIN allocation a on a.group_id=g.id LEFT JOIN course c on a.course_id = c.id
-//             where year(g.start_date)='$year' and '$month' between month(g.start_date) and month(g.end_date)";
-// }
-// if($centre_code != "ALL"){
-//    $base_sql2 .=" and g.centre_code='$centre_code'";
-// }
-// //$base_sql2 .=" limit 1";
-// echo $base_sql2; 
-// $result2=mysqli_query($connection, $base_sql2);
-// $num_row2=mysqli_num_rows($result2);
 
-// if ($num_row2>0) {
-//    $typeSchoolFees = array('placement', 'registration', 'tuition');
-//    $filtering_schoolFees = [];
-//    if ($student != '' && in_array($student, $typeSchoolFees)) {
-//       if ($student == 'tuition') {
-//          while ($row2=mysqli_fetch_assoc($result2)) {
-//             if ($row2["payment_type"] == 'Monthly') {
-//                $start_month=explode('-', ($row2["start_date"]));
-//                $end_month=explode('-', ($row2["end_date"]));
-//                $total_month = (intval($end_month[1]) - intval($start_month[1])) + 1;
-//                for ($i=0; $i < $total_month; $i++) { 
-//                   if ($month == '13') {
-//                      $tuition[$row2['course_name']] += $row2['fees'];
-//                   } else {
-//                      if ((intval($start_month[1]) + $i) <= intval($month)) {
-//                         $tuition[$row2['course_name']] += $row2['fees'];
-//                      }
-//                   }
-//                }
-//             } else {
-//                $tuition[$row2['course_name']] += $row2['fees'];
-//             }
-
-//          }
-//       } else {
-//          while ($row2=mysqli_fetch_assoc($result2)) {
-//             $array_schoolFees[$student] += $row2[$student];
-//          }
-//       }
-//    } elseif ($student != '' && !in_array($student, $typeSchoolFees)) {
-
-//    } else {
-//       while ($row2=mysqli_fetch_assoc($result2)) {
-//          //echo $row2['placement'];
-//          $placement[$row2['course_name']] += $row2['placement'];
-//          $array_schoolFees[$row2['course_name']] += $row2['registration'];
-//          if ($row2["payment_type"] == 'Monthly') {
-//             $start_month=explode('-', ($row2["start_date"]));
-//             $end_month=explode('-', ($row2["end_date"]));
-//             $total_month = (intval($end_month[1]) - intval($start_month[1])) + 1;
-//             for ($i=0; $i < $total_month; $i++) { 
-//                if ($month == '13') {
-//                   $tuition[$row2['course_name']] += $row2['fees'];
-//                } else {
-//                   if ((intval($start_month[1]) + $i) <= intval($month)) {
-//                      $tuition[$row2['course_name']] += $row2['fees'];
-//                   }
-//                }
-//             }
-//          } else {
-//             $tuition[$row2['course_name']] += $row2['fees'];
-//          }
-//       }
-//    }
-// }
 $base_sql ="";
 // School Fees
 
@@ -145,27 +82,27 @@ $base_sql .=" select  f.subject,'School Fees' as fee_name, sum(f.school_adjust) 
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.school_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."')";
 if ($month != '13') {
-   $base_sql .= " and case when f.school_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.school_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.school_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.school_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.school_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.school_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.school_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.school_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   }  
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
 } 
 // $base_sql .=" group by f.subject, f.school_collection";
-//echo $base_sql;
+
 // Multimedia Fees
 $base_sql .="  UNION ALL
 select  f.subject,'Multimedia Fees' as fee_name, sum(f.multimedia_adjust) as fees, f.multimedia_collection as payment_type, s.extend_year 
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.multimedia_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when f.multimedia_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.multimedia_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.multimedia_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.multimedia_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.multimedia_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.multimedia_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.multimedia_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.multimedia_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -179,10 +116,10 @@ select  f.subject,'Facility Fees' as fee_name, sum(f.facility_adjust) as fees, f
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.facility_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when f.facility_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.facility_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.facility_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.facility_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.facility_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.facility_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.facility_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.facility_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -196,10 +133,10 @@ select  f.subject,'Integrated Module' as fee_name, sum(f.integrated_adjust) as f
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.integrated_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when f.integrated_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.integrated_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.integrated_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.integrated_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.integrated_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.integrated_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.integrated_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.integrated_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -213,10 +150,10 @@ select  f.subject,'Link & Think' as fee_name, sum(f.link_adjust) as fees, f.link
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.link_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when f.link_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.link_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.link_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.link_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.link_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.link_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.link_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.link_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -230,10 +167,10 @@ select  f.subject,'Mobile app' as fee_name, sum(f.mobile_adjust) as fees, f.mobi
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.mobile_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when f.mobile_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.mobile_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.mobile_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.mobile_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.mobile_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.mobile_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.mobile_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.mobile_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -247,7 +184,7 @@ select  f.subject,'Registration' as fee_name, sum(f.registration_adjust) as fees
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.registration_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month' end ";
+   $base_sql .= " and case when $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date' end ";
   } 
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
@@ -260,7 +197,7 @@ select  f.subject,'Insurance' as fee_name, sum(f.insurance_adjust) as fees, 'Ann
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.insurance_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month' end ";
+   $base_sql .= " and case when $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date' end ";
   } 
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
@@ -273,7 +210,7 @@ select  f.subject,'Q-dees Level Kit' as fee_name, sum(f.q_dees_adjust) as fees, 
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.q_dees_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month' end ";
+   $base_sql .= " and case when $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date' end ";
   } 
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
@@ -286,7 +223,7 @@ select  f.subject,'Uniform (2 sets)' as fee_name, sum(fl.uniform_adjust) as fees
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.uniform_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month' end ";
+   $base_sql .= " and case when $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date' end ";
   } 
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
@@ -299,7 +236,7 @@ select  f.subject,'Gymwear (1 set)' as fee_name, sum(fl.gymwear_adjust) as fees,
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.gymwear_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month' end ";
+   $base_sql .= " and case when $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date' end ";
   } 
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
@@ -312,7 +249,7 @@ select  f.subject,'Q-dees Bag' as fee_name, sum(f.q_bag_adjust) as fees, 'Annual
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and f.q_bag_adjust != 0 and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month' end ";
+   $base_sql .= " and case when $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date' end ";
   } 
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
@@ -325,10 +262,10 @@ select  f.subject,'Mandarin Modules' as fee_name, sum(f.mandarin_m_adjust) as fe
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.foundation_mandarin =1 and f.mandarin_m_adjust != 0  and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when f.mandarin_m_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.mandarin_m_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.mandarin_m_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.mandarin_m_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.mandarin_m_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.mandarin_m_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.mandarin_m_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.mandarin_m_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -343,10 +280,10 @@ from student s, programme_selection ps, student_fee_list fl, fee_structure f
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.foundation_iq_math =1 and f.iq_math_adjust != 0   and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
    //$base_sql .= " and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."')  and fl.programme_date<='$selectedDateTime'";
-   $base_sql .= " and case when f.iq_math_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.iq_math_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.iq_math_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.iq_math_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.iq_math_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.iq_math_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.iq_math_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.iq_math_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -361,10 +298,10 @@ from student s, programme_selection ps, student_fee_list fl, fee_structure f
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.foundation_int_mandarin =1 and f.mandarin_adjust != 0   and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
    //$base_sql .= " and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."')  and fl.programme_date<='$selectedDateTime'";
-   $base_sql .= " and case when f.mandarin_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.mandarin_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.mandarin_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.mandarin_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.mandarin_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.mandarin_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.mandarin_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.mandarin_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -379,10 +316,10 @@ from student s, programme_selection ps, student_fee_list fl, fee_structure f
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.foundation_int_art =1 and f.mandarin_adjust != 0   and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
    //$base_sql .= " and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."')  and fl.programme_date<='$selectedDateTime'";
-   $base_sql .= " and case when f.international_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.international_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.international_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.international_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.international_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.international_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.international_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.international_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -397,10 +334,10 @@ from student s, programme_selection ps, student_fee_list fl, fee_structure f
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.foundation_int_english =1 and f.enhanced_adjust != 0   and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
    //$base_sql .= " and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."')  and fl.programme_date<='$selectedDateTime'";
-   $base_sql .= " and case when f.enhanced_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.enhanced_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.enhanced_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.enhanced_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.enhanced_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.enhanced_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.enhanced_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.enhanced_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -414,7 +351,7 @@ select   f.subject,'Pendidikan Islam' as fee_name, sum(f.islam_adjust) as fees, 
 from student s, programme_selection ps, student_fee_list fl, fee_structure f 
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.pendidikan_islam =1 and f.islam_adjust != 0   and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
-   $base_sql .= " and case when $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month' end ";
+   $base_sql .= " and case when $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date' end ";
   } 
 if($centre_code != "ALL"){
    $base_sql .=" and s.centre_code='$centre_code'";
@@ -428,10 +365,10 @@ from student s, programme_selection ps, student_fee_list fl, fee_structure f
 where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.`student_status`='A' and fl.afternoon_programme =1 and f.basic_adjust != 0   and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ";
 if ($month != '13') {
    //$base_sql .= " and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."')  and fl.programme_date<='$selectedDateTime'";
-   $base_sql .= " and case when f.basic_collection='Monthly' then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'  
-   when f.basic_collection='Termly' and $month in (1, 4, 7, 10) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.basic_collection='Half Year' and $month in (1, 7) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
-   when f.basic_collection='Annually' and $month in (1) then  month(fl.programme_date)<='$month' and month(fl.programme_date_end) >='$month'
+   $base_sql .= " and case when f.basic_collection='Monthly' then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'  
+   when f.basic_collection='Termly' and $month in (1, 4, 7, 10) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.basic_collection='Half Year' and $month in (1, 7) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
+   when f.basic_collection='Annually' and $month in (1) then  fl.programme_date <= '$month_end_date' and fl.programme_date_end >='$month_start_date'
    end ";
   } 
 if($centre_code != "ALL"){
@@ -447,58 +384,31 @@ if($centre_code != "ALL"){
 
 
    $base_sql1 = " 
-  select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '$year' as extend_year, '' as fee_id, '$year-01-01' as start_date, '$year-12-01' as end_date from addon_product where status='Approved' and `monthly`='Monthly'";
+  select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '".$_SESSION['Year']."' as extend_year, '' as fee_id, '$year_start_date' as start_date, '$year_end_date' as end_date from addon_product where status='Approved' and `monthly`='Monthly'";
    if($centre_code != "ALL"){
       $base_sql1 .=" and centre_code='$centre_code'";
    } 
-   //if($month == 1 || $month == 4 || $month == 7 || $month == 10){Termly
+
    $base_sql1 .= " UNION ALL
-   select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '$year' as extend_year, '' as fee_id, '$year-01-01' as start_date, '$year-12-01' as end_date from addon_product where status='Approved' and `monthly`='Termly'";
+   select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '".$_SESSION['Year']."' as extend_year, '' as fee_id, '$year_start_date' as start_date, '$year_end_date' as end_date from addon_product where status='Approved' and `monthly`='Termly'";
     if($centre_code != "ALL"){
        $base_sql1 .=" and centre_code='$centre_code'";
     }
-  // }
+ 
 
-   //if($month == 1 || $month == 7){
+   
    $base_sql1 .= " UNION ALL
-   select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '$year' as extend_year, '' as fee_id, '$year-01-01' as start_date, '$year-12-01' as end_date from addon_product where status='Approved' and `monthly`='Half Year'";
+   select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '".$_SESSION['Year']."' as extend_year, '' as fee_id, '$year_start_date' as start_date, '$year_end_date' as end_date from addon_product where status='Approved' and `monthly`='Half Year'";
     if($centre_code != "ALL"){
        $base_sql1 .=" and centre_code='$centre_code'";
     }
-   //}
-
-   //if($month == 1){
+   
    $base_sql1 .= " UNION ALL
-   select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '$year' as extend_year, '' as fee_id, '$year-01-01' as start_date, '$year-12-01' as end_date from addon_product where status='Approved' and `monthly`='Annually'";
+   select 'Add-On Products' as subject, `product_code`, `product_name` as fee_name, unit_price as fees, `monthly` as payment_type, '".$_SESSION['Year']."' as extend_year, '' as fee_id, '$year_start_date' as start_date, '$year_end_date' as end_date from addon_product where status='Approved' and `monthly`='Annually'";
     if($centre_code != "ALL"){
        $base_sql1 .=" and centre_code='$centre_code'";
     }
-   //}
 
-
-//echo $base_sql1;
-
-// $base_sql="SELECT sum(amount) amount, product_code, collection_type  from collection c where year(c.collection_date_time)='$year' and c.void=0";
-// if ($month != '13') {
-//    $base_sql .=" and month(c.collection_date_time)='$month' ";
-//       //where year(c.collection_date_time)='$year' and c.void=0 and collection_type In ('addon-product', 'product')";
-// }
-// if($centre_code != "ALL"){
-//    $base_sql .=" and c.centre_code='$centre_code'";
-// }
-// if($summary == "School Fees Summary"){
-//    $base_sql .=" and collection_type not In ('addon-product', 'product')";
-// }else if($summary == "Stock Item Summary"){
-//    $base_sql .=" and collection_type In ('addon-product', 'product')";
-// }
-// $base_sql .=" group by product_code";
-
-
-//    $result=mysqli_query($connection, $base_sql);
-//     $num_row=mysqli_num_rows($result);
-// echo $base_sql;
-
-	
 ?>
 
 <style type="text/css">
@@ -511,7 +421,7 @@ if($centre_code != "ALL"){
 
 <div class="uk-width-1-1 myheader text-center mt-5" style="text-align:center;color:white;">
    <h2 class="uk-text-center myheader-text-color myheader-text-style">CENTRE MONTHLY FEES REPORT</h2>
-   For <?php echo date('F', mktime(0, 0, 0, $month, 10)).' '; echo $year;?><br>
+   For <?php echo ($selected_month == '13') ? 'All Months' : date('M Y',strtotime($year.'-'.$month));?><br>
 </div>
 <div class="nice-form">
    <div class="uk-grid">
@@ -534,14 +444,7 @@ if($centre_code != "ALL"){
       <table class="uk-table">
          <tr>
             <td class="uk-text-bold">Academic Year</td>
-                  <td><?php 
-                     if(!empty($selected_month)) {
-                        $str_length = strlen($selected_month);
-                        echo str_split($selected_month, ($str_length - 2))[0];
-                     } else { 
-                        echo $_SESSION['Year'];
-                     }
-                  ?></td>
+            <td><?php echo $_SESSION['Year']; ?></td>
          </tr>
          <tr>
             <td class="uk-text-bold">School Term</td>
@@ -554,7 +457,7 @@ if($centre_code != "ALL"){
                         $month = substr($selected_month, ($str_length - 2), 2);
                         $year = substr($selected_month, 0, -2);
                      }
-                        //$sql = "SELECT * from codes where year=" . $year;
+                        
 						$sql = "SELECT * from codes where module='SCHOOL_TERM'";
                     if($month!="13"){
                       $sql .= " and from_month<=$month and to_month>=$month";
@@ -564,7 +467,6 @@ if($centre_code != "ALL"){
                         $centre_result = mysqli_query($connection, $sql);
                         $str = "";
                       while ($centre_row = mysqli_fetch_assoc($centre_result)) {
-                        // echo $centre_row['category'] . "/" . $centre_row['year'] . "<br>";
                         $str .= $centre_row['category'] . ', ';
                       }
                       echo rtrim($str, ", ");
@@ -618,21 +520,51 @@ if ($month != '13') {
                <td class="uk-text-right"><?php echo (($row['fees'] == '') ? 0 : $row['fees']); ?></td>
                <td class="uk-text-right"><?php 
                if($row['fees'] > 0) {
-               $sql22 = "SELECT sum(amount) collection FROM `collection` c  where  c.year = '$year' and c.void = 0 and CONVERT(c.`collection_month`, UNSIGNED) = $month and c.product_code = '$fee_name' ";
-               if($centre_code != "ALL"){
-                $sql22 .= "and c.centre_code='$centre_code' ";
-               }
-               //$sql22 = "SELECT sum(amount)+sum(discount) collection FROM `collection` c  where  c.year = '$year' and c.void = 0 and month(c.`collection_date_time`) = $month and c.product_code = '$fee_name' and c.centre_code='$centre_code' ";
-               // if($row['fee_name'] == "School Fees"){
-               //    echo $sql22;
-               // }
+
+                  $sql22 = "SELECT sum(amount) collection FROM `collection` c  where  c.year = '".$_SESSION['Year']."' and c.void = 0 and CONVERT(c.`collection_month`, UNSIGNED) = $month and c.product_code = '$fee_name' ";
+
+                  if($centre_code != "ALL"){
+                     $sql22 .= "and c.centre_code='$centre_code' ";
+                  }
                
-               $result22=mysqli_query($connection, $sql22);
-               //$IsRow22=mysqli_num_rows($result22);
-               $row_collection=mysqli_fetch_assoc($result22);
-               echo (($row_collection["collection"] == '') ? 0 : $row_collection["collection"]);
-               $collection_total_amount += $row_collection['collection'];
-               $collection_Grand_total += $row_collection['collection'];
+                  $result22=mysqli_query($connection, $sql22);
+            
+                  $row_collection=mysqli_fetch_assoc($result22);
+
+                  if($month_start_date == '2022-01-01' || $month_start_date == '2022-02-01')
+                  {
+                     $sql22 = "SELECT SUM(amount) collection FROM (SELECT amount FROM `collection` c  where  c.year = '".$_SESSION['Year']."' and c.void = 0 and CONVERT(c.`collection_month`, UNSIGNED) = $month and c.product_code = '$fee_name'";
+
+                     if($centre_code != "ALL"){
+                        $sql22 .= "and c.centre_code='$centre_code' ";
+                     }
+                  
+                     $sql22 .= " GROUP BY `allocation_id` ORDER BY `id` ASC) ab";
+                     
+                     $result22=mysqli_query($connection, $sql22);
+               
+                     $row_collection=mysqli_fetch_assoc($result22);
+                  }
+                  else if($month_start_date == '2023-01-01' || $month_start_date == '2023-02-01')
+                  {
+                     $sql23 = "SELECT SUM(amount) collection FROM (SELECT amount FROM `collection` c  where  c.year = '".$_SESSION['Year']."' and c.void = 0 and CONVERT(c.`collection_month`, UNSIGNED) = $month and c.product_code = '$fee_name' ";
+
+                     if($centre_code != "ALL"){
+                        $sql23 .= "and c.centre_code='$centre_code' ";
+                     }
+                  
+                     $sql23 .= " GROUP BY `allocation_id`) ab";
+
+                     $result23=mysqli_query($connection, $sql23);
+               
+                     $row_collection1=mysqli_fetch_assoc($result23);
+
+                     $row_collection['collection'] = $row_collection['collection'] - $row_collection1['collection'];
+                  }
+
+                  echo (($row_collection["collection"] == '') ? 0 : $row_collection["collection"]);
+                  $collection_total_amount += $row_collection['collection'];
+                  $collection_Grand_total += $row_collection['collection'];
                }else {
                   echo 0;
                }
@@ -686,6 +618,7 @@ if ($month != '13') {
                <td class="uk-text-right"><?php 
                 $product_code = $row['product_code'];
                if($row['payment_type']=="Termly"){
+                  
                   if($month == 1 || $month == 4 || $month == 7 || $month == 10){
                      $total_amount += $row['fees'];
                      $Grand_total += $row['fees'];
@@ -706,16 +639,20 @@ if ($month != '13') {
                            $collection_month=4;
                            break;
                      }
+
+                     if($month_start_date == '2023-01-01') {
+                        $collection_month=5;
+                     }
                   }else{
                      echo 0;
                   }
                }else if($row['payment_type']=="Half Year"){
-                  if($month == 1 || $month == 7){
+                  if($month == date('m',strtotime($year_start_date)) || $month == 7){
                      $total_amount += $row['fees'];
                      $Grand_total += $row['fees'];
                      echo $row['fees'];
                      switch ($month){
-                        case 1:
+                        case date('m',strtotime($year_start_date)):
                            $collection_month=1;
                            break;
                         case 7:
@@ -726,11 +663,11 @@ if ($month != '13') {
                      echo 0;
                   }
                }else if($row['payment_type']=="Annually"){
-                  if($month == 1){
+                  if($month == date('m',strtotime($year_start_date))){
                      $total_amount += $row['fees'];
                      $Grand_total += $row['fees'];
                      echo $row['fees'];
-                     $collection_month=1;
+                     $collection_month=date('m',strtotime($year_start_date));
                   }else{
                      echo 0;
                   }
@@ -742,12 +679,12 @@ if ($month != '13') {
                }
                ?></td>
                <td class="uk-text-right"><?php 
-              $sql22 = "SELECT sum(amount) collection FROM `collection` c  where  c.year = '$year' and c.void = 0 and CONVERT(c.`collection_month`, UNSIGNED) = $collection_month and c.product_code = '$product_code' ";
+              $sql22 = "SELECT sum(amount) collection FROM `collection` c  where  c.year = '".$_SESSION['Year']."' and c.void = 0 and CONVERT(c.`collection_month`, UNSIGNED) = $collection_month and c.product_code = '$product_code' ";
 
               if($centre_code != "ALL"){
                $sql22 .= "and c.centre_code='$centre_code' ";
               }
-               //echo $sql22;
+             
                $result22=mysqli_query($connection, $sql22);
                //$IsRow22=mysqli_num_rows($result22);
                $row_collection=mysqli_fetch_assoc($result22);

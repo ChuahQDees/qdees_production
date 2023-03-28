@@ -203,7 +203,7 @@ if ($_SESSION["isLogin"]==1) {
 <strong>NOTE:</strong><br>
 <span>1. Please note that Saturday, Sunday and public holidays are not available for self-collection.
 </span><br>
-<span>2. Gymwear and uniform will require 1 month for collection.</span>
+<span>2. Gymwear and uniform will require at least <b>MINIMUM</b> 1 month for collection.</span>
 </div>
 </div>
 <?php
@@ -272,7 +272,9 @@ if ($_SESSION["isLogin"]==1) {
   function getNext5WorkingDays(){
     var d = new Date();
     var day = d.getDay();
-    if(day>=0 && day<=3) return 7;
+    //if(day>=0 && day<=3) return 7;
+	//CHS: Changed to 10 days instead of 7 upon request
+	if(day>=0 && day<=3) return 10;
     else if(day!=6) return 8;
     else return 9;
 }

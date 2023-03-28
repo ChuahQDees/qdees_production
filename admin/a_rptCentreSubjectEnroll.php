@@ -165,10 +165,10 @@ if ($centre_code != "") {
             if($centre_code!="ALL"){
                $sql.=" and s.centre_code='$centre_code' ";
             }
-            // $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and f.school_adjust !='' group by ps.student_entry_level, s.id) ab";
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' group by ps.student_entry_level, s.id) ab";
+         
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' group by ps.student_entry_level, s.id) ab";
             $result=mysqli_query($connection, $sql);
-            
+            //echo $sql;
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
                 ?>    
@@ -185,8 +185,8 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            // $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and f.school_adjust !='' group by ps.student_entry_level, s.id) ab";
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' group by ps.student_entry_level, s.id) ab";
+            
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -204,8 +204,8 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            // $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and f.school_adjust !='' group by ps.student_entry_level, s.id) ab";
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' group by ps.student_entry_level, s.id) ab";
+         
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -223,8 +223,8 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            // $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and f.school_adjust !='' group by ps.student_entry_level, s.id) ab";
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' group by ps.student_entry_level, s.id) ab";
+            
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -243,8 +243,8 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            // $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and f.school_adjust !='' group by ps.student_entry_level, s.id) ab";
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' group by ps.student_entry_level, s.id) ab";
+   
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -266,7 +266,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -284,7 +284,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -302,7 +302,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -320,7 +320,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -338,7 +338,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
             //echo $sql;
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
@@ -361,7 +361,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -379,7 +379,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -397,7 +397,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -415,7 +415,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -433,7 +433,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and fl.foundation_int_english =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -455,7 +455,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -473,7 +473,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -491,7 +491,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -509,7 +509,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -527,7 +527,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and fl.foundation_iq_math =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -549,7 +549,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -567,7 +567,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -585,7 +585,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -603,7 +603,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -621,7 +621,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and fl.foundation_int_art =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -643,7 +643,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -661,7 +661,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -679,7 +679,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -697,7 +697,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -715,7 +715,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and fl.foundation_int_mandarin =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -737,7 +737,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='EDP' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -755,7 +755,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -773,7 +773,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -791,7 +791,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
+            $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -809,7 +809,7 @@ if ($centre_code != "") {
               if($centre_code!="ALL"){
                 $sql.=" and s.centre_code='$centre_code' ";
              }
-             $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end >= '$to_date')) and s.deleted='0' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
+             $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) and s.deleted='0' and fl.afternoon_programme =1 group by ps.student_entry_level, s.id) ab";
 				$result=mysqli_query($connection, $sql);
 				$num_row=mysqli_num_rows($result);
             while ($row=mysqli_fetch_assoc($result)) {
@@ -834,7 +834,7 @@ if ($centre_code != "") {
 }
    ?>
    </div>
-   <div id="student-dialog"></div>
+   
  <style>
  .founda{
 	 text-align: center;
@@ -877,3 +877,4 @@ if ($centre_code != "") {
          }
       });
    </script>
+

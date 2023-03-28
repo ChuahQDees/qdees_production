@@ -1,7 +1,6 @@
 <?php 
  session_start();
  if ($_SESSION["isLogin"]==1) {
-	//print_r($_SESSION); die;
  if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView"))) {
      // include_once("mysql.php");
     //   foreach ($_GET as $key=>$value) {
@@ -122,7 +121,7 @@ include_once("admin/declaration_func.php");
 </style>
 
 <?php 
-    if(date('d') <= 3 && $_GET['mode'] != 'EDIT') {
+    if(date('d') <= 5 && $_GET['mode'] != 'EDIT') {
         $prev_month = (date('m') == 1) ? 12 : (date('m') - 1);
         $declaration_data = mysqli_fetch_array(mysqli_query($connection,"SELECT `declaration_pdf` FROM `declaration` WHERE `centre_code` = '".$_SESSION['CentreCode']."' AND `month` = '".$prev_month."' AND `year` = '".$_SESSION['Year']."'"));
 
@@ -189,7 +188,7 @@ include_once("admin/declaration_func.php");
                         </table>
                     </div>
                     <div style="padding-left: 0px; padding-right: 0px;" class="uk-width-medium-2-10">
-                        <img src="images/Artboard – 4.png" alt="" class="img_logo" style="width: 80%;">
+                        <img src="images/Qdees-logo-n.png" alt="" class="img_logo" style="width: 80%;">
                     </div>
                 </div>
                 <div class="uk-grid" >
@@ -476,6 +475,7 @@ include_once("admin/declaration_func.php");
                                 // end ";
 
                                 $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                
                                 $resultt=mysqli_query($connection, $sql);
                           
                                 $num_row=mysqli_num_rows($resultt);
@@ -1127,7 +1127,11 @@ include_once("admin/declaration_func.php");
                             when basic_collection = 'Termly' then  basic_adjust/3 
                             when basic_collection = 'Half Year' then  basic_adjust/6 
                             when basic_collection = 'Annually' then  basic_adjust/12
-                            else basic_adjust end, 2) as basic_adjust 
+                            else basic_adjust end, 2) as basic_adjust, ROUND(case 
+                            when afternoon_robotic_collection = 'Termly' then  afternoon_robotic_adjust/3 
+                            when afternoon_robotic_collection = 'Half Year' then  afternoon_robotic_adjust/6 
+                            when afternoon_robotic_collection = 'Annually' then  afternoon_robotic_adjust/12
+                            else afternoon_robotic_adjust end, 2) as afternoon_robotic_adjust 
                              from `fee_structure` where centre_code='$centre_code' and subject='EDP' and status='Approved' and extend_year='$year'";
                         }
 							
@@ -1174,6 +1178,11 @@ include_once("admin/declaration_func.php");
                                 while ($roww=mysqli_fetch_assoc($resultt)) {
                                     $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
+                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
+                                }
+
                                 $total_EDP_basic_adjust += $level_count * $row['basic_adjust'];
                                 $total_EDP_basic_student += $level_count;
                             }
@@ -1231,7 +1240,11 @@ include_once("admin/declaration_func.php");
                             when basic_collection = 'Termly' then  basic_adjust/3 
                             when basic_collection = 'Half Year' then  basic_adjust/6 
                             when basic_collection = 'Annually' then  basic_adjust/12
-                            else basic_adjust end, 2) as basic_adjust 
+                            else basic_adjust end, 2) as basic_adjust, ROUND(case 
+                            when afternoon_robotic_collection = 'Termly' then  afternoon_robotic_adjust/3 
+                            when afternoon_robotic_collection = 'Half Year' then  afternoon_robotic_adjust/6 
+                            when afternoon_robotic_collection = 'Annually' then  afternoon_robotic_adjust/12
+                            else afternoon_robotic_adjust end, 2) as afternoon_robotic_adjust 
                              from `fee_structure` where centre_code='$centre_code' and subject='QF1' and status='Approved' and extend_year='$year'";
                         }
 							
@@ -1275,6 +1288,11 @@ include_once("admin/declaration_func.php");
                                 
                                 $num_row=mysqli_num_rows($resultt);
                                 $level_count = 0;
+
+                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
+                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
+                                }
+
                                 while ($roww=mysqli_fetch_assoc($resultt)) {
                                     $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
@@ -1334,7 +1352,11 @@ include_once("admin/declaration_func.php");
                             when basic_collection = 'Termly' then  basic_adjust/3 
                             when basic_collection = 'Half Year' then  basic_adjust/6 
                             when basic_collection = 'Annually' then  basic_adjust/12
-                            else basic_adjust end, 2) as basic_adjust 
+                            else basic_adjust end, 2) as basic_adjust, ROUND(case 
+                            when afternoon_robotic_collection = 'Termly' then  afternoon_robotic_adjust/3 
+                            when afternoon_robotic_collection = 'Half Year' then  afternoon_robotic_adjust/6 
+                            when afternoon_robotic_collection = 'Annually' then  afternoon_robotic_adjust/12
+                            else afternoon_robotic_adjust end, 2) as afternoon_robotic_adjust 
                              from `fee_structure` where centre_code='$centre_code' and subject='QF2' and status='Approved' and extend_year='$year'";
                         }
 							
@@ -1382,6 +1404,11 @@ include_once("admin/declaration_func.php");
                                 while ($roww=mysqli_fetch_assoc($resultt)) {
                                     $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
+                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
+                                }
+
                                 $total_QF2_basic_adjust += $level_count * $row['basic_adjust'];
                                 $total_QF2_basic_student += $level_count;
                             }
@@ -1438,7 +1465,11 @@ include_once("admin/declaration_func.php");
                             when basic_collection = 'Termly' then  basic_adjust/3 
                             when basic_collection = 'Half Year' then  basic_adjust/6 
                             when basic_collection = 'Annually' then  basic_adjust/12
-                            else basic_adjust end, 2) as basic_adjust 
+                            else basic_adjust end, 2) as basic_adjust, ROUND(case 
+                            when afternoon_robotic_collection = 'Termly' then  afternoon_robotic_adjust/3 
+                            when afternoon_robotic_collection = 'Half Year' then  afternoon_robotic_adjust/6 
+                            when afternoon_robotic_collection = 'Annually' then  afternoon_robotic_adjust/12
+                            else afternoon_robotic_adjust end, 2) as afternoon_robotic_adjust 
                              from `fee_structure` where centre_code='$centre_code' and subject='QF3' and status='Approved' and extend_year='$year'";
                         }
 							
@@ -1483,6 +1514,11 @@ include_once("admin/declaration_func.php");
                                 
                                 $num_row=mysqli_num_rows($resultt);
                                 $level_count = 0;
+
+                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
+                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
+                                }
+
                                 while ($roww=mysqli_fetch_assoc($resultt)) {
                                     $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
@@ -1961,6 +1997,7 @@ include_once("admin/declaration_func.php");
                                 </td>
                             </tr>
                             <!-- Mobile App end -->
+
 
                             <tr class="">
                                 <td style="margin-top:50px; padding-top: 11px; text-align: right;"
@@ -2848,7 +2885,7 @@ include_once("admin/declaration_func.php");
                             <!--b 3  start -->
                             <tr class="">
                                 <td style=" margin-top:50px;border:none; font-size:18px;"
-                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Pack</td>
+                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Fee</td>
                             </tr>
                             <!--  b 3 edp start -->
 
@@ -3438,10 +3475,11 @@ include_once("admin/declaration_func.php");
                                     $sql .=" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, f.q_bag_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Q-dees Bag' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
                                     $sql .= " )abc ";
 
-                                    $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0'";
+                                    $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Q-dees Bag' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id) ab";
 
-									$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
-									$sql_price="SELECT *, BIN(`deleted` + 0) AS `deleted`, unit_price as fees
+									//$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
+									
+                                    $sql_price="SELECT *, BIN(`deleted` + 0) AS `deleted`, unit_price as fees
 									FROM `product`
 									WHERE `product_name` LIKE '%Q-dees Back Pack Bag%'
 									LIMIT 1";
@@ -3523,9 +3561,9 @@ include_once("admin/declaration_func.php");
                                     
                                     $sql =" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, fl.uniform_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Uniform (2 sets)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-									$sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0'";
+									$sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Uniform (2 sets)' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id) ab";
 
-										$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
+										//$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
                                         
 										$sql_price="SELECT *, BIN(`deleted` + 0) AS `deleted`, unit_price as fees
 										FROM `product`
@@ -3736,9 +3774,9 @@ include_once("admin/declaration_func.php");
                                         // $sql="SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, f.gymwear_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and f.gymwear_adjust !='' and c.product_code='Gymwear (1 set)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
                                         $sql ="SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, fl.gymwear_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Gymwear (1 set)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-                                       $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0'";
+                                        $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Gymwear (1 set)' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id) ab";
 
-										$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
+										// $sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
 										
 											$sql_price="SELECT *, BIN(`deleted` + 0) AS `deleted`, unit_price as fees
 											FROM `product`
@@ -4401,7 +4439,7 @@ include_once("admin/declaration_func.php");
                         </table>
                     </div>
                     <div style="padding-left: 0px; padding-right: 0px;" class="uk-width-medium-2-10">
-                        <img src="/images/Artboard – 4.png" alt="" class="img_logo">
+                        <img src="/images/Qdees-logo-n.png" alt="" class="img_logo">
                     </div>
                 </div>
                 <div class="uk-grid">
@@ -6186,6 +6224,419 @@ include_once("admin/declaration_func.php");
                             </tr>
                             <!-- Mobile App end -->
 
+<!-- Robotic Plus start -->
+<tr class="">
+                                <td style=" margin-top:50px;border:none; font-size:18px;"
+                                    class="uk-width-6-10 uk-text-bold">(v) Robotics Plus</td>
+                            </tr>
+                            <!-- Robotic Plus edp start -->
+
+                            <tr class="">
+                                <td style=" margin-top:20px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">EDP:</td>
+                            </tr>
+                            <?php
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as robotic_plus_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form2' and fee_structure_mame='Robotic Plus' and subject='EDP'";
+                        }else{
+							$sql="SELECT fees_structure, ROUND(case 
+                            when robotic_plus_collection = 'Termly' then  robotic_plus_adjust/3 
+                            when robotic_plus_collection = 'Half Year' then  robotic_plus_adjust/6 
+                            when robotic_plus_collection = 'Annually' then  robotic_plus_adjust/12
+                            else robotic_plus_adjust end, 2) as robotic_plus_adjust 
+                             from `fee_structure` where centre_code='$centre_code' and subject='EDP' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_EDP_robotic_plus_student2 = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
+                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Robotic Plus" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_robotic_plus_adjust += $row['amount'];
+                                $total_EDP_robotic_plus_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
+
+                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $num_row=mysqli_num_rows($resultt);
+                                $level_count = 0;
+                                while ($roww=mysqli_fetch_assoc($resultt)) {
+                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+                                $total_EDP_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
+                                $total_EDP_robotic_plus_student2 += $level_count;
+                            }
+                                ?>
+                                    <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd afternoon" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo $row['robotic_plus_adjust']?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['robotic_plus_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } } ?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_EDP_robotic_plus_student2;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total EDP" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_EDP_robotic_plus_adjust, 2, '.', '');  ?>" readonly>
+                                </td>
+                            </tr>
+
+                            <!-- Mobile App edp end -->
+                            <!-- Mobile App QF1 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:20px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF1:</td>
+                            </tr>
+                            <?php
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as robotic_plus_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form2' and fee_structure_mame='Robotic Plus' and subject='QF1'";
+                        }else{
+							$sql="SELECT fees_structure, ROUND(case 
+                            when robotic_plus_collection = 'Termly' then  robotic_plus_adjust/3 
+                            when robotic_plus_collection = 'Half Year' then  robotic_plus_adjust/6 
+                            when robotic_plus_collection = 'Annually' then  robotic_plus_adjust/12
+                            else robotic_plus_adjust end, 2) as robotic_plus_adjust 
+                             from `fee_structure` where centre_code='$centre_code' and subject='QF1' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF1_robotic_plus_student2 = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
+                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Robotic Plus" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_robotic_plus_adjust += $row['amount'];
+                                $total_QF1_robotic_plus_student2 += $level_count;
+                            }else{
+
+                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $num_row=mysqli_num_rows($resultt);
+                                $level_count = 0;
+                                while ($roww=mysqli_fetch_assoc($resultt)) {
+                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+                                $total_QF1_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
+                                $total_QF1_robotic_plus_student2 += $level_count;
+                            }
+                                ?>
+                                    <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd afternoon" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo $row['robotic_plus_adjust']?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['robotic_plus_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } } ?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF1_robotic_plus_student2;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF1" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF1_robotic_plus_adjust, 2, '.', '');  ?>" readonly>
+                                </td>
+                            </tr>
+                            <!-- Robotic Plus QF1 end -->
+                            <!-- Robotic Plus QF2 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:20px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF2:</td>
+                            </tr>
+
+                            <?php
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as robotic_plus_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form2' and fee_structure_mame='Robotic Plus' and subject='QF2'";
+                        }else{
+							$sql="SELECT fees_structure, ROUND(case 
+                            when robotic_plus_collection = 'Termly' then  robotic_plus_adjust/3 
+                            when robotic_plus_collection = 'Half Year' then  robotic_plus_adjust/6 
+                            when robotic_plus_collection = 'Annually' then  robotic_plus_adjust/12
+                            else robotic_plus_adjust end, 2) as robotic_plus_adjust 
+                             from `fee_structure` where centre_code='$centre_code' and subject='QF2' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF2_robotic_plus_student2 = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
+                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Robotic Plus" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_robotic_plus_adjust += $row['amount'];
+                                $total_QF2_robotic_plus_student2 += $level_count;
+                            }else{
+
+                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
+
+                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+
+                                    $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                    $resultt=mysqli_query($connection, $sql);
+                                    
+                                    $num_row=mysqli_num_rows($resultt);
+                                    $level_count = 0;
+                                    while ($roww=mysqli_fetch_assoc($resultt)) {
+                                        $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                    }
+                                    $total_QF2_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
+                                    $total_QF2_robotic_plus_student2 += $level_count;
+                                }
+                                ?>
+                                    <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd afternoon" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo $row['robotic_plus_adjust']?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['robotic_plus_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } } ?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF2_robotic_plus_student2;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF2" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF2_robotic_plus_adjust, 2, '.', '');  ?>" readonly>
+                                </td>
+                            </tr>
+                            <!-- Robotic Plus QF2 end -->
+                            <!-- Robotic Plus QF3 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:20px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF3:</td>
+                            </tr>
+
+                            <?php
+                            $total_QF3_robotic_plus_adjust = 0;
+                            if($mode=="EDIT"){
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as robotic_plus_adjust, amount
+                            from `declaration_child` where master_id=$master_id and form='Form2' and fee_structure_mame='Robotic Plus' and subject='QF3'";
+                            }else{
+                                $sql="SELECT fees_structure, ROUND(case 
+                                when robotic_plus_collection = 'Termly' then  robotic_plus_adjust/3 
+                                when robotic_plus_collection = 'Half Year' then  robotic_plus_adjust/6 
+                                when robotic_plus_collection = 'Annually' then  robotic_plus_adjust/12
+                                else robotic_plus_adjust end, 2) as robotic_plus_adjust 
+                                from `fee_structure` where centre_code='$centre_code' and subject='QF3' and status='Approved' and extend_year='$year'";
+                            }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF3_robotic_plus_student2 = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
+                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Robotic Plus" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                            
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF3_robotic_plus_adjust += $row['amount'];
+                                $total_QF3_robotic_plus_student2 += $level_count;
+                            }else{
+
+                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
+
+                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $num_row=mysqli_num_rows($resultt);
+                                $level_count = 0;
+                                while ($roww=mysqli_fetch_assoc($resultt)) {
+                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+                                $total_QF3_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
+                                $total_QF3_robotic_plus_student2 += $level_count;
+                            }
+                                ?>
+                                    <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd afternoon" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo $row['robotic_plus_adjust']?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['robotic_plus_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } } ?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF3_robotic_plus_student2;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF3" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF3_robotic_plus_adjust, 2, '.', '');  ?>" readonly>
+                                </td>
+                            </tr>
+                            <!-- Robotic Plus QF3 end -->
+
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student (v)</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php echo $total_robotic_plus_student2 = $total_EDP_robotic_plus_student2 + $total_QF1_robotic_plus_student2 + $total_QF2_robotic_plus_student2 + $total_QF3_robotic_plus_student2; $total_student_A2 += $total_robotic_plus_student2; ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total (v)" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php  $total_robotic_plus_adjust = $total_EDP_robotic_plus_adjust + $total_QF1_robotic_plus_adjust  + $total_QF2_robotic_plus_adjust + $total_QF3_robotic_plus_adjust; 
+                                        echo number_format((float)$total_robotic_plus_adjust, 2, '.', '') ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            <!-- Robotic Plus end -->
 
 
                             <tr class="">
@@ -6204,7 +6655,7 @@ include_once("admin/declaration_func.php");
 
                                     <input class="total_a" type="number" step="0.01" name="school_total_f"
                                         id="school_total_f"
-                                        value="<?php  $total_a2 = $total_iq_math_adjust+$total_mandarin_adjust+$total_international_adjust+$total_enhanced_adjust; 
+                                        value="<?php  $total_a2 = $total_iq_math_adjust+$total_mandarin_adjust+$total_international_adjust+$total_enhanced_adjust+$total_robotic_plus_adjust; 
                                         echo number_format((float)$total_a2, 2, '.', '')  ?>"
                                         readonly>
                                 </td>

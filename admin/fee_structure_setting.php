@@ -1129,10 +1129,24 @@ if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "Sal
 				<input type="text" name="n" id="n" value="<?php echo $_GET['n']?>" placeholder="Name of Fees Structure">
          	</div> 
 		 	<div class="uk-width-2-10 uk-text-small">
-				<input type="text" name="sb" id="sb" value="<?php echo $_GET['sb']?>" placeholder="Student Entry Level">
+				<!-- <input type="text" name="sb" id="sb" value="<?php echo $_GET['sb']?>" placeholder="Student Entry Level"> -->
+				<select name="sb" id="sb" value="<?php echo $_GET['sb']?>">
+				  <option value="">Student Entry Level</option>
+				  <option value="EDP">EDP</option>
+				  <option value="QF1">QF1</option>
+				  <option value="QF2">QF2</option>
+				  <option value="QF3">QF3</option>
+				</select>
          	</div> 
 		 	<div class="uk-width-2-10 uk-text-small">
-				<input type="text" name="st" id="st" value="<?php echo $_GET['st']?>" placeholder="Programme Package">
+				<!-- Optimizing Selection for Search -->
+				<!--<input type="text" name="st" id="st" value="<?php echo $_GET['st']?>" placeholder="Programme Package">-->
+				<select name="st" id="st" value="<?php echo $_GET['st']?>">
+				  <option value="">Programme Package</option>
+				  <option value="Full Day">Full Day</option>
+				  <option value="Half Day">Half Day</option>
+				  <option value="3/4 Day">3/4 Day</option>
+				</select>
          	</div> 
 		 <!--<div class="uk-width-2-10 uk-text-small">
 		      <select name="st" id="st" class="uk-width-1-1">
@@ -1306,7 +1320,7 @@ $(document).ready(function(){
         'targets': [0,8], // column index (start from 0)
         'orderable': false, // set orderable false for selected columns
       	}],
-		"order": [[ 8, "asc" ]],
+		"order": [[ 4, "desc" ]],
 		"bProcessing": true,
 		"bServerSide": true,
 		"sAjaxSource": "admin/serverresponse/fee_structure_setting.php?p=<?php echo $_GET['p']; ?>&n=<?php echo $n; ?>&sb=<?php echo $sb; ?>&st=<?php echo $st; ?>"

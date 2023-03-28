@@ -37,9 +37,13 @@
         $date_to = "$year-$month-$day";
     }
 
+//Super Admin status = S
+
     if($sOrderNo != '') { $where .= " AND (`order`.`order_no` like '%$sOrderNo%')"; }
 
-    if($sCentreCode1 != '') { $where .= " AND `order`.`centre_code` = '".$sCentreCode1."'"; }
+    //if($sCentreCode1 != '') { $where .= " AND `order`.`centre_code` = '".$sCentreCode1."'"; }
+	
+	if($sCentreCode1 != '') { $where .= " AND `order`.`centre_code` = '".$sCentreCode1."'"; }
 
 	if ($date_from != '' && $date_to == '') {
 		
@@ -258,7 +262,61 @@
 	   	global $connection;
 
 	   	$sql = "SELECT * from `order` where order_no='$order_no'";
+	
+		
+		//CHS: Code rewrite because the table only takes the first status in the row for some reason
+	   	$result = mysqli_query($connection, $sql);
+		$cancelledFlag = true;
 
+		while ($row = mysqli_fetch_assoc($result)) {
+			if (!$row["cancelled_by"] != "" && $cancelledFlag == true) {
+				//Confirmed there is at least one order which isn't cancelled. Do not mark the order as Cancelled.
+				$cancelledFlag = false;
+			}
+			
+			//Begin checking to see what status to put
+			if ($cancelledFlag == false){
+				if ($row["delivered_to_logistic_by"] != "") {
+					if ($row["finance_payment_paid_by"] != "") {
+						return ($_SESSION["UserType"] == "S") ? "Delivered" : "Delivered";
+					} else {
+						return ($_SESSION["UserType"] == "S") ? "Delivered" : "Delivered"; 
+					}
+				} else {
+					if ($row["packed_by"] != "") {
+						if ($row["finance_payment_paid_by"] != "") {
+							return ($_SESSION["UserType"] == "S") ? "Ready for Collection" : "Ready for Collection";
+						} else {
+							return ($_SESSION["UserType"] == "S") ? "Ready for Collection" : "Ready for Collection";  
+						}
+					} else {
+						if ($row["finance_approved_by"] != "") {
+							if ($row["finance_payment_paid_by"] != "") {
+								return ($_SESSION["UserType"] == "S") ? "Finance Approved (Paid)" : "Finance Approved";
+							} else {
+								return ($_SESSION["UserType"] == "S") ? "Finance Approved (Pending Payment)" : "Finance Approved";
+							}
+						} else {
+							if ($row["logistic_approved_by"] != "") {
+								return "Packing";
+							} else {
+								if ($row["acknowledged_by"] != "") {
+									return "Acknowledged";
+								} else {
+									return "Pending";
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if ($cancelledFlag == true){
+			return "Cancelled";
+		}
+		
+		/*
 	   	$result = mysqli_query($connection, $sql);
 	   	if ($result) {
 		  	$row = mysqli_fetch_assoc($result);
@@ -301,6 +359,7 @@
 				}
 			}
 		}
+		*/
 	}
 
 ?>

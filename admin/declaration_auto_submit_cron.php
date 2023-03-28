@@ -8,7 +8,7 @@ global $connection;
 error_reporting(0);
 function isRecordFound($centre_code, $year, $month) {
 	global $connection;
-	$sql_check="SELECT * from `declaration` where centre_code='$centre_code' and year='$year' and month=$month";
+	$sql_check="SELECT * from `declaration` where centre_code='$centre_code' and year='$year' and month=$month and `submited_date` LIKE '%2023%'";
 	$result_check=mysqli_query($connection, $sql_check);
 	$num_row_check=mysqli_num_rows($result_check);
  

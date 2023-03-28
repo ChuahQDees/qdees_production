@@ -51,8 +51,10 @@ function doCentreCodeChange() {
 
 $(document).ready(function() {
    var today = new Date();
-   //$("#selected_month").val(today.getFullYear()+''+(("0" + (today.getMonth()+1)).slice(-2)));
-   $("#selected_month").val('<?php echo $year ?>'+''+(("0" + (today.getMonth()+1)).slice(-2)));
+   $("#selected_month").val(today.getFullYear()+''+(("0" + (today.getMonth()+1)).slice(-2)));
+   
+   if($("#selected_month").val() == '' || $("#selected_month").val() == null) { $("#selected_month").val('13'); }
+   
    generateReport('screen');
    $("#btnGenerate").click(function(){
 	   $("#back_stock").attr("href", window.location.href);
@@ -60,6 +62,7 @@ $(document).ready(function() {
 });
 
 function generateReport(method) {
+   
    var centre_code=$("[name='centre_code']").val();
    if(centre_code==""){
       centre_code="ALL"
@@ -67,6 +70,7 @@ function generateReport(method) {
    // var df=$("#df").val();
    // var dt=$("#dt").val();
    var selected_month=$("#selected_month").val();
+
    var sid=$("#student_id").val();
    var student=$("#student").val();
    var summary=$("#summary").val();
@@ -211,8 +215,22 @@ $(function() {
       </div>
         <div class="uk-width-medium-2-10" style="width: auto;">
          Months selection<br>
-         <a class="uk-button" id="month">Pick a Month</a>
-         <input type="hidden" name="selected_month" id="selected_month" value="">
+         <select name="selected_month" id="selected_month" >
+            <option value="13" >All Months</option>
+               <?php
+                  $period = getMonthList($year_start_date, $year_end_date);
+                  $months = array();
+               
+                  foreach ($period as $dt) {
+               ?>
+                     <option value="<?php echo $dt->format("Ym"); ?>" <?php if(isset($_GET['selected_month']) && $_GET['selected_month'] == $dt->format("Ym")) { echo "selected"; } ?>><?php echo $dt->format("M Y"); ?></option>
+               <?php
+                        $months[$dt->format("M Y")] = $dt->format("Y-m");
+                  }
+               ?>
+            </select>
+         <!-- <a class="uk-button" id="month">Pick a Month</a>
+         <input type="hidden" name="selected_month" id="selected_month" value=""> -->
       </div>		
 	  <div style="margin-top:20px; white-space: nowrap;" class="uk-width-medium-2-10">
 			  <button onclick="generateReport('screen');" id="btnGenerate" class="uk-button">Show on screen</button>
