@@ -2768,7 +2768,7 @@ span.edp_eq2 {
                             </tr>
                             <tr class="">
                                 <td style=" margin-top:50px;border:none; font-size:18px;"
-                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Pack</td>
+                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Fee</td>
                             </tr>
 
                             <tr class="">

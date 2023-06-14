@@ -38,10 +38,12 @@
          <?php
             if($student_data['delete_request'] == 3) 
             {
+				//CHS: Notification ID to tell that the notification is done
+				$notification_id = $_REQUEST['notification_id'];
          ?>
-               <span class="btn btn-rounded btn-success ml-1  delete<?php echo sha1($student_data['id']); ?>" onclick="doDeleteStudentRequest('<?php echo sha1($student_data['id']); ?>','approve_request')" data-uk-tooltip="{pos:top}" title="Approve Request"><i style="cursor:pointer;" class="fas fa-check" ></i> Approve</span>
+               <span class="btn btn-rounded btn-success ml-1  delete<?php echo sha1($student_data['id']); ?>" onclick="doDeleteStudentRequest('<?php echo sha1($student_data['id']); ?>','approve_request','<?php echo $notification_id ?>')" data-uk-tooltip="{pos:top}" title="Approve Request"><i style="cursor:pointer;" class="fas fa-check" ></i> Approve</span>
 
-               <span class="btn btn-rounded btn-danger ml-1 delete<?php echo sha1($student_data['id']); ?>" onclick="doDeleteStudentRequest('<?php echo sha1($student_data['id']); ?>','reject_request')" data-uk-tooltip="{pos:top}" title="Reject Request"><i style="cursor:pointer;" class="fas fa-close "></i> Reject</span>
+               <span class="btn btn-rounded btn-danger ml-1 delete<?php echo sha1($student_data['id']); ?>" onclick="doDeleteStudentRequest('<?php echo sha1($student_data['id']); ?>','reject_request', '<?php echo $notification_id ?>')" data-uk-tooltip="{pos:top}" title="Reject Request"><i style="cursor:pointer;" class="fas fa-close "></i> Reject</span>
                   
          <?php
             }

@@ -192,6 +192,20 @@ if ((($_SESSION["UserType"]=="A") || ($_SESSION["UserType"]=="O")) &
         }
         ?>
 
+        <?php
+        if ((($_SESSION["UserType"]=="A") || ($_SESSION["UserType"]=="O")) &
+            (hasRightGroupXOR($_SESSION["UserName"], "PointOfSalesEdit|PointOfSalesView"))) {
+            ?>
+            <li class="nav-item fee_str_allocate">
+                <a class="nav-link" href="index.php?p=fee_str_allocate">
+                    <span class="menu-icon"><img src="images/menu_icons/Fees Structure Allocations.png"></span>
+                    <span class="menu-title">Fee Allocation</span>
+                </a>
+            </li>
+            <?php
+        }
+        ?>
+
     </ul>
 </div>
 
@@ -358,12 +372,12 @@ if ((($_SESSION["UserType"]=="A") || ($_SESSION["UserType"]=="O")) &
 }
 
 ?>  
-    <li class="nav-item schedule_term">
+    <!-- <li class="nav-item schedule_term">
         <a class="nav-link" href="index.php?p=schedule_term">
             <span class="menu-icon"><img src="images/menu_icons/Student Population.png"></span>
             <span class="menu-title">Schedule Term</span>
         </a>
-    </li>
+    </li> -->
 
     <ul class="q-dees-dropdown-menu ">
         <?php

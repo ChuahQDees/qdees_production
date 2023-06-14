@@ -11,6 +11,8 @@
     $sb=isset($_GET['sb']) ? $_GET['sb'] : '';
     $year=$_SESSION['Year'];
     $p=isset($_GET["p"]) ? $_GET["p"] : '';
+	$sdate=isset($_GET['sdate']) ? $_GET['sdate'] : '';
+	$edate=isset($_GET['edate']) ? $_GET['edate'] : '';
 
     $where = '';
 
@@ -22,6 +24,9 @@
     }
     if($sb!=""){
         $where .= " and subject like '%$sb%' ";
+    }
+	if($sdate!=""){
+        $where .= " and from_date >= '$sdate' AND to_date <= '$edate' ";
     }
 
 	$sIndexColumn = "rowNumber";

@@ -157,13 +157,41 @@ function isDelivered($order_no) {
     // if (strtoupper($_SESSION["UserName"])=="SUPER") {
         if ($_SESSION["UserType"]=="S" || $_SESSION["UserType"]=="H
         " || $_SESSION["UserType"]=="C" || $_SESSION["UserType"]=="R" || $_SESSION["UserType"]=="CM" || $_SESSION["UserType"]=="T") {
-            $sql="select l.student_entry_level, s.level_count from (SELECT DISTINCT student_entry_level from student) l left join ( SELECT student_entry_level, count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id where year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and ps.student_entry_level != '' and student_status = 'A' and deleted='0' group by ps.student_entry_level, s.id) ab group by student_entry_level ) s on s.student_entry_level = l.student_entry_level where l.student_entry_level !=''";
+            //$sql="select l.student_entry_level, s.level_count from (SELECT DISTINCT student_entry_level from student) l left join ( SELECT student_entry_level, count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id where year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and ps.student_entry_level != '' and student_status = 'A' and deleted='0' group by ps.student_entry_level, s.id) ab group by student_entry_level ) s on s.student_entry_level = l.student_entry_level where l.student_entry_level !=''";
        //$sql="select l.student_entry_level, s.level_count from (SELECT DISTINCT student_entry_level from student) l left join (SELECT ps.student_entry_level, count(id) level_count from student s inner join programme_selection ps on ps.student_id=s.id where  student_status = 'A'and ps.student_entry_level != '' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' group by ps.student_entry_level) s on s.student_entry_level = l.student_entry_level where l.student_entry_level !=''";
       // $sql="SELECT * from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' ";
         // echo $sql; die;
 
-       $sql2="SELECT count(id) level_count from( SELECT s.id from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and fl.foundation_mandarin=1 and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' group by s.id ) ab";
+        //CHS: SQL Fix
+        $sql="SELECT student_entry_level , count(id) level_count 
+        from (SELECT ps.student_entry_level, s.id 
+        from student s inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0' group by ps.student_entry_level, s.id) ab
+        GROUP BY student_entry_level";
 
+
+       //$sql2="SELECT count(id) level_count from( SELECT s.id from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and fl.foundation_mandarin=1 and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' group by s.id ) ab";
+
+       $sql2="SELECT count(id) level_count from (SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f 
+       where s.id=ps.student_id 
+       and ps.id = fl.programme_selection_id 
+       and f.id=fl.fee_id 
+       and fl.foundation_int_mandarin=1 
+       and s.centre_code='".$_SESSION["CentreCode"]."' 
+       and year(fl.programme_date) = '$year' 
+       and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) 
+       and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) 
+       or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) 
+       and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) 
+       and s.student_status = 'A' 
+       and s.deleted='0' group by s.id ) ab";
+       
        //$sql2="SELECT count(id) level_count from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' and foundation_mandarin = 'yes'";
         // echo $sql2;
     } 
@@ -182,7 +210,7 @@ function isDelivered($order_no) {
     ?>
         <div class="main-box-content">
             <div class="box-head background-red box-after-red">
-                <p>Foundation</p>
+                <p>Foundatio a</p>
             </div>
             <div class="box-content">
                 <div class="row">
@@ -225,16 +253,82 @@ function isDelivered($order_no) {
     // if (strtoupper($_SESSION["UserName"])=="SUPER") {
         if ($_SESSION["UserType"]=="S" || $_SESSION["UserType"]=="H
         " || $_SESSION["UserType"]=="C" || $_SESSION["UserType"]=="R" || $_SESSION["UserType"]=="CM" || $_SESSION["UserType"]=="T") {
-        $sql="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_english=1 group by s.id ) ab";
+
+            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_int_english=1 
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql2="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_iq_math=1
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql3="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_int_mandarin=1
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql4="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_int_art=1
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql5="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.pendidikan_islam=1
+        group by ps.student_entry_level, s.id) ab";
+
+        //$sql="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_english=1 group by s.id ) ab";
         //$sql="SELECT count(id) level_count from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' and foundation_int_english = '1'";
         //$sql2="SELECT count(id) level_count from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' and foundation_iq_math = '1'";
-        $sql2="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_iq_math=1 group by s.id ) ab";
+        //$sql2="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_iq_math=1 group by s.id ) ab";
         //$sql3="SELECT count(id) level_count from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' and foundation_int_mandarin = '1'";
-        $sql3="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_mandarin=1 group by s.id ) ab";
+        //$sql3="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_mandarin=1 group by s.id ) ab";
         //$sql4="SELECT count(id) level_count from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' and foundation_int_art = '1'";
-        $sql4="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_art=1 group by s.id ) ab";
+        //$sql4="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_art=1 group by s.id ) ab";
         //$sql5="SELECT count(id) level_count from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' and pendidikan_islam = '1'";
-        $sql5="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.pendidikan_islam=1 group by s.id ) ab";
+        //$sql5="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.pendidikan_islam=1 group by s.id ) ab";
        //$sql="SELECT * from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' ";
 
     }
@@ -262,10 +356,22 @@ function isDelivered($order_no) {
     $result5=mysqli_query($connection, $sql5);
     $num_row5=mysqli_num_rows($result5);
     $row5=mysqli_fetch_assoc($result5);
+
+    $intEnglishCount = 0;
+    $IQMathCount = 0;
+    $MandarinCount = 0;
+    $IntArtCount = 0;
+    $PIslamCount = 0;
+
+    if($row["level_count"] > 0) $intEnglishCount = $row["level_count"];
+    if($row2["level_count"] > 0) $IQMathCount = $row2["level_count"];
+    if($row3["level_count"] > 0) $MandarinCount = $row3["level_count"];
+    if($row4["level_count"] > 0) $IntArtCount = $row4["level_count"];
+    if($row5["level_count"] > 0) $PIslamCount = $row5["level_count"];
     ?>
         <div class="main-box-content">
             <div class="box-head">
-                <p>Enhanced Foundation</p>
+                <p>Enhanced Foundationvasd</p>
             </div>
             <div class="box-content">
                 <div class="row">
@@ -287,19 +393,19 @@ function isDelivered($order_no) {
                     </div>
                     <div class="col-sm-12 col-md-7 d-flex drs_dsa fwbold">
                     <span class="gd_sb22"> 
-                        <span class="text-color-red q-text_w2">Int. Eng </span><span><?php echo $row["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">Int. Enga </span><span><?php echo $intEnglishCount; ?></span>
                     </span>
                     <span class="gd_sb22">    
-                        <span class="text-color-red q-text_w2">IQ Math </span><span><?php echo $row2["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">IQ Math </span><span><?php echo $IQMathCount; ?></span>
                     </span>
                     <span class="gd_sb22">    
-                        <span class="text-color-red q-text_w2">Mandarin </span><span><?php echo $row3["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">Mandarin </span><span><?php echo $MandarinCount; ?></span>
                     </span>
                     <span class="gd_sb22">    
-                        <span class="text-color-red q-text_w2">Int. Art </span><span><?php echo $row4["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">Int. Art </span><span><?php echo $IntArtCount; ?></span>
                     </span>
                     <span class="gd_sb22">    
-                        <span class="text-color-red q-text_w2">P. Islam </span><span><?php echo $row5["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">P. Islam </span><span><?php echo $PIslamCount; ?></span>
                     </span>
                     </div>
                 </div>
@@ -619,12 +725,35 @@ if (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView")) {
     <div class="col-sm-12 col-md mobile-margin-50">
         <?php 
    
-       $sql="select l.student_entry_level, s.level_count from (SELECT DISTINCT student_entry_level from student) l left join ( SELECT student_entry_level, count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id where s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and ps.student_entry_level != '' and s.student_status = 'A' and s.deleted='0'  group by ps.student_entry_level, s.id) ab group by student_entry_level ) s on s.student_entry_level = l.student_entry_level where l.student_entry_level !=''";
+       //$sql="select l.student_entry_level, s.level_count from (SELECT DISTINCT student_entry_level from student) l left join ( SELECT student_entry_level, count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id where s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and ps.student_entry_level != '' and s.student_status = 'A' and s.deleted='0'  group by ps.student_entry_level, s.id) ab group by student_entry_level ) s on s.student_entry_level = l.student_entry_level where l.student_entry_level !=''";
         //echo $sql;
+
+        //CHS: SQL Fix
+        $sql="SELECT student_entry_level , count(id) level_count 
+        from (SELECT ps.student_entry_level, s.id 
+        from student s inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0' group by ps.student_entry_level, s.id) ab
+        GROUP BY student_entry_level";
 
        //$sql2="SELECT count(id) level_count from student where centre_code='".$_SESSION["CentreCode"]."'  and extend_year >= '$year' and student_status = 'A' and deleted='0' and foundation_mandarin = 'yes'";
 
-       $sql2="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and fl.foundation_mandarin=1 and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' group by s.id ) ab";
+       $sql2="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+            inner join programme_selection ps on ps.student_id=s.id 
+            inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+            inner join fee_structure f on f.id=fl.fee_id 
+            where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+            and ps.student_entry_level != '' and s.student_status = 'A' 
+            and s.centre_code='".$_SESSION["CentreCode"]."' 
+            and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+            or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+            and s.deleted='0'
+            and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
         
 	 //echo $sql2;
     // var_dump($sql);
@@ -681,16 +810,83 @@ if (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView")) {
     <div class="col-sm-12 col-md mobile-margin-50">
         <?php 
     // if (strtoupper($_SESSION["UserName"])=="SUPER") {
-        $sql="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_english=1 group by s.id ) ab";
+        //$sql="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_english=1 group by s.id ) ab";
         //echo $sql;
         //$sql="SELECT count(id) level_count from student where centre_code='".$_SESSION["CentreCode"]."' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and student_status = 'A' and deleted='0' and foundation_int_english = '1'";
-        $sql2="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_iq_math=1 group by s.id ) ab";
+        $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_int_english=1 
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql2="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_iq_math=1
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql3="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_int_mandarin=1
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql4="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.foundation_int_art=1
+        group by ps.student_entry_level, s.id) ab";
+
+        $sql5="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+        inner join programme_selection ps on ps.student_id=s.id 
+        inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+        inner join fee_structure f on f.id=fl.fee_id 
+        where (fl.programme_date >= '$year_start_date' AND fl.programme_date <= '$year_end_date') 
+        and ps.student_entry_level != '' and s.student_status = 'A' 
+        and s.centre_code='".$_SESSION["CentreCode"]."' 
+        and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') 
+        or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) 
+        and s.deleted='0'
+        and fl.pendidikan_islam=1
+        group by ps.student_entry_level, s.id) ab";
+
+        //$sql2="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_iq_math=1 group by s.id ) ab";
         //$sql2="SELECT count(id) level_count from student where centre_code='".$_SESSION["CentreCode"]."' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and student_status = 'A' and deleted='0' and foundation_iq_math = '1'";
-        $sql3="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_mandarin=1 group by s.id ) ab";
+        
+        
+        //$sql3="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_mandarin=1 group by s.id ) ab";
         //$sql3="SELECT count(id) level_count from student where centre_code='".$_SESSION["CentreCode"]."' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and student_status = 'A' and deleted='0' and foundation_int_mandarin = '1'";
-        $sql4="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_art=1 group by s.id ) ab";
+        //$sql4="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.foundation_int_art=1 group by s.id ) ab";
         //$sql4="SELECT count(id) level_count from student where centre_code='".$_SESSION["CentreCode"]."' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and student_status = 'A' and deleted='0' and foundation_int_art = '1'";
-        $sql5="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.pendidikan_islam=1 group by s.id ) ab";
+        //$sql5="SELECT count(id) level_count from( SELECT s.id from  student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.centre_code='".$_SESSION["CentreCode"]."' and year(fl.programme_date) = '$year' and ((MONTH(fl.programme_date) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date) <= MONTH(CURRENT_DATE())) or (MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()) and MONTH(fl.programme_date_end) >= MONTH(CURRENT_DATE()))) and s.student_status = 'A' and s.deleted='0' and fl.pendidikan_islam=1 group by s.id ) ab";
         //echo $sql5;
         //$sql5="SELECT count(id) level_count from student where centre_code='".$_SESSION["CentreCode"]."' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and student_status = 'A' and deleted='0' and pendidikan_islam = '1'";
        //$sql="SELECT * from student where student_status = 'A' and year(start_date_at_centre) <= '$year' and extend_year >= '$year' and deleted='0' ";
@@ -720,6 +916,18 @@ if (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView")) {
     $result5=mysqli_query($connection, $sql5);
     $num_row5=mysqli_num_rows($result5);
     $row5=mysqli_fetch_assoc($result5);
+
+    $intEnglishCount = 0;
+    $IQMathCount = 0;
+    $MandarinCount = 0;
+    $IntArtCount = 0;
+    $PIslamCount = 0;
+
+    if($row["level_count"] > 0) $intEnglishCount = $row["level_count"];
+    if($row2["level_count"] > 0) $IQMathCount = $row2["level_count"];
+    if($row3["level_count"] > 0) $MandarinCount = $row3["level_count"];
+    if($row4["level_count"] > 0) $IntArtCount = $row4["level_count"];
+    if($row5["level_count"] > 0) $PIslamCount = $row5["level_count"];
     ?>
         <div class="main-box-content">
             <div class="box-head">
@@ -745,19 +953,19 @@ if (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView")) {
                     </div>
                     <div class="col-sm-12 col-md-7 d-flex drs_dsa fwbold ">
                     <span class="gd_sb2"> 
-                        <span class="text-color-red q-text_w2">Int. Eng </span><span><?php echo $row["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">Int. Eng </span><span><?php echo $intEnglishCount; ?></span>
                     </span>
                     <span class="gd_sb2">    
-                        <span class="text-color-red q-text_w2">IQ Math </span><span><?php echo $row2["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">IQ Math </span><span><?php echo $IQMathCount; ?></span>
                     </span>
                     <span class="gd_sb2">    
-                        <span class="text-color-red q-text_w2">Mandarin </span><span><?php echo $row3["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">Mandarin </span><span><?php echo $MandarinCount; ?></span>
                     </span>
                     <span class="gd_sb2">    
-                        <span class="text-color-red q-text_w2">Int. Art </span><span><?php echo $row4["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">Int. Art </span><span><?php echo $IntArtCount; ?></span>
                     </span>
                     <span class="gd_sb2">    
-                        <span class="text-color-red q-text_w2">P. Islam </span><span><?php echo $row5["level_count"]; ?></span>
+                        <span class="text-color-red q-text_w2">P. Islam </span><span><?php echo $PIslamCount; ?></span>
                     </span>
                     </div>
                 </div>
@@ -783,6 +991,7 @@ if (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView")) {
         $today=date("Y-m-d");
         $strToday=date("d/m/Y");
 
+        //CHS: This is the part which is lagging the home page
         $sql="SELECT DISTINCT o.product_code, p.product_name, p.sub_category from `order` o, product p Where o.centre_code='".$_SESSION["CentreCode"]."' AND o.product_code=p.product_code and cancelled_by=''";
 
         if ($year == $current_year) {
@@ -1380,18 +1589,14 @@ SELECT DISTINCT ps.student_entry_level, s.id
 				AND fl.programme_date_end >= '2023-04-30')) AND s.deleted = '0' 
 			) ab ";
   $result=mysqli_query($connection, $sql);
-  //$sub_categories = array();
+  $sub_categories = array();
   if ($result) {
     while($row=mysqli_fetch_assoc($result)){
 		$totalAmt = $row['total'];
     }
   }
- 
-if ($totalAmt < 50){
-	//Remove access to ordering
-	$sql = "DELETE FROM `user_right` WHERE user_name = '".$_SESSION["UserName"]."' 
-	AND (`right` = 'OrderEdit' OR `right` = 'OrderView')";
-	$result=mysqli_query($connection, $sql);
+  
+if ($totalAmt < 10){
 ?>
 <script>
 $(document).ready(function(){
@@ -1477,7 +1682,9 @@ $(document).ready(function(){
     color: #3399ff;
     font-size: 12px;
 }
+<?php if ($totalAmt < 10){ ?>
 .ui-dialog .ui-dialog-titlebar {
 	background: #ef5350;
 }
+<?php } ?>
 </style>

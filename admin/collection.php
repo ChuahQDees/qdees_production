@@ -521,7 +521,7 @@ function dlgAddOnProduct(student_code) {
                    <div id="products-dialog"></div>
                </div>
                <div class="uk-width-medium-1-3 square-button">
-                  <a class="addon-product uk-button uk-button-large uk-width-1-1" data-uk-tooltip title="Add On Product">Add-On Products</a>
+                  <a onclick="dlgAddOnProduct('<?php echo sha1($student_code)?>')" class="addon-product uk-button uk-button-large uk-width-1-1" data-uk-tooltip title="Add On Product">Add-On Products</a>
                    <div id="addon-product-dialog"></div>
                </div>
             </div>
@@ -1026,13 +1026,8 @@ $(function() {
    dlgProduct('<?php echo sha1($student_code)?>');
    myDialog('products');
 
-   dlgAddOnProduct('<?php echo sha1($student_code)?>');
+   //dlgAddOnProduct('<?php echo sha1($student_code)?>');
    myDialog('addon-product');
 });
 
-
-
-// $(function() {
-    
-//  });
 </script>

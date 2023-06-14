@@ -197,7 +197,7 @@ if ($_SESSION["isLogin"] == 1) {
                                 </table>
                             </div>
                             <div style="padding-left: 0px; padding-right: 0px;" class="uk-width-medium-2-10">
-                                <img src="images/Artboard – 4.png" alt="" class="img_logo" style="width: 80%;">
+                                <img src="images/Qdees-logo-n.png" alt="" class="img_logo" style="width: 80%;">
                             </div>
                         </div>
                         <div class="uk-grid">
@@ -2409,7 +2409,7 @@ if ($_SESSION["isLogin"] == 1) {
 
                                     <!--b 3  start -->
                                     <tr class="">
-                                        <td style=" margin-top:50px;border:none; font-size:18px;" class="uk-width-6-10 uk-text-bold">(iii) Registration Pack</td>
+                                        <td style=" margin-top:50px;border:none; font-size:18px;" class="uk-width-6-10 uk-text-bold">(iii) Registration Fee</td>
                                     </tr>
                                     <!--  b 3 edp start -->
 
@@ -3565,7 +3565,7 @@ if ($_SESSION["isLogin"] == 1) {
                                 </table>
                             </div>
                             <div style="padding-left: 0px; padding-right: 0px;" class="uk-width-medium-2-10">
-                                <img src="/images/Artboard – 4.png" alt="" class="img_logo">
+                                <img src="/images/Qdees-logo-n.png" alt="" class="img_logo">
                             </div>
                         </div>
                         <div class="uk-grid">

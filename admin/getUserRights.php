@@ -59,7 +59,7 @@ getUserType($user_name)=="R" || getUserType($user_name)=="CM" || getUserType($us
    "BufferStock"=>"Buffer Stock",
    "CentreStatementAccount"=>"Centre Statement Account",
 
-   "Reporting"=>"Reporting", "AddOnProduct"=>"Addon Product" );
+   "Reporting"=>"Reporting", "AddOnProduct"=>"Addon Product", "CreditNote"=>"Credit Note" );
 
 }else if (getUserType($user_name)=="A") {
    if ($_SESSION["UserType"]=="S"){
@@ -116,7 +116,7 @@ else{
    
 
 
-   "AddOnProduct"=>"Addon Product");
+   "AddOnProduct"=>"Addon Product", "CreditNote"=>"Credit Note");
 }
 } else if ((getUserType($user_name)=="O") ||  (getUserRole($user_name)=="Operator")){
    $the_rights=array("Dashboard"=>"Dashboard", "Student"=>"Student Population", "Allocation"=>"Class Allocation", "UserPassword"=>"User Password",

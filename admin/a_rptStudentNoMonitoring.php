@@ -33,6 +33,11 @@ if($centre_code != 'ALL') {
     $total_records = $total_records['total_records'];
     $total_no_of_pages = ceil($total_records / $total_records_per_page);
     $second_last = $total_no_of_pages - 1; // total pages minus 1
+
+    if($total_no_of_pages == $page_no) {
+      
+    }
+
 }
 
 if ($method == "print") {
@@ -198,6 +203,8 @@ if ($_SESSION["isLogin"]==1) {
             }
 
             $foundation_EDP_grand_total = $foundation_QF1_grand_total = $foundation_QF2_grand_total = $foundation_QF3_grand_total = $zhi_hui_mandarin_QF1_grand_total = $zhi_hui_mandarin_QF2_grand_total = $zhi_hui_mandarin_QF3_grand_total = $pendidikan_QF1_grand_total = $pendidikan_QF2_grand_total = $pendidikan_QF3_grand_total = $english_QF1_grand_total = $english_QF2_grand_total = $english_QF3_grand_total = $art_QF1_grand_total = $art_QF2_grand_total = $art_QF3_grand_total = $iq_QF1_grand_total = $iq_QF2_grand_total = $iq_QF3_grand_total = $mandarin_QF1_grand_total = $mandarin_QF2_grand_total = $mandarin_QF3_grand_total = $basic_grand_total = $basic_robotic_junior_grand_total = $basic_robotic_senior_grand_total = $robotic_junior_grand_total = $robotic_senior_grand_total = 0;
+
+            $foundation_EDP_final_total = $foundation_QF1_final_total = $foundation_QF2_final_total = $foundation_QF3_final_total = $zhi_hui_mandarin_QF1_final_total = $zhi_hui_mandarin_QF2_final_total = $zhi_hui_mandarin_QF3_final_total = $pendidikan_QF1_final_total = $pendidikan_QF2_final_total = $pendidikan_QF3_final_total = $english_QF1_final_total = $english_QF2_final_total = $english_QF3_final_total = $art_QF1_final_total = $art_QF2_final_total = $art_QF3_final_total = $iq_QF1_final_total = $iq_QF2_final_total = $iq_QF3_final_total = $mandarin_QF1_final_total = $mandarin_QF2_final_total = $mandarin_QF3_final_total = $basic_final_total = $basic_robotic_junior_final_total = $basic_robotic_senior_final_total = $robotic_junior_final_total = $robotic_senior_final_total = 0;
             
             $enh_foundation_grand_total = 0;
 
@@ -238,7 +245,15 @@ if ($_SESSION["isLogin"]==1) {
                     <!-- Foundation Start -->
                     <td >
                       <?php
-                        $sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where (`collection`.`product_code` like 'MY-EDP1.EARLY-DIS%' OR `collection`.`product_code` like 'MY-EDP2.EARLY-DIS%' OR `collection`.`product_code` like 'MY-EDP3.EARLY-DIS%' OR `collection`.`product_code` like 'MY-EDP4.EARLY-DIS%') and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'EDP'";
+                      
+                      $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                      if($centre_code!="ALL"){
+                        $sql.=" and s.centre_code='$centre_code' ";
+                      }
+                      
+                      $sql.=" and s.deleted='0' and ps.student_entry_level ='EDP' group by ps.student_entry_level, s.id) ab";
+
+                        //$sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where (`collection`.`product_code` like 'MY-EDP1.EARLY-DIS%' OR `collection`.`product_code` like 'MY-EDP2.EARLY-DIS%' OR `collection`.`product_code` like 'MY-EDP3.EARLY-DIS%' OR `collection`.`product_code` like 'MY-EDP4.EARLY-DIS%') and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'EDP'";
 
                         $resultt=mysqli_query($connection, $sql);
                                 
@@ -252,11 +267,20 @@ if ($_SESSION["isLogin"]==1) {
 
                         $foundation_total += $level_count;
                         $foundation_EDP_grand_total += $level_count;
+
                       ?>
                     </td>
                     <td >
                       <?php
-                        $sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-MODULE%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF1'";
+
+                        $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                        if($centre_code!="ALL"){
+                          $sql.=" and s.centre_code='$centre_code' ";
+                        }
+
+                        $sql.=" and s.deleted='0' and ps.student_entry_level ='QF1' group by ps.student_entry_level, s.id) ab";
+
+                        //$sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-MODULE%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF1'";
 
                         $resultt=mysqli_query($connection, $sql);
                                 
@@ -274,7 +298,15 @@ if ($_SESSION["isLogin"]==1) {
                     </td>
                     <td >
                       <?php
-                        $sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-MODULE%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF2'";
+
+                        $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                        if($centre_code!="ALL"){
+                          $sql.=" and s.centre_code='$centre_code' ";
+                        }
+
+                        $sql.=" and s.deleted='0' and ps.student_entry_level ='QF2' group by ps.student_entry_level, s.id) ab";
+
+                        //$sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-MODULE%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF2'";
 
                         $resultt=mysqli_query($connection, $sql);
                                 
@@ -292,7 +324,15 @@ if ($_SESSION["isLogin"]==1) {
                     </td>
                     <td >
                       <?php
-                        $sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-MODULE%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF3'";
+
+                        $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                        if($centre_code!="ALL"){
+                          $sql.=" and s.centre_code='$centre_code' ";
+                        }
+
+                        $sql.=" and s.deleted='0' and ps.student_entry_level ='QF3' group by ps.student_entry_level, s.id) ab";
+
+                        //$sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-MODULE%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF3'";
 
                         $resultt=mysqli_query($connection, $sql);
                                 
@@ -317,7 +357,12 @@ if ($_SESSION["isLogin"]==1) {
                     <!-- Zhi Hui Mandrin Start -->
                     <td >
                       <?php
-                        $sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-ZHM%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF1'";
+
+                        $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                        $sql.=" and s.centre_code='$centre_code' ";
+                        $sql.=" and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+
+                        //$sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-ZHM%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF1'";
 
                         $resultt=mysqli_query($connection, $sql);
                                 
@@ -335,7 +380,11 @@ if ($_SESSION["isLogin"]==1) {
                     </td>
                     <td >
                       <?php
-                        $sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-ZHM%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF2'";
+                        $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                        $sql.=" and s.centre_code='$centre_code' ";
+                        $sql.=" and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+
+                        //$sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-ZHM%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF2'";
 
                         $resultt=mysqli_query($connection, $sql);
                                 
@@ -353,7 +402,12 @@ if ($_SESSION["isLogin"]==1) {
                     </td>
                     <td >
                       <?php
-                        $sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-ZHM%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF3'";
+
+                        $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                        $sql.=" and s.centre_code='$centre_code' ";
+                        $sql.=" and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+
+                        //$sql="SELECT count(`collection`.`id`) as level_count from `collection` LEFT JOIN `product` ON `product`.`product_code` = `collection`.`product_code` where `collection`.`product_code` like 'MY-ZHM%' and (collection_date_time BETWEEN '$year_start_date' AND '$year_end_date') and `collection`.`centre_code`='$centre_code' and `collection`.`void`=0 and `product`.`sub_sub_category` = 'QF3'";
 
                         $resultt=mysqli_query($connection, $sql);
                                 
@@ -803,7 +857,7 @@ if ($_SESSION["isLogin"]==1) {
           ?>
           <tr  style="font-weight:bold;" >
             <td></td>
-            <td>GRAND TOTAL</td>
+            <td>TOTAL</td>
             <td ><?php echo $foundation_EDP_grand_total; ?></td>
             <td ><?php echo $foundation_QF1_grand_total; ?></td>
             <td ><?php echo $foundation_QF2_grand_total; ?></td>
@@ -842,6 +896,518 @@ if ($_SESSION["isLogin"]==1) {
             <td ><?php echo $robotic_senior_grand_total; ?></td>
             <td ><?php echo $robotic_junior_grand_total + $robotic_senior_grand_total; ?></td>
           </tr>
+
+          <?php if($page_no == $total_no_of_pages && $_POST['centre_code'] == 'ALL') { ?>
+
+            <tr  style="font-weight:bold;" >
+              <td></td>
+              <td>GRAND TOTAL</td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  $sql.=" and s.deleted='0' and ps.student_entry_level ='EDP' group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $foundation_EDP_final_total = $level_count;
+
+                  echo $foundation_EDP_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  $sql.=" and s.deleted='0' and ps.student_entry_level ='QF1' group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $foundation_QF1_final_total += $level_count;
+
+                  echo $foundation_QF1_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  $sql.=" and s.deleted='0' and ps.student_entry_level ='QF2' group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $foundation_QF2_final_total += $level_count;
+
+                  echo $foundation_QF2_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  $sql.=" and s.deleted='0' and ps.student_entry_level ='QF3' group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $foundation_QF3_final_total += $level_count;
+
+                  echo $foundation_QF3_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $foundation_EDP_final_total + $foundation_QF1_final_total + $foundation_QF2_final_total + $foundation_QF3_final_total; ?></td>
+              <td >
+                <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                  
+                  $sql.=" and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $zhi_hui_mandarin_QF1_final_total = $level_count;
+
+                  echo $zhi_hui_mandarin_QF1_final_total; 
+                ?>
+              </td>
+              <td >
+              <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                  
+                  $sql.=" and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $zhi_hui_mandarin_QF2_final_total = $level_count;
+
+                  echo $zhi_hui_mandarin_QF2_final_total; 
+                ?>
+              </td>
+              <td >
+              <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' ";
+                  
+                  $sql.=" and ((fl.programme_date >= '$year_start_date' and fl.programme_date <= '$year_end_date') or (fl.programme_date_end >= '$year_start_date' and fl.programme_date_end <= '$year_end_date')) and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $zhi_hui_mandarin_QF3_final_total = $level_count;
+
+                  echo $zhi_hui_mandarin_QF3_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $zhi_hui_mandarin_QF1_final_total + $zhi_hui_mandarin_QF2_final_total + $zhi_hui_mandarin_QF3_final_total; ?></td>
+              <td >
+                <?php
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF1'  and fl.pendidikan_islam=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $pendidikan_QF1_final_total += $level_count;
+                
+                  echo $pendidikan_QF1_final_total; 
+                ?>
+              </td>
+              <td >
+              <?php
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF2'  and fl.pendidikan_islam=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $pendidikan_QF2_final_total += $level_count;
+                
+                  echo $pendidikan_QF2_final_total; 
+                ?>
+              </td>
+              <td >
+              <?php
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF3'  and fl.pendidikan_islam=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $pendidikan_QF3_final_total += $level_count;
+                
+                  echo $pendidikan_QF3_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $pendidikan_QF1_final_total + $pendidikan_QF2_final_total + $pendidikan_QF3_final_total; ?></td>
+              <td >
+                <?php 
+                  
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF1'  and fl.foundation_int_english=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $english_QF1_final_total += $level_count;
+
+                  echo $english_QF1_final_total; 
+                ?>
+              </td>
+              <td >
+              <?php 
+                  
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF2'  and fl.foundation_int_english=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $english_QF2_final_total += $level_count;
+
+                  echo $english_QF2_final_total; 
+                ?>
+              </td>
+              <td >
+              <?php 
+                  
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF3'  and fl.foundation_int_english=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $english_QF3_final_total += $level_count;
+
+                  echo $english_QF3_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $english_QF1_final_total + $english_QF2_final_total + $english_QF3_final_total; ?></td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_mandarin=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $mandarin_QF1_final_total += $level_count;
+
+                  echo $mandarin_QF1_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_mandarin=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $mandarin_QF2_final_total += $level_count;
+
+                  echo $mandarin_QF2_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_mandarin=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $mandarin_QF3_final_total += $level_count;
+
+                  echo $mandarin_QF3_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $mandarin_QF1_final_total + $mandarin_QF2_final_total + $mandarin_QF3_final_total; ?></td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_int_art=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $art_QF1_final_total += $level_count;
+
+                  echo $art_QF1_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_int_art=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $art_QF2_final_total += $level_count;
+
+                  echo $art_QF2_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_int_art=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $art_QF3_final_total += $level_count;
+
+                  echo $art_QF3_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $art_QF1_final_total + $art_QF2_final_total + $art_QF3_final_total; ?></td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_iq_math=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $iq_QF1_final_total += $level_count;
+
+                  echo $iq_QF1_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_iq_math=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $iq_QF2_final_total += $level_count;
+
+                  echo $iq_QF2_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_iq_math=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $iq_QF3_final_total = $level_count;
+
+                  echo $iq_QF3_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $iq_QF1_final_total + $iq_QF2_final_total + $iq_QF3_final_total; ?></td>
+              <td ><?php echo $english_QF1_final_total + $english_QF2_final_total + $english_QF3_final_total + $mandarin_QF1_final_total + $mandarin_QF2_final_total + $mandarin_QF3_final_total + $art_QF1_final_total + $art_QF2_final_total + $art_QF3_final_total + $iq_QF1_final_total + $iq_QF2_final_total + $iq_QF3_final_total; ?></td>
+              <td >
+                <?php
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and fl.afternoon_programme =1 and f.basic_adjust > 0 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $basic_final_total = $level_count;
+                
+                  echo $basic_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and (ps.student_entry_level ='EDP' OR ps.student_entry_level ='QF1') and fl.afternoon_programme =1 and f.basic_adjust < 1 and f.afternoon_robotic_adjust > 0 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $basic_robotic_junior_final_total += $level_count;
+
+                  echo $basic_robotic_junior_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and (ps.student_entry_level ='QF2' OR ps.student_entry_level ='QF3') and fl.afternoon_programme =1 and f.basic_adjust < 1 and f.afternoon_robotic_adjust > 0 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $basic_robotic_senior_final_total += $level_count;
+
+                  echo $basic_robotic_senior_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $basic_robotic_junior_final_total + $basic_robotic_senior_final_total; ?></td>
+              <td >
+                <?php
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and (ps.student_entry_level ='EDP' OR ps.student_entry_level ='QF1') and fl.robotic_plus=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $robotic_junior_final_total += $level_count;
+                
+                  echo $robotic_junior_final_total; 
+                ?>
+              </td>
+              <td >
+                <?php 
+
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.deleted='0' and (ps.student_entry_level ='QF2' OR ps.student_entry_level ='QF3') and fl.robotic_plus=1 group by ps.student_entry_level, s.id) ab";
+
+                  $resultt=mysqli_query($connection, $sql);
+                          
+                  $num_row=mysqli_num_rows($resultt);
+                  $level_count = 0;
+                  while ($roww=mysqli_fetch_assoc($resultt)) {
+                      $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                  }
+
+                  $robotic_senior_final_total += $level_count;
+
+                  echo $robotic_senior_final_total; 
+                ?>
+              </td>
+              <td ><?php echo $robotic_junior_final_total + $robotic_senior_final_total; ?></td>
+            </tr>
+
+          <?php } ?>
         </table>
         
         <div class="container">

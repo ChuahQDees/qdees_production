@@ -9,7 +9,7 @@ if(isset($_GET['flag']) && $_GET['flag'] ==1){
 }
 $where_request = '';
 if(isset($_GET['request']) && $_GET['request'] ==1){
-	$where_request = " AND `type` = 'student_delete_request'";
+	$where_request = " AND `type` = 'student_delete_request' AND hide_from_view = '0'";
 }
 
 if($_SESSION["UserType"] == "A"){ 
@@ -69,12 +69,28 @@ $result=mysqli_query($connection, $r_sql);
 								  <a class="" href="index.php?p=notifications&request=1">
 							  <?php } else if($row['type'] == 'fee_structure_adjusted') { ?>
                            <a class="" href="index.php?p=fee_approve&id=<?php echo sha1($row['action_id']); ?>&mode=EDIT">
+                        <?php } else if($row['type'] == 'outstanding_report_pdf') { ?>
+                           
                        <?php } else { ?>
 								<a class="" href="index.php?p=order_status&sOrderNo=<?php if (substr($row['action_id'], 0, 1) != '0') { echo 0; } echo $row['action_id']; ?>">
 							  <?php } ?>
-									<p class="preview-subject<?php if ($is_read == 0) { echo ""; }?>"><?php echo $row['subject']; ?></p>
+									<p class="preview-subject<?php if ($is_read == 0) { echo ""; }?>">
+                              <?php 
+                                 echo $row['subject'];  
+                                 
+                                 if($row['type'] == 'outstanding_report_pdf') { 
+
+                                    $report_pdf = mysqli_fetch_array(mysqli_query($connection,"SELECT `pdf_name` FROM `outstanding_pdf` WHERE `id` = '".$row['action_id']."'"));
+                              ?> 
+                                    <a href="admin/outstanding_report_pdf/<?php echo $report_pdf['pdf_name']; ?>" download > Download </a>
+                              <?php 
+                                 } 
+                              ?> 
+                           </p>
 									<p class="mt-1 text-muted text-small ellipsis"> <?php echo date("d M Y h:s A",strtotime($row['created_at'])); ?> </p>
-								  </a>
+                           <?php if($row['type'] != 'outstanding_report_pdf') { ?>
+                           </a>
+                           <?php } ?>
 							  </div>
 							 
 							  <div class="preview-thumbnail pl-2">
@@ -87,7 +103,7 @@ $result=mysqli_query($connection, $r_sql);
                               if ($row['type'] == 'student_delete_request') 
                               { 
                            ?>
-                                 <span class="btn btn-rounded btn-primary ml-1  delete" onclick="dlgDeleteStudent('<?php echo $row['action_id']; ?>')" data-uk-tooltip="{pos:top}" title="View Request"><i style="cursor:pointer;" class="fas fa-eye" ></i> View</span>
+                                 <span class="btn btn-rounded btn-primary ml-1  delete" onclick="dlgDeleteStudent('<?php echo $row['action_id']; ?>', '<?php echo  $row['id'] ?>')" data-uk-tooltip="{pos:top}" title="View Request"><i style="cursor:pointer;" class="fas fa-eye" ></i> View</span>
                            <?php
                                  $student_data = mysqli_fetch_array(mysqli_query($connection,"SELECT `delete_request` FROM `student` WHERE id = '".$row['action_id']."'"));
 
@@ -137,7 +153,7 @@ $result=mysqli_query($connection, $r_sql);
       });
    });
 
-   function doDeleteStudentRequest(id,request) {
+   function doDeleteStudentRequest(id,request,notid) {
 
       var action = (request == 'approve_request') ? 'approve' : 'reject';
 
@@ -145,7 +161,7 @@ $result=mysqli_query($connection, $r_sql);
          $.ajax({
             url : "admin/delete_student_request.php",
             type : "GET",
-            data : "request="+request+"&student_sid="+id,
+            data : "request="+request+"&student_sid="+id+"&notification_id="+notid,
             dataType : "text",
             beforeSend : function(http) {
             },
@@ -162,11 +178,11 @@ $result=mysqli_query($connection, $r_sql);
       })
    }
 
-   function dlgDeleteStudent(id) {
+   function dlgDeleteStudent(id, notid) {
       $.ajax({
          url : "admin/dlgDeleteStudent.php",
          type : "GET",
-         data : "request=view_request&student_sid="+id,
+         data : "request=view_request&student_sid="+id+"&notification_id="+notid,
          dataType : "text",
          beforeSend : function(http) {
          },

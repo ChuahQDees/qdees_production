@@ -158,19 +158,16 @@ function DateTime($person, $datetime) {
 
 function getStatus($order_no) {
    global $connection;
-   $cancelCounter = "0";
 
    $sql="SELECT * from `order` where order_no='$order_no' or id='$order_no'";
 
    $result=mysqli_query($connection, $sql);
-   //if ($result) {
-   while ($rowxx=mysqli_fetch_assoc($result)) {
+   if ($result) {
       $row=mysqli_fetch_assoc($result);
 
       if ($row["cancelled_by"]!="") {
-         //return "Cancelled";
+         return "Cancelled";
       } else {
-         $cancelCounter = "1"; //don't mark as cancelled
          if ($row["delivered_to_logistic_by"]!="") {
             if ($row["finance_payment_paid_by"]!="") {
                return ($_SESSION["UserType"]=="S") ? "Delivered (Paid)" : "Delivered";
@@ -210,10 +207,6 @@ function getStatus($order_no) {
             //}
          }
          }
-      }
-
-      if ($cancelCounter == "0"){
-         return "Cancelled";
       }
    }
 }
@@ -788,26 +781,6 @@ $sha_id=sha1($row["id"]);
 <!--    <a class="uk-button" id="btnClear">Clear</a> -->
 </form><br>
 <?php
-$orderCheck = $row["order_no"];
-///
-$sqlstatusCheck ="SELECT * from `order` where order_no='$orderCheck' or id='$orderCheck'";
-$result2x=mysqli_query($connection, $sqlstatusCheck);
-
-// if ($result) {
- //  $row=mysqli_fetch_assoc($result);
-//CHS: Cancelled Status Fix
-
-$cancelCounter = "1";
-
-while ($rowxx=mysqli_fetch_assoc($result2x)) {
-   if ($rowxx["cancelled_by"]!="") {
-      //return "Cancelled";
-   }else{
-      $cancelCounter = "0";
-   }
-}
-///
-
 if (!isset($mode) && $mode != 'defective') {
 ?>
   <div class="uk-grid">
@@ -823,7 +796,7 @@ if (!isset($mode) && $mode != 'defective') {
       ?>
      
       <?php
-      if (($row["acknowledged_by"]=="") & ($cancelCounter == "0") & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S")
+      if (($row["acknowledged_by"]=="") & ($row["cancelled_by"]=="") & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S")
          & (hasRight($_SESSION["UserName"], "AcknowledgeOrderEdit"))) {
       ?>
                   <a style="color: white;" onclick="doAcknowledged('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class="uk-button uk-button-small form_btn"><i class="fa fa-check"></i> Acknowledge</a>
@@ -831,7 +804,7 @@ if (!isset($mode) && $mode != 'defective') {
       }
       ?>
       <?php
-      if (($row["acknowledged_by"]!="") & ($row["logistic_approved_by"]=="") & ($cancelCounter == "0") & ($_SESSION["isLogin"]==1)
+      if (($row["acknowledged_by"]!="") & ($row["logistic_approved_by"]=="") & ($row["cancelled_by"]=="") & ($_SESSION["isLogin"]==1)
          & ($_SESSION["UserType"]=="S") & (hasRight($_SESSION["UserName"], "LogisticApproveEdit"))) {
       ?>
                   <a style="color: white;" onclick="doLogisticApprove('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class="uk-button uk-button-small form_btn"><i class="fa fa-check-circle-o"></i> Logistic Approve</a>
@@ -840,7 +813,7 @@ if (!isset($mode) && $mode != 'defective') {
       ?>
       <?php
       if (($row["acknowledged_by"]!="") & ($row["logistic_approved_by"]!="") & ($row["finance_approved_by"]=="") & ($row["packed_by"]!="") &
-         ($cancelCounter == "0") & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S")
+         ($row["cancelled_by"]=="") & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S")
          & (hasRight($_SESSION["UserName"], "FinanceApproveEdit"))) {
       ?>
                   <a style="color: white;" onclick="doFinanceApproved('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class='uk-button uk-button-small form_btn'><i class="fa fa-check-square-o"></i> Finance Approved</a>
@@ -848,7 +821,7 @@ if (!isset($mode) && $mode != 'defective') {
       }
       ?>
       <?php
-      if (($row["acknowledged_by"]!="") & ($row["assigned_to_by"]=="") & ($row["logistic_approved_by"]!="") & ($cancelCounter == "0")
+      if (($row["acknowledged_by"]!="") & ($row["assigned_to_by"]=="") & ($row["logistic_approved_by"]!="") & ($row["cancelled_by"]=="")
          & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S") & (hasRight($_SESSION["UserName"], "PackedEdit"))) {
       ?>
                   <a style="color: white;" onclick="dlgAssignedTo('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class='uk-button uk-button-small form_btn'><i class="fa fa-user"></i> Assigned To</a>
@@ -856,7 +829,7 @@ if (!isset($mode) && $mode != 'defective') {
       }
       ?>
       <?php
-      if (($row["acknowledged_by"]!="") & ($row["finance_approved_by"]=="") & ($row["packed_by"]=="") & ($row["logistic_approved_by"]!="") & ($cancelCounter == "0") & ($row["assigned_to_by"]!="")
+      if (($row["acknowledged_by"]!="") & ($row["finance_approved_by"]=="") & ($row["packed_by"]=="") & ($row["logistic_approved_by"]!="") & ($row["cancelled_by"]=="") & ($row["assigned_to_by"]!="")
          & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S") & (hasRight($_SESSION["UserName"], "PackedEdit"))) {
       ?>
                   <a style="color: white;" onclick="doPacked('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class='uk-button uk-button-small form_btn'><i class="fa fa-barcode"></i> Packed</a>
@@ -865,7 +838,7 @@ if (!isset($mode) && $mode != 'defective') {
       ?>
       <?php
       if (($row["acknowledged_by"]!="") & ($row["finance_approved_by"]!="") & ($row["packed_by"]!="") & ($row["delivered_to_logistic_by"]=="")
-         & ($cancelCounter == "0") & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S") & ($row["logistic_approved_by"]!="")
+         & ($row["cancelled_by"]=="") & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S") & ($row["logistic_approved_by"]!="")
          & (hasRight($_SESSION["UserName"], "DeliveryEdit"))) {
       ?>
                   <a onclick="doDeliveredToLogistic('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class="uk-button uk-button-small form_btn" style="color:white;"><i class="fa fa-truck"></i> Delivery</a>

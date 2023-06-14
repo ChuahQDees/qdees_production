@@ -10,8 +10,8 @@ function notification($data) {
 	$type = $data['type'];
 	$subject = $data['subject']; 
 	$centre_code = isset($_SESSION['CentreCode']) ? $_SESSION['CentreCode'] : '';
-	$sql="INSERT into `notifications` (centre_code,action_id,send_to,send_from,type,subject,created_at,is_hq_read,is_center_read) 
-	values ('$centre_code','$action_id','$send_to','$send_from','$type','$subject','$created_at','$is_hq_read','$is_center_read' )";
+	$sql="INSERT into `notifications` (centre_code,action_id,send_to,send_from,type,subject,created_at,is_hq_read,is_center_read,hide_from_view) 
+	values ('$centre_code','$action_id','$send_to','$send_from','$type','$subject','$created_at','$is_hq_read','$is_center_read','0' )";
 	$result=mysqli_query($connection, $sql);
 }
 

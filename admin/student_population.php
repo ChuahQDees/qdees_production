@@ -400,6 +400,8 @@ display: none;
             </div>
             <div class="uk-overflow-container student_popu">
          <!-- <a href="admin/student_population_report.php?s=<?php echo $_GET['s']?>&student_status=<?php echo $student_status?>" target="_blank" class="uk-button full-width-blue" style="width:120px; float:right;margin-bottom: 15px;">Print</a> --> <a href="admin/export_student_population.php?s=<?php echo $_GET['s']; ?>&student_status=<?php echo $student_status; ?>&state=<?php echo $_GET['state']; ?>&country=<?php echo $_GET['country']; ?>&race=<?php echo $_GET['race']; ?>&age=<?php echo $_GET['age']; ?>" class="uk-button full-width-blue" style="width:120px; float:right;margin-bottom: 15px;">Export CSV</a>
+            <a href="" 
+            class="uk-button full-width-blue" style="width:120px; float:right;margin-bottom: 15px;">Multi-Transfer</a>
                 <table class="uk-table" id='mydatatable' style="width: 100%;font-size:12px;">
                   <thead>
 

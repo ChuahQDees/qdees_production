@@ -10,6 +10,8 @@ if( ! defined('STUDENT_PHOTO_PATH') ){
 if( ! defined('STUDENT_ATTACHMENT_URL') ){
   define('STUDENT_ATTACHMENT_URL', '/admin/attachment/');
 }
+
+
 function getStudentID($sid) {
    global $connection;
 	
@@ -239,7 +241,7 @@ function getPrimaryContact($table, $temp_student_code){
   global $connection;
 
   $sql="SELECT * from `$table` where student_code='$temp_student_code' order by id LIMIT 1";
-  //echo $sql;
+  
   $result=mysqli_query($connection, $sql);
 
   if ($result) {
@@ -264,6 +266,11 @@ function getStudent($table, $get_sha1_id){
   }
 
   return $row;
+}
+
+function clean($string) {
+  $string2 = str_replace("'","",$string);
+  return $string2;
 }
 
 function saveStudent($table, $form_mode = ''){
@@ -341,6 +348,8 @@ $num_row=mysqli_num_rows($result);
   } else { 
   }
 
+ $name = clean($name);
+/*
        $sql="UPDATE `$table` set
         student_code='$student_code',
         student_status='$student_status',
@@ -372,8 +381,41 @@ $num_row=mysqli_num_rows($result);
 		unique_id='$unique_id'
         $defer_date
 		where student_code='$hidden_student_code'";
+*/
 
+//Removing Extend year update due to students suddenly going back to previous terms
+$sql="UPDATE `$table` set
+        student_code='$student_code',
+        student_status='$student_status',
+        name='$name',
+        nric_no='$nric_no',
+        form_serial_no='$form_serial_no',
+        dob='$dob',
+        birth_cert_no='$birth_cert_no',
+        nationality='$nationality',
+        start_date_at_centre='$start_date_at_centre',
+        gender='$gender',
+        age='$age',
+        add1='$add1',
+        add2='$add2',
+        add3='$add3',
+        add4='$add4',
+        country='$country',
+        state='$state',
+        race='$race',
+        nationality='$nationality',
+        religion='$religion',
+        remarks='$remarks',
+        health_problem='$health_problem',
+        allergies='$allergies',
+        accept_photo='$accept_photo',
+        accept_terms='$accept_terms',
+        signature='$signature',
+		unique_id='$unique_id'
+        $defer_date
+		where student_code='$hidden_student_code'";
 		//extend_year='$extend_year',
+
      $result = mysqli_query($connection, $sql);
 	 $student_id= getStudentID($_GET['id']);
 	 
@@ -403,58 +445,71 @@ $num_row=mysqli_num_rows($result);
 	// }
 
      if ($result) {
+        
+        //card information
+        $sql = "select id from student where student_code='$hidden_student_code'";
+        $result1=mysqli_query($connection, $sql);
+        $row=mysqli_fetch_assoc($result1);
+        $student_id = $row['id'];
+        
+        $sql2 = "select id from student_card where student_id='$student_id'";
+        $result2=mysqli_query($connection, $sql2);
+        $num_row=mysqli_fetch_assoc($result2);
       
-       //card information
-       $sql = "select id from student where student_code='$hidden_student_code'";
-       $result1=mysqli_query($connection, $sql);
-       $row=mysqli_fetch_assoc($result1);
-       $student_id = $row['id'];
-       
-       $sql2 = "select id from student_card where student_id='$student_id'";
-       $result2=mysqli_query($connection, $sql2);
-       $num_row=mysqli_fetch_assoc($result2);
-     
-       if ($num_row == 0) {
-       $insert_sql="INSERT into student_card (
-         student_id,
-         status,
-         unique_id
-       ) values (
-         '$student_id',
-         '0',
-         '$unique_id'
-       )";
+        if ($num_row == 0) {
+          $insert_sql="INSERT into student_card (
+            student_id,
+            status,
+            unique_id
+          ) values (
+            '$student_id',
+            '0',
+            '$unique_id'
+          )";
+        
+          mysqli_query($connection, $insert_sql);
+        }else{
+          $insert_sql="UPDATE student_card set unique_id ='$unique_id' where student_id='$student_id' and unique_id ='' and status=0 and deleted = 0 limit 1";
+        
+          mysqli_query($connection, $insert_sql);
+        }
+
+        $student_detail=mysqli_fetch_assoc(mysqli_query($connection,"SELECT * FROM `student` WHERE `id` = '".$student_id."'"));
+
+        $s="SELECT * from `student_emergency_contacts` where student_code = '" . $hidden_student_code . "'  ORDER BY `student_emergency_contacts`.`id` ASC";
+        $r=mysqli_query($connection, $s);
+
+        if (mysqli_num_rows($r)) {
+          $student_detail['contacts'] = json_encode(mysqli_fetch_all($r, MYSQLI_ASSOC)[0]);
+        }else{
+          $student_detail['contacts'] = '';
+        }
+
+        AppStudent($student_detail);
+
+        //api code
+        $postRequest = array(
+          'student_type' => 'Starter',
+          'student_id' => '$hidden_student_code',
+          'qr_code' => '$unique_id',
+          'session' => 'cb76fe897986563639f6983bfd33b57cd'
+        );
+
       
-        mysqli_query($connection, $insert_sql);
-       }else{
-        $insert_sql="UPDATE student_card set unique_id ='$unique_id' where student_id='$student_id' and unique_id ='' and status=0 and deleted = 0 limit 1";
-      
-         mysqli_query($connection, $insert_sql);
-       }
+        $cURLConnection = curl_init('https://starters.q-dees.com/application/api/StudentQRassignment');
+        curl_setopt($cURLConnection, CURLOPT_POSTFIELDS, $postRequest);
+        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
 
- //api code
- $postRequest = array(
-  'student_type' => 'Starter',
-  'student_id' => '$hidden_student_code',
-  'qr_code' => '$unique_id',
-  'session' => 'cb76fe897986563639f6983bfd33b57cd'
-);
+        $apiResponse = curl_exec($cURLConnection);
+        curl_close($cURLConnection);
 
-//$cURLConnection = curl_init('http://13.58.211.59/q-dees/api/StudentQRassignment');
-/* $cURLConnection = curl_init('http://13.67.72.102/api/StudentQRassignment');
-curl_setopt($cURLConnection, CURLOPT_POSTFIELDS, $postRequest);
-curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+        //  $status = $array['status'];
+        //  $message = $array['message'];
+        //  //print_r($array);
+        //  if ($status == 1) {
 
-$apiResponse = curl_exec($cURLConnection);
-curl_close($cURLConnection); */
-
-//  $status = $array['status'];
-//  $message = $array['message'];
-//  //print_r($array);
-//  if ($status == 1) {
-
-//  }
-//end API Code
+        //  }
+        //end API Code
 
 
          processStudentPhoto($table, $student_code);
@@ -524,7 +579,7 @@ $extend_year = getYearFromMonth(date('Y',strtotime($start_date_at_centre)), date
      $sql="SELECT * from `$table` where nric_no='$nric_no' and student_status!='I'";
    $result=mysqli_query($connection, $sql);
 $num_row=mysqli_num_rows($result);
- //var_dump($sql);die;
+
 /* if ($num_row > 0) {
 resetStudentRegistrationSession();
 echo "<script> alert('Student MyKid/Passport No must be unique, please try again'); </script>";
@@ -534,6 +589,20 @@ echo "<script> alert('Student MyKid/Passport No must be unique, please try again
 $defer = ($student_status == 'D') ? ', defer_date' : '';
 $defer_dates = ($student_status == 'D') ? ", '".date('Y-m-d h:m:i')."'" : '';
 $date_created = date('Y-m-d h:m:i');
+
+//Remove special characters
+$name = clean($name);
+
+//Set extend_year to the current year because everyone's confused where the new student went lmao
+$extend_default = "";
+
+    $startDate = strtotime(date('Y-m-d', strtotime($start_date_at_centre) ) );
+    $currentDate = strtotime('2023-03-01'); 
+    
+    //if($startDate < $currentDate) {
+      $extend_default = "2023-2024";
+    //}
+
     $insert_sql="INSERT into `$table` (
        student_code,
        centre_code,
@@ -597,7 +666,7 @@ $date_created = date('Y-m-d h:m:i');
        '$accept_terms',
        '$attachment',
        '$signature',
-       '$extend_year',
+       '$extend_default',
 		'$unique_id','','','$date_created'".$defer_dates."
      )";
      $result=mysqli_query($connection, $insert_sql);
@@ -615,6 +684,19 @@ $date_created = date('Y-m-d h:m:i');
 
       if ($table == 'student') {
 
+        $student_detail=mysqli_fetch_assoc(mysqli_query($connection,"SELECT * FROM `student` WHERE `id` = '".$student_id."'"));
+
+        $s="SELECT * from `student_emergency_contacts` where student_code = '" . $student_code . "'  ORDER BY `student_emergency_contacts`.`id` ASC";
+        $r=mysqli_query($connection, $s);
+
+        if (mysqli_num_rows($r)) {
+          $student_detail['contacts'] = json_encode(mysqli_fetch_all($r, MYSQLI_ASSOC)[0]);
+        }else{
+          $student_detail['contacts'] = '';
+        }
+
+        AppStudent($student_detail);
+
         $sql_getContact="SELECT * from `student_emergency_contacts` where student_code='".$student_code."'";
         $result_getContact=mysqli_query($connection, $sql_getContact);
         
@@ -628,8 +710,6 @@ $date_created = date('Y-m-d h:m:i');
         //   //mysqli_query($connection, $sql_delContact);
         // }
        
-       
-
         //card information
       $sql = "select id from student where student_code='$student_code'";
       $result1=mysqli_query($connection, $sql);
@@ -660,13 +740,12 @@ $date_created = date('Y-m-d h:m:i');
         'session' => 'cb76fe897986563639f6983bfd33b57cd'
      );
 
-    //  $cURLConnection = curl_init('http://13.58.211.59/q-dees/api/StudentQRassignment');
-   /*   $cURLConnection = curl_init('http://13.58.211.59/api/StudentQRassignment');
+     $cURLConnection = curl_init('https://starters.q-dees.com/application/api/StudentQRassignment');
      curl_setopt($cURLConnection, CURLOPT_POSTFIELDS, $postRequest);
      curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
 
      $apiResponse = curl_exec($cURLConnection);
-     curl_close($cURLConnection); */
+     curl_close($cURLConnection);
 
     //  $status = $array['status'];
     //  $message = $array['message'];

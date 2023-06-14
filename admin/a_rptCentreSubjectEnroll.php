@@ -273,6 +273,7 @@ if ($centre_code != "") {
                 ?>    
                         <span style="cursor:pointer;color:blue;" onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','Foundation Mandarin','EDP')" ><?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?></span>
                             </span>
+                            <p><?php echo $sql ?></p>
                         <?php
                      }
             ?>
@@ -650,6 +651,7 @@ if ($centre_code != "") {
                 ?>    
                         <span style="cursor:pointer;color:blue;" onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','Enhanced Foundation Mandarin','EDP')" ><?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?></span>
                             </span>
+                            <p><?php echo $sql ?></p>
                         <?php
                      }
             ?>

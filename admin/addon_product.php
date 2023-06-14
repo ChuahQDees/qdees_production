@@ -76,21 +76,21 @@ if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "Add
                   </td>
                </tr>
 			   <tr class="uk-text-small">
-                  <td class="uk-width-3-10 uk-text-bold">UOM : </td>
-                  <td class="uk-width-7-10"><input class="uk-width-1-1" type="number" name="uom" id="uom" value="<?php echo $edit_row['uom']?>">
-					<span id="validationUom"  style="color: red; display: none;">Please insert File No</span>
+                  <td class="uk-width-3-10 uk-text-bold">Unit of Measurement (UOM) : </td>
+                  <td class="uk-width-7-10"><input class="uk-width-1-1" value="1" type="number" name="uom" id="uom" value="<?php echo $edit_row['uom']?>">
+					<span id="validationUom"  style="color: red; display: none;">Please insert UOM</span>
 				  </td>
                </tr>
 			   <tr class="uk-text-small">
                   <td class="uk-width-3-10 uk-text-bold">Unit Price : </td>
                   <td class="uk-width-7-10"><input class="uk-width-1-1" type="number" name="unit_price" id="unit_price" step="0.01" value="<?php echo $edit_row['unit_price']?>">
-				  <span id="validationUnitprice"  style="color: red; display: none;">Please insert File No</span>
+				  <span id="validationUnitprice"  style="color: red; display: none;">Please insert Unit Price</span>
 				  </td>
                </tr>
                <tr class="uk-text-small">
                   <td class="uk-width-3-10 uk-text-bold">Centre Remarks : </td>
                   <td class="uk-width-7-10"><textarea id="remarks" name="remarks" rows="5" cols="50"><?php echo $edit_row['remarks'] ?> </textarea>
-				      <span id="validationRemarks"  style="color: red; display: none;">Please Remarks</span></td>
+				      <span id="validationRemarks"  style="color: red; display: none;">Please enter Remarks</span></td>
                </tr>
             </table>
          </div>

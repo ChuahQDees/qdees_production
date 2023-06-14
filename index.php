@@ -70,7 +70,8 @@ function getLink($p, $active_page, $str_p) {
 
     <!-- <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" /> -->
     <link rel="stylesheet" href="lib/simplebar/simplebar.css" />
-
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/select2.min.css">
     
 <script>
 function mark_important(id,e) {
@@ -850,8 +851,8 @@ if (isset($_SESSION["isLogin"]) && $_SESSION["isLogin"]==1) {
   <div class="container-scroller">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row navbar-info">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="index.php"><img class="img-responsive" src="images/Artboard – 4.png" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="index.php"><img class="img-responsive" src="images/logo-mini.png" alt="logo"/></a>
+        <a class="navbar-brand brand-logo" href="index.php"><img class="img-responsive" src="images/Qdees-logo-n.png" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="index.php"><img class="img-responsive" src="images/Qdees-logo-n.png" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -914,12 +915,27 @@ if (($_SESSION["isLogin"]==1) & (!isMobileDevice())) {
                   <div class="preview-item-content"> 
 					  <?php   if ($row['type'] == 'student_delete_request') { ?>
 						  <a class="" href="index.php?p=notifications&request=1">
+              <?php } else if($row['type'] == 'outstanding_report_pdf') { ?>
+                           
 					  <?php } else { ?>
 						<a class="" href="index.php?p=order_status&sOrderNo=<?php if (substr($row['action_id'], 0, 1) != '0') { echo 0; } echo $row['action_id']; ?>">
 					  <?php } ?>
-						<p class="preview-subject<?php if ($is_read == 0) { echo ""; }?>"><?php echo $row['subject']; ?></p>
+						<p class="preview-subject<?php if ($is_read == 0) { echo ""; }?>">
+              <?php 
+                  echo $row['subject'];  
+                  
+                  if($row['type'] == 'outstanding_report_pdf') { 
+
+                    $report_pdf = mysqli_fetch_array(mysqli_query($connection,"SELECT `pdf_name` FROM `outstanding_pdf` WHERE `id` = '".$row['action_id']."'"));
+              ?> 
+                    <a href="admin/outstanding_report_pdf/<?php echo $report_pdf['pdf_name']; ?>" download style="color:#0077dd;" > Download </a>
+              <?php 
+                  } 
+              ?> </p>
 						<p class="mt-1 text-muted text-small ellipsis"> <?php echo date("d M Y h:s A",strtotime($row['created_at'])); ?> </p>
-					  </a>
+					  <?php if($row['type'] != 'outstanding_report_pdf') { ?>
+                </a>
+            <?php } ?>
                   </div>
 				 
 				  <div class="preview-thumbnail pl-2">
@@ -969,7 +985,7 @@ if (($_SESSION["isLogin"]==1) & (!isMobileDevice())) {
             <li class="nav-item nav-profile">
               <div class="btn-group efcbtn">
 <?php
-if (($_SESSION["UserType"]=="S")) {
+if (($_SESSION["UserType"]=="S" && $_SESSION['UserName'] != 'management')) {
 ?>
                 <div class="dropdown" style="width: 100%; margin-bottom: 15px;">
                   <button class="btn btn-secondary dropdown-toggle yrbtn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -1172,6 +1188,21 @@ if ($_SESSION["UserType"]=="S") {
   case "rpt_student_population" : include_once("admin/rptStudentPopulation.php"); break;
   case "rpt_summary_students_population" : include_once("admin/rptSummaryStudentsPopulation.php"); break;
   case "rpt_summary_students_population_new" : include_once("admin/rptSummaryStudentsPopulationNew.php"); break;
+
+  case "rpt_int_english_stock" : include_once("admin/rptIntEnglishStock.php"); break;
+  case "rpt_int_art_stock" : include_once("admin/rptIntArtStock.php"); break;
+  case "rpt_foundation_stock" : include_once("admin/rptFoundationStock.php"); break;
+  case "rpt_zhi_hui_mandarin_stock" : include_once("admin/rptZhiHuiMandarinStock.php"); break;
+  case "rpt_pendidikan_stock" : include_once("admin/rptPendidikanStock.php"); break;
+  case "rpt_mandarin_stock" : include_once("admin/rptMandarinStock.php"); break;
+  case "rpt_iq_math_stock" : include_once("admin/rptIQMathStock.php"); break;
+  case "rpt_student_no_monitoring" : include_once("admin/rptStudentNoMonitoring.php"); break;
+  case "rpt_monthly_student_no_analytic" : include_once("admin/rptMonthlyStudentNoAnalytic.php"); break;
+  case "rpt_monthly_student_no_analytic_graph" : include_once("admin/rptMonthlyStudentNoAnalyticGraph.php"); break;
+  case "rpt_month_to_month_student_no_tracking" : include_once("admin/rptMonthToMonthStudentNoTracking.php"); break;
+  case "rpt_foundation_termly_stock_order" : include_once("admin/rptFoundationTermlyStockOrder.php"); break;
+
+
   case "rpt_stock_balance" : include_once("admin/rptStockBalance.php"); break;
   case "rpt_stock_balance_master" : include_once("admin/rptStockBalanceMaster.php"); break;
   case "student_info" : include_once("admin/student_info.php"); break;
@@ -1196,6 +1227,11 @@ if ($_SESSION["UserType"]=="S") {
   case "" : include_once("home.php"); break;
   case "centre_information" : include_once ("admin/centre_information.php"); break;
   case "notifications" : include_once ("admin/notifications.php"); break;
+  case "fee_str_allocate" : include_once ("admin/fee_structure_allocation.php"); break;
+  case "declaration_rpt_view" : include_once ("admin/declaration_rpt_view.php"); break;
+  case "fee_str_allocate_func" : include_once ("admin/fee_structure_allocation_function.php"); break;
+
+  case "student_multitransfer" : include_once("admin/student_multi_transfer.php"); break;
 }
 ?>
           </p>
@@ -1218,12 +1254,15 @@ if ($_SESSION["UserType"]=="S") {
 <script src="lib/simplebar/simplebar.js"></script>
 <!-- <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script> -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="js/select2.js"></script>
 <script>
     //new SimpleBar($('#simplebar')[0], { autoHide: false });
 
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
    })
+
+   $('.select2').select2();
 </script>
 <script>
 
