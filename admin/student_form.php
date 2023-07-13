@@ -138,6 +138,16 @@ if (!defined('IS_PUBLIC_STUDENT_FORM')) {
                                     </div>
                                 </div>
 
+                                <!--
+                                <div class="uk-flex uk-flex-column" style="margin-top: 10px">
+                                    <div class="uk-width-1-1 uk-text-bold">Chinese Name : </div>
+                                    <div class="uk-width-1-1">
+                                        <input class="uk-width-1-1 " type="text" name="chinese_name" id="chinese_name"
+                                            value="<?php if(isset($data_array['chinese_name'])) { echo $data_array['chinese_name']; } ?>">
+                                    </div>
+                                </div>
+                                -->
+
                                 <div class="uk-flex uk-flex-column" style="margin-top: 10px">
                                     <div class="uk-width-1-1 uk-text-bold">Start Date at Centre* : </div>
                                     <div class="uk-width-1-1">
@@ -219,6 +229,14 @@ if (!defined('IS_PUBLIC_STUDENT_FORM')) {
                                         value="<?php echo $data_array['name']?>">
                                     <span id="validationStudentName" style="color: red; display: none;">Please insert
                                         Student's Full Name</span>
+                                </td>
+                            </tr>
+
+                            <tr class="uk-text-small">
+                                <td class="uk-width-4-10 uk-text-bold">Chinese Name : </td>
+                                <td class="uk-width-6-10">
+                                    <input class="uk-width-1-1 " type="text" name="chinese_name" id="chinese_name"
+                                        value="<?php echo $data_array['chinese_name']?>">
                                 </td>
                             </tr>
 
@@ -525,7 +543,14 @@ if (!defined('IS_PUBLIC_STUDENT_FORM')) {
                             </tr>
 
                             <tr class="uk-text-small">
-                                <td class="uk-width-4-10 uk-text-bold">Medical Condition* : </td>
+                                <td class="uk-width-4-10 uk-text-bold">Chinese Name : </td>
+                                <td class="uk-width-6-10"><input class="uk-width-1-1 " type="text" name="chinese_name"
+                                        id="chinese_name" value="<?php echo $data_array['chinese_name']?>">
+                                </td>
+                            </tr>
+
+                            <tr class="uk-text-small">
+                                <td class="uk-width-4-10 uk-text-bold">Medical Condition : </td>
                                 <td class="uk-width-6-10"><input class="uk-width-1-1 " type="text" name="health_problem"
                                         id="health_problem" value="<?php echo $data_array['health_problem']?>">
                                     <span id="validationHealth" style="color: red; display: none;">Please insert Medical
@@ -534,7 +559,7 @@ if (!defined('IS_PUBLIC_STUDENT_FORM')) {
                             </tr>
 
                             <tr class="uk-text-small">
-                                <td class="uk-width-4-10 uk-text-bold">Allergies* : </td>
+                                <td class="uk-width-4-10 uk-text-bold">Allergies : </td>
                                 <td class="uk-width-6-10"><input class="uk-width-1-1 " type="text" name="allergies"
                                         id="allergies" value="<?php echo $data_array['allergies']?>">
                                     <span id="validationAllergies" style="color: red; display: none;">Please insert
@@ -1719,6 +1744,7 @@ if($status==1){
         var accept_terms = $("#accept_terms").prop('checked');
         var attachment = $("#attachment").val();
         var signature = $("#signature").val();
+        var chinese_name = $("#chinese_name").val();
         var form_mode = $("#form_mode").val();
         var allergies = $("#allergies").val();
         var health_problem = $("#health_problem").val();
@@ -1742,9 +1768,13 @@ if($status==1){
         }
         //if (!name || student_status === "" || !nric_no || dob_year === "" || dob_month === "" || dob_day === "" || ! birth_cert_no || !start_date_at_centre || !gender || !add1 || !country || !state || !race || !nationality || !religion || !accept_terms || !signature || !allergies || !health_problem || student_entry_level === "" || foundation_mandarin === "" || programme_duration === "" || programme_date === "" || primary_contact =="Primary contact eg: Parents or Guardian" || fee_name === "") {
 
+            /*
         if (!name || student_status === "" || dob_year === "" || dob_month === "" || dob_day === "" || !start_date_at_centre || !gender || !add1 || !country || !state || !race || !nationality ||
-            !religion || !accept_terms || !signature || !allergies || !health_problem || primary_contact ==
-            "Primary contact eg: Parents or Guardian" ) {
+            !religion || !accept_terms || !signature || !allergies || !health_problem || primary_contact == "Primary contact eg: Parents or Guardian" ) {
+                */
+
+        if (!name || student_status === "" || dob_year === "" || dob_month === "" || dob_day === "" || !start_date_at_centre || !gender || !add1 || !country || !state || !race || !nationality ||
+            !religion || !accept_terms || !signature || primary_contact == "Primary contact eg: Parents or Guardian" ) {
             e.preventDefault();
             UIkit.notify("Please fill up mandatory fields marked *");
 
@@ -1850,17 +1880,21 @@ if($status==1){
                 $('#validationReligion').hide();
             }
 
+            /*
             if (!health_problem) {
                 $('#validationHealth').show();
             } else {
                 $('#validationHealth').hide();
             }
+            */
 
+            /*
             if (!allergies) {
                 $('#validationAllergies').show();
             } else {
                 $('#validationAllergies').hide();
             }
+            */
             if (!accept_terms) {
                 $('#validationCheckbox2').show();
             } else {
@@ -1897,8 +1931,8 @@ if($status==1){
             (race != "") &&
             (nationality != "") &&
             (religion != "") &&
-            (allergies != "") &&
-            (health_problem != "") &&
+            //(allergies != "") &&
+            //(health_problem != "") &&
             (accept_terms == true) &&
             (signature != "" && signature != '{\"lines\":[]}') &&
             (fee_name != "")) {
@@ -2161,9 +2195,10 @@ if($status==1){
         var accept_terms = $("#accept_terms").prop('checked');
         var attachment = $("#attachment").val();
         var signature = $("#signature").val();
+        var chinese_name = $("#chinese_name").val();
         var form_mode = $("#form_mode").val();
-        var allergies = $("#allergies").val();
-        var health_problem = $("#health_problem").val();
+        //var allergies = $("#allergies").val();
+        //var health_problem = $("#health_problem").val();
         var primary_contact1 = $("#primary-contact1").text();
         var primary_contact2 = $("#primary-contact2").text();
         var student_entry_level = $("#student_entry_level").val();
@@ -2297,12 +2332,14 @@ if($status==1){
             $('#validationHealth').hide();
         }
 
+        /*
         if (!allergies) {
             $('#validationAllergies').show();
             error = true;
         } else {
             $('#validationAllergies').hide();
         }
+        */
 
 
 

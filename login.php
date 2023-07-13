@@ -4,39 +4,96 @@ include_once("bootstrap.php");
 ?>
 <script>
 $(document).ready(function () {
-   $("#btnLogin").click(function () {
-      var user_name=$("#user_name").val();
-      var password=$("#password").val();
-      var eula=$("#eula").val();
-
-      if ($("#eula").prop("checked")==true) {
-         $.ajax({
-            url : "a_login.php",
-            type : "POST",
-            data : "user_name="+user_name+"&password="+password,
-            dataType : "text",
-            beforeSend : function(http) {
-            },
-            success : function(response, status, http) {
-               var s=response.split("|");
-
-               if (s[0]=="1") {
-                  location.reload();
-               }
-
-               if (s[0]=="0") {
-                  UIkit.notify(s[1]);
-               }
-            },
-            error : function(http, status, error) {
-               UIkit.notify("Error:"+error);
+    $(document).on('keypress',function(e) {
+        if(e.which == 13) {
+            if ($("input").is(":focus")) {
+                //alert('You pressed enter!');
+                loginPOS();
             }
-         });
-      } else {
-         UIkit.notify("Please accept End User License Agreement to proceed");
-      }
+        }
+    });
+
+   $("#btnLogin").click(function () {
+        loginPOS();
    });
 });
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function checkCookie() {
+  let username = getCookie("username");
+  if (username != "") {
+   //alert("Cookie found "+username);
+   return "1";
+  }else{
+    //alert("Cookie not found");
+    return "0";
+  }
+}
+
+function loginPOS() {
+    var user_name=$("#user_name").val();
+    var password=$("#password").val();
+    var eula=$("#eula").val();
+    var saveUserPass=$("#saveUserPass").val();
+
+    if ($("#eula").prop("checked")==true) {
+        $.ajax({
+        url : "a_login.php",
+        type : "POST",
+        data : "user_name="+user_name+"&password="+password,
+        dataType : "text",
+        beforeSend : function(http) {
+        },
+        success : function(response, status, http) {
+            var s=response.split("|");
+
+            if (s[0]=="1") {
+                const d = new Date();
+
+                if ($("#saveUserPass").prop("checked")==true) {
+                    //Create the cookies
+
+                    d.setTime(d.getTime() + (100 * 24 * 60 * 60 * 1000));
+                    let expires = "expires="+d.toUTCString();
+                    document.cookie = "username=" + user_name + ";" + expires + ";path=/";
+                    document.cookie = "password=" + password + ";" + expires + ";path=/";
+                }else{
+                    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    ///alert("ooo");
+                    //checkCookie();
+                }
+                //checkCookie();
+                location.reload();
+            }
+
+            if (s[0]=="0") {
+                UIkit.notify(s[1]);
+            }
+        },
+        error : function(http, status, error) {
+            UIkit.notify("Error:"+error);
+        }
+        });
+    } else {
+        UIkit.notify("Please accept End User License Agreement to proceed");
+    }
+}
 </script>
 
 <style>
@@ -179,7 +236,7 @@ input {
             <div class="col-md-6 col-sm-12 no-padding" style="background:#F7FCFF;border-radius: 50px 0px 0px 50px;">
             <div style="width: 100%; height:87%" class="pt-3 d-flex justify-content-center">
                <img src="/images/Qdees_Globe.png" alt="" class="img_bg">
-               <img src="/images/Q-dees-Starters-Logo_o.png" alt="" class="img_logo">
+               <img src="/images/Qdees-logo-n.png" alt="" class="img_logo">
             </div>
             <h2 style="text-align:center; padding-bottom:20px;"><a href="https://www.q-dees.com/" style="color:#707070;">www.q-dees.com</a></h2>
             </div>
@@ -206,7 +263,10 @@ input {
                         </div>
 						<div class="text-black mt-12" style="margin-top: 1rem;font-size:12px;">
                           <div class="form-group">
-                           <input type="checkbox" value="1" name="eula" id="eula" checked>&nbsp;I accept the terms in the <a href="doc/EULA.pdf" target="_blank">End User License Agreement</a>
+                            <label><input type="checkbox" name="saveUserPass" id="saveUserPass">&nbsp;Save username & password</label>
+                          </div>
+                          <div class="form-group">
+                           <label><input type="checkbox" value="1" name="eula" id="eula" checked>&nbsp;I accept the terms in the <a href="doc/EULA.pdf" target="_blank">End User License Agreement</a></label>
                           </div>
                         </div>                       
 
@@ -220,9 +280,9 @@ input {
                     </form>
 
                     <div style="padding-bottom: 20px;padding-top: 20px;" class="mt-3 eng_and_maths">
-                        <img src="/images/Artboard – 1.png" alt="" style="width: 43%;">
+                        <!-- <img src="/images/Artboard – 1.png" alt="" style="width: 43%;">
                         <img src="/images/Artboard – 3.png" alt="" style="margin-left: -20px; margin-right: -20px; position: relative;width:50px; ">
-                        <img src="/images/Artboard – 2.png" alt="" style="width: 43%;">
+                        <img src="/images/Artboard – 2.png" alt="" style="width: 43%;"> -->
                     </div>
 					<!--<div class="mt-3 eng_and_maths">
                         <img src="/images/Inter_English.png" alt="" style="width: 43%;">
@@ -235,3 +295,16 @@ input {
         </div>
     </div>
 </div>
+
+<script>
+//Autofill fields if there's cookies inside
+var cookieCheck = checkCookie();
+
+if (cookieCheck == "1"){
+    let username = getCookie("username");
+    document.getElementById("user_name").value = username;
+    let password = getCookie("password");
+    document.getElementById("password").value = password;
+    document.getElementById("saveUserPass").checked = true;
+}
+</script>

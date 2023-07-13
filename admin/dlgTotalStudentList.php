@@ -12,12 +12,20 @@ include_once("../mysql.php");
 	
     $sql="SELECT s.* from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and s.student_status = 'A' ";
       
-	if($student_entry_level != '')
+	if($student_entry_level != '' && ($student_entry_level != 'Junior' && $student_entry_level != 'Senior'))
 	{
 		$sql .= " and ps.student_entry_level = '".$student_entry_level."'";
 	}
-	else
-	{
+	else if($student_entry_level == 'Junior' || $student_entry_level == 'Senior')
+    {
+        if ($student_entry_level == 'Junior'){
+            $sql .= " and (ps.student_entry_level = 'EDP' OR ps.student_entry_level = 'QF1')";
+        }else{
+            $sql .= " and (ps.student_entry_level = 'QF2' OR ps.student_entry_level = 'QF3')";
+        }
+    }
+    else
+    {
 		$sql .= " and ps.student_entry_level != ''";
 	}
 	  
@@ -54,7 +62,19 @@ include_once("../mysql.php");
     else if($project == 'Afternoon Programme')
     {
         $sql.=" and fl.afternoon_programme =1 group by ps.student_entry_level, s.id";
-    } 
+    }
+    else if($project == 'AFBasicRobotics')
+    {
+        $sql.=" and fl.afternoon_programme =1 
+        and f.basic_adjust < 1 
+        and f.afternoon_robotic_adjust > 0 
+        group by ps.student_entry_level, s.id";
+    }
+    else if($project == 'EFPlusRobotics')
+    {
+        $sql.=" and fl.robotic_plus=1 
+        group by ps.student_entry_level, s.id";
+    }
 
     
     $result_student=mysqli_query($connection, $sql);

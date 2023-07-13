@@ -2,16 +2,6 @@
  session_start();
  if ($_SESSION["isLogin"]==1) {
  if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView"))) {
-     // include_once("mysql.php");
-    //   foreach ($_GET as $key=>$value) {
-    //      $key=$value;
-    //   }
-	
-// $mode=$_GET["mode"];
-// $centre_code = $_SESSION["CentreCode"];
-// $get_sha1_fee_id=$_POST['fee_id'];
-// $from_date= $_POST['from_date'];
-// $from_date=convertDate2ISO($from_date);
 
 $current_date = date('Y-m-d');
 
@@ -118,20 +108,43 @@ include_once("admin/declaration_func.php");
     display:none;
 }
 
+.studentLink {
+    cursor:pointer;
+    color:#3399ff;
+}
 </style>
 
 <?php 
     if(date('d') <= 5 && $_GET['mode'] != 'EDIT') {
         $prev_month = (date('m') == 1) ? 12 : (date('m') - 1);
-        $declaration_data = mysqli_fetch_array(mysqli_query($connection,"SELECT `declaration_pdf` FROM `declaration` WHERE `centre_code` = '".$_SESSION['CentreCode']."' AND `month` = '".$prev_month."' AND `year` = '".$_SESSION['Year']."'"));
+        $declaration_data = mysqli_fetch_array(mysqli_query($connection,"SELECT `declaration_pdf` FROM `declaration` WHERE `centre_code` = '".$_SESSION['CentreCode']."' AND `month` = '".$prev_month."' AND `year` = '".$_SESSION['Year']."' ORDER BY `id` DESC"));
 
         $pdf_name = (!empty($declaration_data['declaration_pdf'])) ? $declaration_data['declaration_pdf'] : '';
     } 
+
+    $half_year_array = array();
+    $half_year_array[0] = 3;
+    $half_year_array[1] = 9;
+
+    $half_year_array = implode(", ", $half_year_array);
+
+    $term_array = array();
+
+    $term_start_date = mysqli_query($connection,"SELECT MIN(`term_start`) AS `start_date` FROM `schedule_term` WHERE `year` = '".$_SESSION['Year']."' AND `centre_code` = '".$_SESSION['CentreCode']."' GROUP BY `term_num` ORDER BY `term_num` ASC");
+
+    $j = 0;
+
+    while($term_row = mysqli_fetch_array($term_start_date)) {
+        $term_array[$j] = date('m',strtotime($term_row['start_date']));
+        $j++;
+    }
+    
+    $term_array = implode(", ", $term_array);
 ?>
 
 <span>
     <span class="page_title"><img src="/images/title_Icons/Visitor Reg.png">DECLARATION OF Q-DEES AND PAYMENTS
-        REPORT</span>
+        REPORT assas</span>
 </span><br>
 <div style="<?php if($pdf_name != '') { echo 'display:none;'; } ?>" >
     <button style="margin-left: 30px;margin-bottom: 13px; position: relative; bottom: 40px;  " id="btnPrint" onclick="printDiv('print_1')"
@@ -245,8 +258,49 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                    <?php 
+                                if($mode=="EDIT"){
+                                    $level_count = $row['active_student'];
+                                    $total_EDP_school_adjust += $level_count * $row['school_adjust'];
+                                    $total_EDP_student += $level_count;
+                                }else{
+                                    //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.school_adjust !='' ";
+                                    
+                                    $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                    $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                    // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                    // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                    // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                    // when f.school_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                    // end ";
+
+                                    $sql .= "  group by ps.student_entry_level, s.id";
+                                    //"and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m')";
+                                    $resultt=mysqli_query($connection, $sql);
+                                  
+                                    $student_id_array = array();
+
+                                    $level_count=mysqli_num_rows($resultt);
+                                    //$level_count = 0;
+                                    while ($roww=mysqli_fetch_array($resultt)) {
+
+                                        $student_id_array[] = $roww['id'];
+
+                                        //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                    }
+
+                                    $student_id_array = implode(', ', $student_id_array);
+
+                                    $total_EDP_school_adjust += $level_count * $row['school_adjust'];
+                                    $total_EDP_student += $level_count;
+                                }
+                                ?>
+
+                                <td style=" margin-top:50px;border:none;"  class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="School Fees" />
@@ -254,36 +308,7 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center; white-space:nowrap;" class="uk-width-1-10">
-                                    <?php 
-                                if($mode=="EDIT"){
-                                    $level_count = $row['active_student'];
-                                    $total_EDP_school_adjust += $level_count * $row['school_adjust'];
-                                    $total_EDP_student += $level_count;
-                                }else{
-                                    //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.school_adjust !='' ";
-                                    
-                                    $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' ";
 
-                                    $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                    // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                    // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                    // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                    // when f.school_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                    // end ";
-
-                                    $sql .= "  group by ps.student_entry_level, s.id) ab";
-                                    //"and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m')";
-                                    $resultt=mysqli_query($connection, $sql);
-                                  
-                                    $num_row=mysqli_num_rows($resultt);
-                                    $level_count = 0;
-                                    while ($roww=mysqli_fetch_assoc($resultt)) {
-                                        $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                    }
-                                    $total_EDP_school_adjust += $level_count * $row['school_adjust'];
-                                    $total_EDP_student += $level_count;
-                                }
-                                ?>
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -326,9 +351,8 @@ include_once("admin/declaration_func.php");
                                     class="uk-width-6-10 uk-text-bold">QF1:</td>
                             </tr>
                             <?php
-                         if($mode=="EDIT"){
-                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as school_adjust, amount
-                        from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='School Fees' and subject='QF1'";
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as school_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='School Fees' and subject='QF1'";
                         }else{
 							$sql="SELECT fees_structure, ROUND(case 
                             when school_collection = 'Termly' then  school_adjust/3 
@@ -346,8 +370,49 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result1)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php 
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_school_adjust +=  $row['amount'];
+                                $total_QF1_student += $level_count;
+                            }else{
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.school_adjust !=''  ";
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.school_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+
+                                $resultt=mysqli_query($connection, $sql);
+
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+                                
+                                $total_QF1_school_adjust += $level_count * $row['school_adjust'];
+                                $total_QF1_student += $level_count;
+                            }
+                                ?>
+
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="School Fees" />
@@ -355,36 +420,7 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php 
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_school_adjust +=  $row['amount'];
-                                $total_QF1_student += $level_count;
-                            }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.school_adjust !=''  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' ";
-
-                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.school_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-
-                                $resultt=mysqli_query($connection, $sql);
-                      
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF1_school_adjust += $level_count * $row['school_adjust'];
-                                $total_QF1_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd edp_tsdq1" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -447,60 +483,69 @@ include_once("admin/declaration_func.php");
 							if ($num_row>0) {
 								while ($row=mysqli_fetch_assoc($result2)) {
 						  ?>
-                            <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="School Fees" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <tr class="">
+                                        
                                     <?php 
-                             if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF2_school_adjust +=  $row['amount'];
-                                $total_QF2_student += $level_count;
-                            }else{
-                               // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.school_adjust !=''  ";
+                                        if($mode=="EDIT"){
+                                            $level_count = $row['active_student'];
+                                            $total_QF2_school_adjust +=  $row['amount'];
+                                            $total_QF2_student += $level_count;
+                                        }else{
+                                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.school_adjust !=''  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."'  ";
+                                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
-                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.school_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
+                                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                            // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                            // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                            // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                            // when f.school_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                            // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                
-                                $resultt=mysqli_query($connection, $sql);
-                          
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF2_school_adjust += $level_count * $row['school_adjust'];
-                                $total_QF2_student += $level_count;
-                            }
+                                            $sql .= "   group by ps.student_entry_level, s.id";
+                                            
+                                            $resultt=mysqli_query($connection, $sql);
+                                            
+                                            $student_id_array = array();
+
+                                            $level_count=mysqli_num_rows($resultt);
+                                            //$level_count = 0;
+                                            while ($roww=mysqli_fetch_array($resultt)) {
+
+                                                $student_id_array[] = $roww['id'];
+
+                                                //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                            }
+
+                                            $student_id_array = implode(', ', $student_id_array);
+                                            
+                                            $total_QF2_school_adjust += $level_count * $row['school_adjust'];
+                                            $total_QF2_student += $level_count;
+                                        }
                                 ?>
-                                    <input class="edp_tsd edp_tsdq2" type="number" step="0.01" name="active_student[]"
-                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
-                                        class="edp_eq">✕ </span>
-                                </td>
-                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
-                                    <input class="edp_tsd edp_tsdq2" type="number" name="fee_rate[]" id="fee_rate"
-                                        value="<?php echo $row['school_adjust']?>" readonly> <span class="edp_eq2">=
-                                    </span>
-                                </td>
-                                <td style="border:none; text-align:center;" class="uk-width-1-10">
-                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
-                                        value="<?php echo number_format((float)$level_count * $row['school_adjust'], 2, '.', '');  ?>" readonly><br>
-                                </td>
-                            </tr>
+                                        <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                            <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                        </td>
+                                        <input type="hidden" id="form" name="form[]" value="Form1" />
+                                        <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                            value="School Fees" />
+                                        <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                        <input type="hidden" id="programme_package" name="programme_package[]"
+                                            value="<?php echo $row['fees_structure']?>" />
+                                        <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+
+                                            <input class="edp_tsd edp_tsdq2" type="number" step="0.01" name="active_student[]" id="active_student" value="<?php echo $level_count ?>" readonly> <span class="edp_eq">✕ </span>
+                                        </td>
+                                        <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                            <input class="edp_tsd edp_tsdq2" type="number" name="fee_rate[]" id="fee_rate"
+                                                value="<?php echo $row['school_adjust']?>" readonly> <span class="edp_eq2">=
+                                            </span>
+                                        </td>
+                                        <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                            <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                                value="<?php echo number_format((float)$level_count * $row['school_adjust'], 2, '.', '');  ?>" readonly><br>
+                                        </td>
+                                    </tr>
                             <?php } }?>
                             <tr class="">
                                 <td style="margin-top:50px; padding-top: 11px; text-align: right;"
@@ -549,46 +594,57 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result3)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="School Fees" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php 
                              if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF3_school_adjust +=  $row['amount'];
                                 $total_QF3_student += $level_count;
                             }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.school_adjust !=''  ";
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.school_adjust !=''  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."'  ";
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
 
                                 $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 
                                 // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.school_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                         
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF3_school_adjust += $level_count * $row['school_adjust'];
                                 $total_QF3_student += $level_count;
                             }
                                 ?>
+                                    <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                        <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                    </td>
+                                    <input type="hidden" id="form" name="form[]" value="Form1" />
+                                    <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                        value="School Fees" />
+                                    <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                    <input type="hidden" id="programme_package" name="programme_package[]"
+                                        value="<?php echo $row['fees_structure']?>" />
+                                    <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+
                                     <input class="edp_tsd edp_tsdq3" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -624,9 +680,6 @@ include_once("admin/declaration_func.php");
                             </tr>
                             <!--i QF3 end-->
 
-
-
-
                             <tr class="">
                                 <td style="margin-top:50px; padding-top: 11px; text-align: right;"
                                     class="uk-width-1-10">Total Student (i)</td>
@@ -651,8 +704,6 @@ include_once("admin/declaration_func.php");
                                 </td>
                             </tr>
                             <?php $total_a += $total_school_adjust; ?>
-
-
 
                             <!-- multimedia start -->
                             <!-- multimedia edp start -->
@@ -686,8 +737,49 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_multimedia_adjust +=  $row['amount'];
+                                $total_EDP_multimedia_student += $level_count;
+                            }else{
+                           // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.multimedia_adjust !=''  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+
+                                // $sql .= " and case when f.multimedia_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.multimedia_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                              
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_multimedia_adjust += $level_count * $row['multimedia_adjust'];
+                                $total_EDP_multimedia_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Multimedia" />
@@ -695,36 +787,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                             if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_EDP_multimedia_adjust +=  $row['amount'];
-                                $total_EDP_multimedia_student += $level_count;
-                            }else{
-                           // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.multimedia_adjust !=''  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."'  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-
-                                // $sql .= " and case when f.multimedia_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.multimedia_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                              
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_EDP_multimedia_adjust += $level_count * $row['multimedia_adjust'];
-                                $total_EDP_multimedia_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -792,43 +854,54 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Multimedia" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                              if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF1_multimedia_adjust +=  $row['amount'];
                                 $total_QF1_multimedia_student += $level_count;
                             }else{
-                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.multimedia_adjust !=''  ";
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' ";
+                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.multimedia_adjust !=''  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.multimedia_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.multimedia_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF1_multimedia_adjust += $level_count * $row['multimedia_adjust'];
                                 $total_QF1_multimedia_student += $level_count;
                             }
                                 ?>
+                                    <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                        <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                    </td>
+                                    <input type="hidden" id="form" name="form[]" value="Form1" />
+                                    <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                        value="Multimedia" />
+                                    <input type="hidden" id="subject" name="subject[]" value="QF1" />
+                                    <input type="hidden" id="programme_package" name="programme_package[]"
+                                        value="<?php echo $row['fees_structure']?>" />
+                                    <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -896,8 +969,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_multimedia_adjust +=  $row['amount'];
+                                $total_QF2_multimedia_student += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.multimedia_adjust !=''  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+
+                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                            //     $sql .= " and case when f.multimedia_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                            //     when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                            //     when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                            //     when f.multimedia_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                            //     end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF2_multimedia_adjust += $level_count * $row['multimedia_adjust'];
+                                $total_QF2_multimedia_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Multimedia" />
@@ -905,35 +1017,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF2_multimedia_adjust +=  $row['amount'];
-                                $total_QF2_multimedia_student += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.multimedia_adjust !=''  ";
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' ";
-
-
-                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                            //     $sql .= " and case when f.multimedia_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                            //     when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                            //     when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                            //     when f.multimedia_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                            //     end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF2_multimedia_adjust += $level_count * $row['multimedia_adjust'];
-                                $total_QF2_multimedia_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -1000,8 +1083,49 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF3_multimedia_adjust +=  $row['amount'];
+                                $total_QF3_multimedia_student += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.multimedia_adjust !=''  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.multimedia_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.multimedia_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF3_multimedia_adjust += $level_count * $row['multimedia_adjust'];
+                                $total_QF3_multimedia_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Multimedia" />
@@ -1009,36 +1133,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF3_multimedia_adjust +=  $row['amount'];
-                                $total_QF3_multimedia_student += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.multimedia_adjust !=''  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' ";
-
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.multimedia_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.multimedia_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.multimedia_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.multimedia_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF3_multimedia_adjust += $level_count * $row['multimedia_adjust'];
-                                $total_QF3_multimedia_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -1144,40 +1238,38 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Afternoon Programme Fees" />
-                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_EDP_basic_adjust +=  $row['amount'];
                                 $total_EDP_basic_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."' and f.basic_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.basic_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."'  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.basic_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.basic_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
                                     $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
@@ -1187,6 +1279,16 @@ include_once("admin/declaration_func.php");
                                 $total_EDP_basic_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span> 
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Afternoon Programme Fees" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -1257,8 +1359,51 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_basic_adjust +=  $row['amount'];
+                                $total_QF1_basic_student += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.basic_adjust !=''  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.basic_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+
+                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
+                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
+                                }
+
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF1_basic_adjust += $level_count * $row['basic_adjust'];
+                                $total_QF1_basic_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Afternoon Programme Fees" />
@@ -1266,40 +1411,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                             if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_basic_adjust +=  $row['amount'];
-                                $total_QF1_basic_student += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."' and f.basic_adjust !=''  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."' ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.basic_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.basic_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-
-                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
-                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
-                                }
-
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF1_basic_adjust += $level_count * $row['basic_adjust'];
-                                $total_QF1_basic_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -1369,41 +1480,40 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Afternoon Programme Fees" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF2_basic_adjust +=  $row['amount'];
                                 $total_QF2_basic_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."' and f.basic_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.basic_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
 
                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.basic_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.basic_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
                                     $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
@@ -1413,6 +1523,18 @@ include_once("admin/declaration_func.php");
                                 $total_QF2_basic_student += $level_count;
                             }
                                 ?>
+
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span> 
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Afternoon Programme Fees" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -1482,8 +1604,52 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF3_basic_adjust +=  $row['amount'];
+                                $total_QF3_basic_student += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.basic_adjust !=''  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.afternoon_programme =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.basic_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.basic_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+
+                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
+                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
+                                }
+
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF3_basic_adjust += $level_count * $row['basic_adjust'];
+                                $total_QF3_basic_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Afternoon Programme Fees" />
@@ -1491,41 +1657,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF3_basic_adjust +=  $row['amount'];
-                                $total_QF3_basic_student += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."' and f.basic_adjust !=''  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.afternoon_programme =1 and f.fees_structure='".$row['fees_structure']."' ";
-
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.basic_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.basic_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.basic_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.basic_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-
-                                if($row['basic_adjust'] < 1 && $row['afternoon_robotic_adjust'] > 0) {
-                                    $row['basic_adjust'] = $row['afternoon_robotic_adjust'];
-                                }
-
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF3_basic_adjust += $level_count * $row['basic_adjust'];
-                                $total_QF3_basic_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -1631,24 +1762,31 @@ include_once("admin/declaration_func.php");
                                 $total_EDP_mobile_adjust +=  $row['amount'];
                                 $total_EDP_mobile_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.mobile_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mobile_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."'  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
                                 $sql .= " and case when f.mobile_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
                                 $total_EDP_mobile_adjust += $level_count * $row['mobile_adjust'];
                                 $total_EDP_mobile_student += $level_count;
                             }
@@ -1725,25 +1863,33 @@ include_once("admin/declaration_func.php");
                                 $total_QF1_mobile_adjust +=  $row['amount'];
                                 $total_QF1_mobile_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.mobile_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mobile_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
 
                                 $sql .= " and case when f.mobile_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF1_mobile_adjust += $level_count * $row['mobile_adjust'];
                                 $total_QF1_mobile_student += $level_count;
                             }
@@ -1820,24 +1966,31 @@ include_once("admin/declaration_func.php");
                                 $total_QF2_mobile_adjust +=  $row['amount'];
                                 $total_QF2_mobile_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.mobile_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mobile_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.mobile_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
                                 $total_QF2_mobile_adjust += $level_count * $row['mobile_adjust'];
                                 $total_QF2_mobile_student += $level_count;
                             }
@@ -1914,25 +2067,33 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_mobile_adjust +=  $row['amount'];
                                 $total_QF3_mobile_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.mobile_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mobile_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
 
                                 $sql .= " and case when f.mobile_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mobile_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF3_mobile_adjust += $level_count * $row['mobile_adjust'];
                                 $total_QF3_mobile_student += $level_count;
                             }
@@ -2056,39 +2217,39 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dess Foundation Materials" />
-                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                              if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_EDP_integrated_adjust +=  $row['amount'];
                                 $total_EDP_integrated_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.integrated_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.integrated_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['integrated_adjust'] = 195;
 
@@ -2096,6 +2257,16 @@ include_once("admin/declaration_func.php");
                                 $total_EDP_integrated_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Q-dess Foundation Materials" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2155,39 +2326,38 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dess Foundation Materials" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF1_integrated_adjust +=  $row['amount'];
                                 $total_QF1_integrated_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.integrated_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.integrated_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['integrated_adjust'] = 195;
 
@@ -2195,6 +2365,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF1_integrated_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Q-dess Foundation Materials" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2253,39 +2433,38 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dess Foundation Materials" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF2_integrated_adjust +=  $row['amount'];
                                 $total_QF2_integrated_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.integrated_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.integrated_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['integrated_adjust'] = 195;
 
@@ -2293,6 +2472,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF2_integrated_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Q-dess Foundation Materials" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2351,39 +2540,38 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dess Foundation Materials" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF3_integrated_adjust +=  $row['amount'];
                                 $total_QF3_integrated_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.integrated_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.integrated_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['integrated_adjust'] = 195;
 
@@ -2391,6 +2579,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_integrated_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>      
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Q-dess Foundation Materials" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2484,40 +2682,39 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dees Foundation Mandarin Modules Materials" />
-                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_EDP_mandarin_m_adjust +=  $row['amount'];
                                 $total_EDP_mandarin_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' and f.mandarin_m_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_m_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.mandarin_m_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['mandarin_m_adjust'] = 0;
 
@@ -2525,6 +2722,16 @@ include_once("admin/declaration_func.php");
                                 $total_EDP_mandarin_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>      
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Q-dees Foundation Mandarin Modules Materials" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2583,8 +2790,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_mandarin_m_adjust +=  $row['amount'];
+                                $total_QF1_mandarin_student += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_m_adjust !=''  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.mandarin_m_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $row['mandarin_m_adjust'] = 0;
+                                $total_QF1_mandarin_m_adjust += $level_count * $row['mandarin_m_adjust'];
+                                $total_QF1_mandarin_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Q-dees Foundation Mandarin Modules Materials" />
@@ -2592,35 +2838,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_mandarin_m_adjust +=  $row['amount'];
-                                $total_QF1_mandarin_student += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' and f.mandarin_m_adjust !=''  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' ";
-
-                                $sql .= " and case when f.mandarin_m_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $row['mandarin_m_adjust'] = 0;
-                                $total_QF1_mandarin_m_adjust += $level_count * $row['mandarin_m_adjust'];
-                                $total_QF1_mandarin_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2679,40 +2896,39 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dees Foundation Mandarin Modules Materials" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF2_mandarin_m_adjust +=  $row['amount'];
                                 $total_QF2_mandarin_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' and f.mandarin_m_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_m_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.mandarin_m_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['mandarin_m_adjust'] = 55;
 
@@ -2720,6 +2936,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF2_mandarin_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Q-dees Foundation Mandarin Modules Materials" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2778,39 +3004,38 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dees Foundation Mandarin Modules Materials" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF3_mandarin_m_adjust +=  $row['amount'];
                                 $total_QF3_mandarin_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' and f.mandarin_m_adjust !=''  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_m_adjust !=''  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 and f.fees_structure='".$row['fees_structure']."' ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and fl.foundation_mandarin =1 and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.mandarin_m_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.mandarin_m_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['mandarin_m_adjust'] = 55;
 
@@ -2818,6 +3043,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_mandarin_student += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>      
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Q-dees Foundation Mandarin Modules Materials" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2885,7 +3120,7 @@ include_once("admin/declaration_func.php");
                             <!--b 3  start -->
                             <tr class="">
                                 <td style=" margin-top:50px;border:none; font-size:18px;"
-                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Fee</td>
+                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Fee qqq</td>
                             </tr>
                             <!--  b 3 edp start -->
 
@@ -2909,8 +3144,38 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_registration_adjust +=  $row['amount'];
+                                $total_EDP_registration_student += $level_count;
+                            }else{
+                           // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
+
+                           $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.registration_adjust !=''  and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_registration_adjust += $level_count * $row['registration_adjust'];
+                                $total_EDP_registration_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Registration Pack" />
@@ -2918,26 +3183,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_EDP_registration_adjust +=  $row['amount'];
-                                $total_EDP_registration_student += $level_count;
-                            }else{
-                           // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
-
-                           $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.registration_adjust !=''  and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_EDP_registration_adjust += $level_count * $row['registration_adjust'];
-                                $total_EDP_registration_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -2996,8 +3241,40 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_registration_adjust +=  $row['amount'];
+                                $total_QF1_registration_student += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
+
+                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m')  group by ps.student_entry_level, s.id";
+
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+                                $total_QF1_registration_adjust += $level_count * $row['registration_adjust'];
+                                $total_QF1_registration_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Registration Pack" />
@@ -3005,29 +3282,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_registration_adjust +=  $row['amount'];
-                                $total_QF1_registration_student += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
-
-                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m')  group by ps.student_entry_level, s.id) ab";
-
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF1_registration_adjust += $level_count * $row['registration_adjust'];
-                                $total_QF1_registration_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -3086,8 +3340,41 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_registration_adjust +=  $row['amount'];
+                                $total_QF2_registration_student += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
+
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id";
+
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF2_registration_adjust += $level_count * $row['registration_adjust'];
+                                $total_QF2_registration_student += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Registration Pack" />
@@ -3095,29 +3382,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF2_registration_adjust +=  $row['amount'];
-                                $total_QF2_registration_student += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
-
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
-
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF2_registration_adjust += $level_count * $row['registration_adjust'];
-                                $total_QF2_registration_student += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -3177,7 +3441,8 @@ include_once("admin/declaration_func.php");
 						  ?>
                             <tr class="">
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Registration Pack" />
@@ -3191,21 +3456,29 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_registration_adjust +=  $row['amount'];
                                 $total_QF3_registration_student += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.registration_adjust !='' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
+                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and c.product_code='Registration' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id";
 
                             
 
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF3_registration_adjust += $level_count * $row['registration_adjust'];
                                 $total_QF3_registration_student += $level_count;
                             }
@@ -3318,14 +3591,7 @@ include_once("admin/declaration_func.php");
                             </tr>
 
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    (i)Pre-school Kits<span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Pre-school Kits" />
-                                <input type="hidden" id="subject" name="subject[]" value="" />
-                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                              if($mode=="EDIT"){
                                 $sql="SELECT programme_package as fees_structure, active_student, fee_rate, amount
@@ -3350,9 +3616,9 @@ include_once("admin/declaration_func.php");
                             $sql .=" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, c.unit_price as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Q-dees Level Kit' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab ";
                             $sql .= " )abc ";
 						
-							$sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0'";
+							$sql1="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0'";
 
-							$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
+							$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id";
 								$sql_price="SELECT *, BIN(`deleted` + 0) AS `deleted`, unit_price as fees
 								FROM `product`
 								WHERE `product_name` LIKE '%Pre-school Kit%'
@@ -3361,17 +3627,36 @@ include_once("admin/declaration_func.php");
 								$row_price=mysqli_fetch_assoc($result_price);
                                 $resultt=mysqli_query($connection, $sql1);
                                  
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
+                                
                                 $fees = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
                                     $fees = (empty($row_price["fees"]) ? "0" : $row_price["fees"]); 
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+
                                 $total_pre_school_kits += $level_count * $fees;
                                 $total_student_C += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" >(i)Pre-school Kits<span class="text-danger"></span>:</span>   
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Pre-school Kits" />
+                                <input type="hidden" id="subject" name="subject[]" value="" />
+                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd pre_school" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -3387,7 +3672,7 @@ include_once("admin/declaration_func.php");
                             </tr>
                             <tr class="">
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    (ii)Memories to Cherish<span class="text-danger"></span>:</td>
+                                    (ii)Memories to Cherishasfasf<span class="text-danger"></span>:</td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Memories to Cherish" />
@@ -3416,6 +3701,7 @@ include_once("admin/declaration_func.php");
                                 $sql .=" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, c.unit_price as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='MEMORIES TO CHERISH' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab ";
                                 $sql .= " )abc ";
 								
+                                echo $sql;
                             
                                 $resultt=mysqli_query($connection, $sql);
                                 
@@ -3445,13 +3731,7 @@ include_once("admin/declaration_func.php");
                             </tr>
 
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">(iii)Q-dees
-                                    Bag<span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Q-dees Bag" />
-                                <input type="hidden" id="subject" name="subject[]" value="" />
-                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+                                
                                 <?php
                                 if($mode=="EDIT"){
                                     $sql="SELECT programme_package as fees_structure, active_student, fee_rate, amount
@@ -3475,7 +3755,7 @@ include_once("admin/declaration_func.php");
                                     $sql .=" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, f.q_bag_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Q-dees Bag' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
                                     $sql .= " )abc ";
 
-                                    $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Q-dees Bag' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id) ab";
+                                    $sql1="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Q-dees Bag' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id";
 
 									//$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
 									
@@ -3488,17 +3768,40 @@ include_once("admin/declaration_func.php");
 
                                     $resultt=mysqli_query($connection, $sql1);
                                     
-                                    $num_row=mysqli_num_rows($resultt);
-                                    $level_count = 0;
                                     $fees = 0;
-                                    while ($roww=mysqli_fetch_assoc($resultt)) {
-                                        $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                        $fees = (empty($row_price["fees"]) ? "0" : $row_price["fees"]); 
+                                    
+
+                                    $student_id_array = array();
+
+                                    $level_count=mysqli_num_rows($resultt);
+                                    //$level_count = 0;
+                                    while ($roww=mysqli_fetch_array($resultt)) {
+
+                                        $student_id_array[] = $roww['id'];
+
+                                        //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                        $fees = (empty($row_price["fees"]) ? "0" : $row_price["fees"]);
                                     }
+
+                                    $student_id_array = implode(', ', $student_id_array);
+
                                     $total_q_bag_adjust += $level_count * $fees;
                                     $total_student_C += $level_count;
                                 }
                                 ?>
+
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+
+                                <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" >(iii)Q-dees
+                                Bag<span class="text-danger"></span>:</span>
+
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                value="Q-dees Bag" />
+                                <input type="hidden" id="subject" name="subject[]" value="" />
+                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd q_dees" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
@@ -3516,31 +3819,27 @@ include_once("admin/declaration_func.php");
                             </tr>
 
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    (iv)Uniform <?php $new_price_condition = ''; if(($monthyear == '2022-10' && $_GET['mode'] != 'EDIT') || ($_GET['mode'] == 'EDIT' && $month == '10' && ($year == '2022' || $year == '2022-2023'))) { 
 
-                                        $new_price_condition = "and fl.`uniform_adjust` = '98'";
+                            <?php $new_price_condition = ''; if(($monthyear == '2022-10' && $_GET['mode'] != 'EDIT') || ($_GET['mode'] == 'EDIT' && $month == '10' && ($year == '2022' || $year == '2022-2023'))) { 
 
-                                        $student_id_list=mysqli_query($connection,"SELECT s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`uniform_adjust` != '98' and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id");
+                                $new_price_condition = "and fl.`uniform_adjust` = '98'";
 
-                                        if(mysqli_num_rows($student_id_list) > 0) 
-                                        {
-                                            $student_id_array = array();
+                                $student_id_list=mysqli_query($connection,"SELECT s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`uniform_adjust` != '98' and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id");
 
-                                            while($student_id_row = mysqli_fetch_array($student_id_list))
-                                            {
-                                                $student_id_array[] = $student_id_row['id'];
-                                            }
-                                            
-                                            $new_price_condition .= " and s.id NOT IN (" . implode(", ", $student_id_array) . ")";
-                                        }
+                                if(mysqli_num_rows($student_id_list) > 0) 
+                                {
+                                    $student_id_array = array();
 
-                                    ?> (New Price) <?php } ?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Uniform" />
-                                <input type="hidden" id="subject" name="subject[]" value="" />
-                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+                                    while($student_id_row = mysqli_fetch_array($student_id_list))
+                                    {
+                                        $student_id_array[] = $student_id_row['id'];
+                                    }
+                                    
+                                    $new_price_condition .= " and s.id NOT IN (" . implode(", ", $student_id_array) . ")";
+                                }
+
+                                ?> (New Price) <?php } ?>
+
                                 <?php
                                  if($mode=="EDIT"){
                                      $sql="SELECT programme_package as fees_structure, active_student, fee_rate, amount
@@ -3555,13 +3854,12 @@ include_once("admin/declaration_func.php");
                                              $total_student_C += $level_count;
                                          }
                                      }
-                                     
                                  }else{
                                     // $sql="SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, f.uniform_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and f.uniform_adjust !='' and c.product_code='Uniform (2 sets)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
                                     
                                     $sql =" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, fl.uniform_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Uniform (2 sets)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-									$sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Uniform (2 sets)' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id) ab";
+									$sql1="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Uniform (2 sets)' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id";
 
 										//$sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
                                         
@@ -3574,20 +3872,38 @@ include_once("admin/declaration_func.php");
 
                                         $resultt=mysqli_query($connection, $sql1);
                                         
-                                        $num_row=mysqli_num_rows($resultt);
-                                        $level_count = 0;
                                         $fees = 0;
-                                        while ($roww=mysqli_fetch_assoc($resultt)) {
-                                            $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                            $fees = (empty($row_price["fees"]) ? "0" : $row_price["fees"]); 
+                                       
+                                        $student_id_array1 = array();
+
+                                        $level_count=mysqli_num_rows($resultt);
+                                        //$level_count = 0;
+                                        while ($roww=mysqli_fetch_array($resultt)) {
+
+                                            $student_id_array1[] = $roww['id'];
+
+                                            //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                            $fees = (empty($row_price["fees"]) ? "0" : $row_price["fees"]);
                                         }
-                                        
+
+                                        $student_id_array1 = implode(', ', $student_id_array1);
+
                                         $fees = 98;
 
                                         $total_uniform_adjust += $level_count * $fees;
                                         $total_student_C += $level_count;
                             }
                                 ?>
+
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array1; ?>')" class="studentLink" >(iv)Uniform<span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Uniform" />
+                                <input type="hidden" id="subject" name="subject[]" value="" />
+                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd q_dees" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
@@ -3633,7 +3949,7 @@ include_once("admin/declaration_func.php");
                                         
                                         $sql =" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, fl.uniform_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Uniform (2 sets)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-                                        $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`uniform_adjust` != '98' and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0'";
+                                        $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`uniform_adjust` != '98' and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0'";
 
                                         $sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
 
@@ -3730,31 +4046,28 @@ include_once("admin/declaration_func.php");
                             ?>
 
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    (v)Gymwear <?php $new_price_condition = ''; if(($monthyear == '2022-10' && $_GET['mode'] != 'EDIT') || ($_GET['mode'] == 'EDIT' && $month == '10' && ($year == '2022' || $year == '2022-2023'))) { 
-                                        
-                                        $new_price_condition = "and fl.`gymwear_adjust` = '37' "; 
 
-                                        $student_id_list=mysqli_query($connection,"SELECT s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`gymwear_adjust` != '37' and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id");
+                                <?php $new_price_condition = ''; if(($monthyear == '2022-10' && $_GET['mode'] != 'EDIT') || ($_GET['mode'] == 'EDIT' && $month == '10' && ($year == '2022' || $year == '2022-2023'))) { 
                                         
-                                        if(mysqli_num_rows($student_id_list) > 0) 
+                                    $new_price_condition = "and fl.`gymwear_adjust` = '37' "; 
+
+                                    $student_id_list=mysqli_query($connection,"SELECT s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`gymwear_adjust` != '37' and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0' and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id");
+                                    
+                                    if(mysqli_num_rows($student_id_list) > 0) 
+                                    {
+                                        $student_id_array = array();
+
+                                        while($student_id_row = mysqli_fetch_array($student_id_list))
                                         {
-                                            $student_id_array = array();
-
-                                            while($student_id_row = mysqli_fetch_array($student_id_list))
-                                            {
-                                                $student_id_array[] = $student_id_row['id'];
-                                            }
-                                            
-                                            $new_price_condition .= " and s.id NOT IN (" . implode(", ", $student_id_array) . ")";
+                                            $student_id_array[] = $student_id_row['id'];
                                         }
+                                        
+                                        $new_price_condition .= " and s.id NOT IN (" . implode(", ", $student_id_array) . ")";
+                                    }
 
-                                    ?> (New Price) <?php } ?> <span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form" name="form[]" value="Form1" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Gymwear" />
-                                <input type="hidden" id="subject" name="subject[]" value="" />
-                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+                                ?> (New Price) <?php } ?>
+
+                                
                                 <?php
                                     if($mode=="EDIT"){
                                         $sql="SELECT programme_package as fees_structure, active_student, fee_rate, amount
@@ -3774,7 +4087,7 @@ include_once("admin/declaration_func.php");
                                         // $sql="SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, f.gymwear_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and f.gymwear_adjust !='' and c.product_code='Gymwear (1 set)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
                                         $sql ="SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, fl.gymwear_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Gymwear (1 set)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-                                        $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Gymwear (1 set)' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id) ab";
+                                        $sql1="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') ".$new_price_condition." and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Gymwear (1 set)' and DATE_FORMAT(c.collection_date_time, '%Y-%m') = '$monthyear' group by ps.student_entry_level, s.id";
 
 										// $sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
 										
@@ -3787,19 +4100,39 @@ include_once("admin/declaration_func.php");
 
                                             $resultt=mysqli_query($connection, $sql1);
                                             
-                                            $num_row=mysqli_num_rows($resultt);
-                                            $level_count = 0;
                                             $fees = 0;
-                                            while ($roww=mysqli_fetch_assoc($resultt)) {
-                                                $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                           
+                                            $student_id_array1 = array();
+
+                                            $level_count=mysqli_num_rows($resultt);
+                                            //$level_count = 0;
+                                            while ($roww=mysqli_fetch_array($resultt)) {
+
+                                                $student_id_array1[] = $roww['id'];
+
+                                                //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+
                                                 //$fees = (empty($row_price["fees"]) ? "0" : $row_price["fees"]); 
 
                                                 $fees = 37.00;
                                             }
+
+                                            $student_id_array1 = implode(', ', $student_id_array1);
+
                                             $total_gymwear_adjust += $level_count * $fees;
                                             $total_student_C += $level_count;
                                         }
                                 ?>
+
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array1; ?>')" class="studentLink" >(v)Gymwear<span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Gymwear" />
+                                <input type="hidden" id="subject" name="subject[]" value="" />
+                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd q_dees" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
@@ -3845,7 +4178,7 @@ include_once("admin/declaration_func.php");
                                             // $sql="SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, f.gymwear_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and f.gymwear_adjust !='' and c.product_code='Gymwear (1 set)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
                                             $sql ="SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, fl.gymwear_adjust as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`gymwear_adjust` != '37' and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='Gymwear (1 set)' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab";
 
-                                            $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`gymwear_adjust` != '37' and ps.student_entry_level != '' and s.student_status = 'A' and month(s.start_date_at_centre) = '".date('m')."' and s.centre_code='$centre_code' and s.deleted='0'";
+                                            $sql1="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and fl.`gymwear_adjust` != '37' and ps.student_entry_level != '' and s.student_status = 'A' and DATE_FORMAT(s.start_date_at_centre, '%Y-%m') = '".$monthyear."' and s.centre_code='$centre_code' and s.deleted='0'";
 
                                             $sql1 .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') group by ps.student_entry_level, s.id) ab";
                                             
@@ -4254,6 +4587,8 @@ include_once("admin/declaration_func.php");
                     </div>
                 </div>
 
+                <?php if(($pdf_name != '' && $_GET['mode'] == 'EDIT') || $pdf_name == '') { ?> 
+
                 <table class="uk-table uk-table-small">
                     <tr>
                         <td class="uk-width-6-10" style="font-size:18px; font-weight:bold; border:none;">TERMS
@@ -4381,12 +4716,20 @@ include_once("admin/declaration_func.php");
 
                 </table>
 
+                <?php }else{ ?>
+				<table class="uk-table uk-table-small">
+					<tr>
+						<td align='right'>To pay declaration, please click on the <img src="images/edit.png"> icon at the listing according to month, located at the bottom.</td>
+					</tr>
+				</table>
+				<?php } ?>
+
                 <div class="uk-width-10-10"
                     style="font-size:18px; font-weight:bold; border:none;text-align: right; margin-top: 20px; padding-right: 25px;">
                     <span style="margin-right: 0;<?php if($pdf_name != '') { echo 'display:none;'; } ?>" onclick="myFunction()" href="javascript:void(0);" id="form_2"
                         class="form_2 uk-button uk-button-primary form_btn">NEXT</span>
 
-                    <?php if($pdf_name != '') { ?> 
+                    <?php if($pdf_name != '' && isset($_GET['mode']) && $_GET['mode'] == 'EDIT') { ?> 
                         <button type="submit" id="submit" name="submit"
                         class="uk-button uk-button-primary form_btn uk-text-center">SAVE</button>
                     <?php } ?>
@@ -4521,15 +4864,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="International English" />
-                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center; white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php 
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
@@ -4537,28 +4872,46 @@ include_once("admin/declaration_func.php");
                                 $total_EDP_enhanced_student2 += $level_count;
                             }else{
 								
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."'  and fl.foundation_int_english=1  ";
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  and fl.foundation_int_english=1  ";
 								
 
                                 $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.enhanced_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.enhanced_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_EDP_enhanced_adjust += $level_count * $row['enhanced_adjust'];
                                 $total_EDP_enhanced_student2 += $level_count; 
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>       
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="International English" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center; white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -4620,8 +4973,48 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php 
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_enhanced_adjust += $row['amount'];
+                                $total_QF1_enhanced_student2 += $level_count;
+                            }else{
+                               // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.enhanced_adjust !='' and fl.foundation_int_english=1  ";
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
+
+                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.enhanced_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF1_enhanced_adjust += $level_count * $row['enhanced_adjust'];
+                                $total_QF1_enhanced_student2 += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="International English" />
@@ -4629,36 +5022,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php 
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_enhanced_adjust += $row['amount'];
-                                $total_QF1_enhanced_student2 += $level_count;
-                            }else{
-                               // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.enhanced_adjust !='' and fl.foundation_int_english=1  ";
-
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."'  ";
-
-                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.enhanced_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.enhanced_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF1_enhanced_adjust += $level_count * $row['enhanced_adjust'];
-                                $total_QF1_enhanced_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -4720,8 +5083,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php 
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_enhanced_adjust += $row['amount'];
+                                $total_QF2_enhanced_student2 += $level_count;
+                            }else{
+                                // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.enhanced_adjust !='' and fl.foundation_int_english=1  ";
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
+
+                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.enhanced_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF2_enhanced_adjust += $level_count * $row['enhanced_adjust'];
+                                $total_QF2_enhanced_student2 += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="International English" />
@@ -4729,35 +5131,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php 
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF2_enhanced_adjust += $row['amount'];
-                                $total_QF2_enhanced_student2 += $level_count;
-                            }else{
-                                // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.enhanced_adjust !='' and fl.foundation_int_english=1  ";
-
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."'  ";
-
-                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.enhanced_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.enhanced_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF2_enhanced_adjust += $level_count * $row['enhanced_adjust'];
-                                $total_QF2_enhanced_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>"> <span class="edp_eq">✕
                                     </span>
@@ -4822,15 +5195,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="International English" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php 
                             
                           if($mode=="EDIT"){
@@ -4838,29 +5203,47 @@ include_once("admin/declaration_func.php");
                             $total_QF3_enhanced_adjust += $row['amount'];
                             $total_QF3_enhanced_student2 += $level_count;
                         }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.enhanced_adjust !='' and fl.foundation_int_english=1  ";
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.enhanced_adjust !='' and fl.foundation_int_english=1  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."'  ";
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
                                 $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.enhanced_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.enhanced_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.enhanced_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF3_enhanced_adjust += $level_count * $row['enhanced_adjust'];
                                 $total_QF3_enhanced_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="International English" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -4955,8 +5338,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_international_adjust += $row['amount'];
+                                $total_EDP_international_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_art=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.international_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_international_adjust += $level_count * $row['international_adjust'];
+                                $total_EDP_international_student2 += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="International Art" />
@@ -4964,35 +5386,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_EDP_international_adjust += $row['amount'];
-                                $total_EDP_international_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_art=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.international_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.international_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_EDP_international_adjust += $level_count * $row['international_adjust'];
-                                $total_EDP_international_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5056,8 +5449,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_international_adjust += $row['amount'];
+                                $total_QF1_international_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_art=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.international_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF1_international_adjust += $level_count * $row['international_adjust'];
+                                $total_QF1_international_student2 += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="International Art" />
@@ -5065,35 +5497,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                             if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_international_adjust += $row['amount'];
-                                $total_QF1_international_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_art=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.international_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.international_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF1_international_adjust += $level_count * $row['international_adjust'];
-                                $total_QF1_international_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5157,8 +5560,46 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_international_adjust += $row['amount'];
+                                $total_QF2_international_student2 += $level_count;
+                            }else{
+                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_art=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.international_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF2_international_adjust += $level_count * $row['international_adjust'];
+                                $total_QF2_international_student2 += $level_count;
+                            }
+                                ?>
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="International Art" />
@@ -5166,34 +5607,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF2_international_adjust += $row['amount'];
-                                $total_QF2_international_student2 += $level_count;
-                            }else{
-                            // $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_art=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.international_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.international_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF2_international_adjust += $level_count * $row['international_adjust'];
-                                $total_QF2_international_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5257,15 +5670,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="International Art" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             
                             if($mode=="EDIT"){
@@ -5273,29 +5678,47 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_international_adjust += $row['amount'];
                                 $total_QF3_international_student2 += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.international_adjust !='' and fl.foundation_int_art=1  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_art=1  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_art=1  ";
 
                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.international_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.international_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.international_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF3_international_adjust += $level_count * $row['international_adjust'];
                                 $total_QF3_international_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>        
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="International Art" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5393,8 +5816,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_mandarin_adjust += $row['amount'];
+                                $total_EDP_mandarin_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_mandarin=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.mandarin_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_mandarin_adjust += $level_count * $row['mandarin_adjust'];
+                                $total_EDP_mandarin_student2 += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>  
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Mandarin" />
@@ -5402,35 +5864,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_EDP_mandarin_adjust += $row['amount'];
-                                $total_EDP_mandarin_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_mandarin=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.mandarin_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.mandarin_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_EDP_mandarin_adjust += $level_count * $row['mandarin_adjust'];
-                                $total_EDP_mandarin_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="afternoon_s" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5492,8 +5925,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_mandarin_adjust += $row['amount'];
+                                $total_QF1_mandarin_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_mandarin=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.mandarin_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF1_mandarin_adjust += $level_count * $row['mandarin_adjust'];
+                                $total_QF1_mandarin_student2 += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Mandarin" />
@@ -5501,35 +5973,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_mandarin_adjust += $row['amount'];
-                                $total_QF1_mandarin_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_mandarin=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.mandarin_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.mandarin_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF1_mandarin_adjust += $level_count * $row['mandarin_adjust'];
-                                $total_QF1_mandarin_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5592,8 +6035,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_mandarin_adjust += $row['amount'];
+                                $total_QF2_mandarin_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_mandarin=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.mandarin_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF2_mandarin_adjust += $level_count * $row['mandarin_adjust'];
+                                $total_QF2_mandarin_student2 += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Mandarin" />
@@ -5601,35 +6083,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF2_mandarin_adjust += $row['amount'];
-                                $total_QF2_mandarin_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_mandarin=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.mandarin_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.mandarin_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF2_mandarin_adjust += $level_count * $row['mandarin_adjust'];
-                                $total_QF2_mandarin_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5693,15 +6146,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Mandarin" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             
                             if($mode=="EDIT"){
@@ -5709,29 +6154,47 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_mandarin_adjust += $row['amount'];
                                 $total_QF3_mandarin_student2 += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.mandarin_adjust !='' and fl.foundation_int_mandarin=1  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_int_mandarin=1  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_int_mandarin=1  ";
 
                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.mandarin_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.mandarin_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.mandarin_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF3_mandarin_adjust += $level_count * $row['mandarin_adjust'];
                                 $total_QF3_mandarin_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Mandarin" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5823,8 +6286,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_iq_math_adjust += $row['amount'];
+                                $total_EDP_iq_math_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_iq_math=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_iq_math_adjust += $level_count * $row['iq_math_adjust'];
+                                $total_EDP_iq_math_student2 += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="IQ Math" />
@@ -5832,35 +6334,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                             if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_EDP_iq_math_adjust += $row['amount'];
-                                $total_EDP_iq_math_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_iq_math=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_EDP_iq_math_adjust += $level_count * $row['iq_math_adjust'];
-                                $total_EDP_iq_math_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -5923,8 +6396,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_iq_math_adjust += $row['amount'];
+                                $total_QF1_iq_math_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_iq_math=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF1_iq_math_adjust += $level_count * $row['iq_math_adjust'];
+                                $total_QF1_iq_math_student2 += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="IQ Math" />
@@ -5932,35 +6444,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                             if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF1_iq_math_adjust += $row['amount'];
-                                $total_QF1_iq_math_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_iq_math=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_QF1_iq_math_adjust += $level_count * $row['iq_math_adjust'];
-                                $total_QF1_iq_math_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6023,8 +6506,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_iq_math_adjust += $row['amount'];
+                                $total_QF2_iq_math_student2 += $level_count;
+                            }else{
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_iq_math=1  ";
+
+                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                    // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                    // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                    // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                    // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                    // end ";
+
+                                    $sql .= "   group by ps.student_entry_level, s.id";
+                                    $resultt=mysqli_query($connection, $sql);
+                                    
+                                    $student_id_array = array();
+
+                                    $level_count=mysqli_num_rows($resultt);
+                                    //$level_count = 0;
+                                    while ($roww=mysqli_fetch_array($resultt)) {
+
+                                        $student_id_array[] = $roww['id'];
+
+                                        //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                    }
+
+                                    $student_id_array = implode(', ', $student_id_array);
+
+                                    $total_QF2_iq_math_adjust += $level_count * $row['iq_math_adjust'];
+                                    $total_QF2_iq_math_student2 += $level_count;
+                                }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span> 
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="IQ Math" />
@@ -6032,35 +6554,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                            if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_QF2_iq_math_adjust += $row['amount'];
-                                $total_QF2_iq_math_student2 += $level_count;
-                            }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
-
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_iq_math=1  ";
-
-                                $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                    // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                    // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                    // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                    // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                    // end ";
-
-                                    $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                    $resultt=mysqli_query($connection, $sql);
-                                    
-                                    $num_row=mysqli_num_rows($resultt);
-                                    $level_count = 0;
-                                    while ($roww=mysqli_fetch_assoc($resultt)) {
-                                        $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                    }
-                                    $total_QF2_iq_math_adjust += $level_count * $row['iq_math_adjust'];
-                                    $total_QF2_iq_math_student2 += $level_count;
-                                }
-                                ?>
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6124,15 +6617,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="IQ Math" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             
                             if($mode=="EDIT"){
@@ -6140,29 +6625,47 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_iq_math_adjust += $row['amount'];
                                 $total_QF3_iq_math_student2 += $level_count;
                             }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and fl.foundation_iq_math=1  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.foundation_iq_math=1  ";
 
                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
                                 // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 // end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF3_iq_math_adjust += $level_count * $row['iq_math_adjust'];
                                 $total_QF3_iq_math_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="IQ Math" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6255,8 +6758,47 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_robotic_plus_adjust += $row['amount'];
+                                $total_EDP_robotic_plus_student2 += $level_count;
+                            }else{
+                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.robotic_plus=1  ";
+
+                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+                                // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                // end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
+                                $total_EDP_robotic_plus_student2 += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
                                 <input type="hidden" id="form2" name="form[]" value="Form2" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Robotic Plus" />
@@ -6264,35 +6806,6 @@ include_once("admin/declaration_func.php");
                                 <input type="hidden" id="programme_package" name="programme_package[]"
                                     value="<?php echo $row['fees_structure']?>" />
                                 <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
-                                    <?php
-                             if($mode=="EDIT"){
-                                $level_count = $row['active_student'];
-                                $total_EDP_robotic_plus_adjust += $row['amount'];
-                                $total_EDP_robotic_plus_student2 += $level_count;
-                            }else{
-                            //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.iq_math_adjust !='' and fl.foundation_iq_math=1  ";
-
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
-
-                            $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
-                                // $sql .= " and case when f.iq_math_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                // when f.iq_math_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.iq_math_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // when f.iq_math_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                // end ";
-
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
-                                $resultt=mysqli_query($connection, $sql);
-                                
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                }
-                                $total_EDP_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
-                                $total_EDP_robotic_plus_student2 += $level_count;
-                            }
-                                ?>
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6355,15 +6868,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Robotic Plus" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                              if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
@@ -6371,22 +6876,40 @@ include_once("admin/declaration_func.php");
                                 $total_QF1_robotic_plus_student2 += $level_count;
                             }else{
 
-                            $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.robotic_plus=1  ";
 
                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_QF1_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
                                 $total_QF1_robotic_plus_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Robotic Plus" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6449,15 +6972,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Robotic Plus" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                               
                                     <?php
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
@@ -6465,22 +6980,40 @@ include_once("admin/declaration_func.php");
                                 $total_QF2_robotic_plus_student2 += $level_count;
                             }else{
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.robotic_plus=1  ";
 
                                 $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
 
-                                    $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                    $sql .= "   group by ps.student_entry_level, s.id";
                                     $resultt=mysqli_query($connection, $sql);
                                     
-                                    $num_row=mysqli_num_rows($resultt);
-                                    $level_count = 0;
-                                    while ($roww=mysqli_fetch_assoc($resultt)) {
-                                        $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                    $student_id_array = array();
+
+                                    $level_count=mysqli_num_rows($resultt);
+                                    //$level_count = 0;
+                                    while ($roww=mysqli_fetch_array($resultt)) {
+
+                                        $student_id_array[] = $roww['id'];
+
+                                        //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                     }
+
+                                    $student_id_array = implode(', ', $student_id_array);
+
                                     $total_QF2_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
                                     $total_QF2_robotic_plus_student2 += $level_count;
                                 }
                                 ?>
+                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Robotic Plus" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6544,15 +7077,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> <span
-                                        class="text-danger"></span><?php echo $row['fees_structure']?></td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Robotic Plus" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             
                             if($mode=="EDIT"){
@@ -6561,22 +7086,40 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_robotic_plus_student2 += $level_count;
                             }else{
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and fl.robotic_plus=1  ";
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and fl.robotic_plus=1  ";
 
                                 $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+                                
                                 $total_QF3_robotic_plus_adjust += $level_count * $row['robotic_plus_adjust'];
                                 $total_QF3_robotic_plus_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold"> 
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Robotic Plus" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd afternoon" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6708,50 +7251,49 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Link & Think Series" />
-                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center; white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php 
                             if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_EDP_link_adjust += $row['amount'];
                                 $total_EDP_link_student2 += $level_count;
                             }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' and f.link_adjust !=''  ";
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.link_adjust !=''  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' ";
+                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.link_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
                                 $sql .= "   group by ps.student_entry_level, s.id) ab";
 								
-								$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".$row['fees_structure']."' ";
+								$sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
 								
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['link_adjust'] = 60;
 
@@ -6759,6 +7301,16 @@ include_once("admin/declaration_func.php");
                                 $total_EDP_link_student2 += $level_count; 
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Link & Think Series" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center; white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6814,50 +7366,49 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Link & Think Series" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php 
                              if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF1_link_adjust += $row['amount'];
                                 $total_QF1_link_student2 += $level_count;
                             }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' and f.link_adjust !='' and fl.foundation_int_english=1  ";
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.link_adjust !='' and fl.foundation_int_english=1  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' ";
+                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.link_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
                                 $sql .= "   group by ps.student_entry_level, s.id) ab";
 
- 								$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".$row['fees_structure']."' ";
+ 								$sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";
+                                $sql .= "   group by ps.student_entry_level, s.id";
 								
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['link_adjust'] = 60;
 
@@ -6865,6 +7416,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF1_link_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Link & Think Series" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -6919,50 +7480,49 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Link & Think Series" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php 
                              if($mode=="EDIT"){
                                 $level_count = $row['active_student'];
                                 $total_QF2_link_adjust += $row['amount'];
                                 $total_QF2_link_student2 += $level_count;
                             }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' and f.link_adjust !='' and fl.foundation_int_english=1  ";
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.link_adjust !='' and fl.foundation_int_english=1  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."'  ";
+                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
                                 $sql .= " and case when f.link_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
                                 $sql .= "   group by ps.student_entry_level, s.id) ab";
 
-								$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".$row['fees_structure']."' ";
+								$sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";								
+                                $sql .= " group by ps.student_entry_level, s.id";								
 								
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['link_adjust'] = 60;
 
@@ -6970,6 +7530,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF2_link_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Link & Think Series" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -7028,15 +7598,7 @@ include_once("admin/declaration_func.php");
 								while ($row=mysqli_fetch_assoc($result)) {
 						  ?>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Link & Think Series" />
-                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
-                                <input type="hidden" id="programme_package" name="programme_package[]"
-                                    value="<?php echo $row['fees_structure']?>" />
-                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php 
                             
                                 if($mode=="EDIT"){
@@ -7044,33 +7606,40 @@ include_once("admin/declaration_func.php");
                                     $total_QF3_link_adjust += $row['amount'];
                                     $total_QF3_link_student2 += $level_count;
                                 }else{
-                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' and f.link_adjust !='' and fl.foundation_int_english=1  ";
+                                //$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' and f.link_adjust !='' and fl.foundation_int_english=1  ";
 
-                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."'  ";
+                                $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
                                 $sql .= " and case when f.link_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.link_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
                                 $sql .= "   group by ps.student_entry_level, s.id) ab";
-								$sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".$row['fees_structure']."' ";
+								$sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
 
                                 $sql .= " and case when f.integrated_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
-                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 4, 7, 10) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1, 7) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
-                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (1) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.integrated_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                 end ";
 
-                                $sql .= "   group by ps.student_entry_level, s.id) ab";								
+                                $sql .= "   group by ps.student_entry_level, s.id";								
                                 $resultt=mysqli_query($connection, $sql);
                                 
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
 
                                 $row['link_adjust'] = 60;
 
@@ -7078,6 +7647,16 @@ include_once("admin/declaration_func.php");
                                 $total_QF3_link_student2 += $level_count;
                             }
                                 ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Link & Think Series" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
                                     <input class="edp_tsd edp_tsdt" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
                                         class="edp_eq">✕ </span>
@@ -7114,9 +7693,6 @@ include_once("admin/declaration_func.php");
                                 </td>
                             </tr>
                             <!--i QF3 end-->
-
-
-
 
                             <tr class="">
                                 <td style="margin-top:50px; padding-top: 11px; text-align: right;"
@@ -7171,15 +7747,7 @@ include_once("admin/declaration_func.php");
                                     class="uk-width-6-10 uk-text-bold">C: Products</td>
                             </tr>
                             <tr class="">
-                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">(i)
-                                    Foundation e-Reader (*Optional for Home Usage)<span class="text-danger"></span>:
-                                </td>
-                                <input type="hidden" id="form2" name="form[]" value="Form2" />
-                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
-                                    value="Foundation e-Reader" />
-                                <input type="hidden" id="subject" name="subject[]" value="" />
-                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
-                                <td style=" text-align:center;border:none;white-space:nowrap;" class="uk-width-1-10">
+                                
                                     <?php
                             if($mode=="EDIT"){
                                 $sql="SELECT programme_package as fees_structure, active_student, fee_rate, amount
@@ -7196,21 +7764,38 @@ include_once("admin/declaration_func.php");
                                 }
                                 
                             }else{
-                            $sql="SELECT count(id) level_count, fees from (SELECT s.id, p.unit_price as fees from student s inner join `collection` c on c.student_id = s.id inner join product p on p.product_code=c.product_code where c.void='0' and c.year = '$year' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and p.product_name like '%e-Reader Nation%' and month(c.collection_date_time) = $month group by s.id) ab";
+                                $sql="SELECT s.id, p.unit_price as fees from student s inner join `collection` c on c.student_id = s.id inner join product p on p.product_code=c.product_code where c.void='0' and c.year = '$year' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and p.product_name like '%e-Reader Nation%' and month(c.collection_date_time) = $month group by s.id";
                                 $resultt=mysqli_query($connection, $sql);
                              
-                                $num_row=mysqli_num_rows($resultt);
-                                $level_count = 0;
                                 $fees = 0;
-                                while ($roww=mysqli_fetch_assoc($resultt)) {
-                                    $level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
-                                    $fees = (empty($roww["fees"]) ? "0" : $roww["fees"]); 
+
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                //$level_count = 0;
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+
+                                    //$level_count = (empty($roww["level_count"]) ? "0" : $roww["level_count"]); 
+                                    $fees = (empty($roww["fees"]) ? "0" : $roww["fees"]);
                                 }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
                                 $total_foundation_e_reader += $level_count * $fees;
                             }
                                 ?>
 
-
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" >(i) Foundation e-Reader (*Optional for Home Usage)<span class="text-danger"></span>:</span>
+                                </td>
+                                <input type="hidden" id="form2" name="form[]" value="Form2" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="Foundation e-Reader" />
+                                <input type="hidden" id="subject" name="subject[]" value="" />
+                                <input type="hidden" id="programme_package" name="programme_package[]" value="" />
+                                <td style=" text-align:center;border:none;white-space:nowrap;" class="uk-width-1-10">
 
                                     <input class="edp_tsd pre_school" type="number" step="0.01" name="active_student[]"
                                         id="active_student" value="<?php echo $level_count ?>" readonly> <span
@@ -7653,10 +8238,14 @@ include_once("admin/declaration_func.php");
                         <?php if($browse_row['declaration_pdf'] != '' && $browse_row['declaration_pdf'] != null) { ?>
 
                             <a href="admin/declaration_pdf/<?php echo $browse_row['declaration_pdf']; ?>" data-uk-tooltip download
-                            title="Download Pdf"><i class="fas fa-download"></i></a>
+                            title="Download Pdf"><i class="fas fa-download"></i></a>&nbsp; &nbsp;
 
                         <?php } ?>
+                        
 
+                        <a href="index.php?p=declaration_rpt_view&id=<?php echo $sha1_id?>" data-uk-tooltip
+                            title="View"><i class="fa fa-eye"></i></a>
+                        
                     </td>
                 </tr>
                 <?php
@@ -7696,6 +8285,25 @@ if ($msg!="") {
      <div class="modal-footer">
        <button type="button" class="uk-button form_btn" data-dismiss="modal">Close</button>
       <!-- <button type="button" class="btn btn-primary">Save changes</button>-->
+     </div>
+   </div>
+ </div>
+</div>
+
+<div class="modal fade" id="studentListModal" tabindex="-1" role="dialog" aria-labelledby="studentListModalLabel" aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header myheader myheader-text-color">  
+       <span class="ui-dialog-title" id="ui-id-1">Student list</span>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body">
+
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="uk-button form_btn" data-dismiss="modal">Close</button>
      </div>
    </div>
  </div>
@@ -7793,6 +8401,23 @@ $("#submit").click(function() {
     } */
 
 });
+
+function dlgDeclarationStudentList(student_id) {
+    $.ajax({
+        url : "admin/dlgDeclarationStudentList.php",
+        type : "POST", 
+	    data : "student_id="+student_id,
+        beforeSend : function(http) {
+        },
+        success : function(response, status, http) {
+            $('#studentListModal').modal('show');
+            $("#studentListModal .modal-body").html(response);
+        },
+        error : function(http, status, error) {
+            UIkit.notify("Error:"+error);
+        }
+   });
+}
 
 function myFunction() {
     var elmnt = document.getElementById("frmdeclaration2");

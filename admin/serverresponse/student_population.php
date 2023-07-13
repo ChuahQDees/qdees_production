@@ -215,7 +215,7 @@
 					}
 					if($aRow['delete_request'] == 0 || $aRow['delete_request'] == 2) 
 					{ 
-						$action .= '<a onclick="dlgDeleteStudent(\''.sha1($aRow['id']).'\')" id="delete'.sha1($aRow['id']).'"  title="Delete Request">
+						$action .= '<a onclick="dlgDeleteStudent(\''.sha1($aRow['id']).'\')" id="delete'.sha1($aRow['id']).'" data-uk-tooltip title="Delete Request">
 						  <i style="font-size: 1.4em; color: #FF6e6e;" class="fas fa-trash"></i></a>';
 					} 
 					$aRow[ $aColumns[$i] ] = $action;

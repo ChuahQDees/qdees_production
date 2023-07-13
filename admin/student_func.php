@@ -411,6 +411,7 @@ $sql="UPDATE `$table` set
         accept_photo='$accept_photo',
         accept_terms='$accept_terms',
         signature='$signature',
+        chinese_name='$chinese_name',
 		unique_id='$unique_id'
         $defer_date
 		where student_code='$hidden_student_code'";
@@ -632,6 +633,7 @@ $extend_default = "";
        accept_terms,
        attachment,
        signature,
+       chinese_name,
 	   extend_year,
 	   unique_id,
      delete_document,
@@ -666,6 +668,7 @@ $extend_default = "";
        '$accept_terms',
        '$attachment',
        '$signature',
+       '$chinese_name',
        '$extend_default',
 		'$unique_id','','','$date_created'".$defer_dates."
      )";

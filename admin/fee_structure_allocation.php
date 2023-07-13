@@ -14,7 +14,11 @@ include_once("functions.php");
 
 if ($_GET['status'] == "completed"){
     echo "<script>UIkit.notify('Record saved!')</script>";
-};
+}
+
+if ($_GET['status'] == "enerror"){
+    echo "<script>UIkit.notify('Must choose at least one Enhanced Foundation')</script>";
+}
 
 //Get array of students who already has fee structure
 $studentFeeStructureArray = array();
@@ -56,6 +60,17 @@ global $connection;
         <input type="hidden" name="name" id="name" value="<?php echo $name; ?>">
         <input type="hidden" name="programme_selection_id" id="programme_selection_id" value="<?php echo $row3["id"]; ?>">
 -->
+    <script>
+    function enhFoundationDefault(){ //By default, need to have at least one enhanced foundation
+        d = document.getElementById("student_entry_level").value;
+
+        if (d != "EDP"){
+            document.getElementById("foundation_int_english").value = "1";
+        }else{
+            document.getElementById("foundation_int_english").value = "0";
+        }
+    }
+    </script>
         <input type="text" id="studentIDArray" name="studentIDArray" hidden>
         <div class="uk-width-medium-10-10">
             <table class="uk-table uk-table-small">
@@ -65,7 +80,7 @@ global $connection;
                 </tr>
                 <tr class="uk-text-small">
                     <td class="uk-width-3-10">
-                        <select name="student_entry_level" id="student_entry_level" class="uk-width-1-1" style="width: 100px;">
+                        <select name="student_entry_level" id="student_entry_level" class="uk-width-1-1" style="width: 100px;" onChange="enhFoundationDefault()">
                             <option value="">Select</option>
                             <option value="EDP">EDP</option>
                             <option value="QF1">QF1</option>

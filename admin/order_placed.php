@@ -57,19 +57,17 @@
 
     •	Finance department:
     Royalty: jaya@q-dees.com (Jayashree) <br>
-    Stock Payment: financeholdings@q-dees.com (Kevin) <br>
-    Note: Please cc a copy to your respective CGO Consultant <br><br>
+	Stock Payment: financeholdings@q-dees.com (Athirah) <br>
+	Tel: +60 12-981 1560 <br><br>
 
     ii.	For orders and stock collections, please contact: <br>
     Name: Diana <br>
-    Tel: 017-6202 133 <br>
-    Email: operations@q-dees.com <br>
-    Note: Please cc a copy to your respective CGO Consultant <br><br>
+    Tel: +60 12-981 1537 <br>
+    Email: operations@q-dees.com <br><br>
 
-    Name: Eera <br>
-    Tel: 012-393 1800 <br>
-    Email: enquiry@q-dees.com <br>
-    Note: Please cc a copy to your respective CGO Consultant <br><br>
+    Name: Miko <br>
+    Tel: +60 12-689 4513 <br>
+    Email: enquiry@q-dees.com <br><br>
 
     <h4><b>6)	Operating Hours</b></h4>
     Monday to Friday: 10.00am – 4.00pm <br>
@@ -77,7 +75,7 @@
     Monday to Thursday: 12.30pm – 1.30pm <br>
     Friday: 1.00pm-2.45pm <br><br>
 
-    Should you require assistance for stock collection, please do not hesitate to contact OPS (Diana/Eira) at 1700-81-5077 or operations@q-dees.com. You may also Whatsapp 017-6202133 or your respective Operations Consultant.
+    Should you require assistance for stock collection, please do not hesitate to contact Logistics (Diana/Miko) at 1700-81-5077 or Operations@q-dees.com. You may also Whatsapp +60 12-981 1537.
 
 	<div class="text-center" style="margin-top: 25px;"><a href="/" class="modal_btn" style="padding: .6em 1.5em;" >Close</a></div>
 </div>

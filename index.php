@@ -1232,6 +1232,7 @@ if ($_SESSION["UserType"]=="S") {
   case "fee_str_allocate_func" : include_once ("admin/fee_structure_allocation_function.php"); break;
 
   case "student_multitransfer" : include_once("admin/student_multi_transfer.php"); break;
+  case "student_multitransfer_function" : include_once("admin/student_multi_transfer_function.php"); break;
 }
 ?>
           </p>

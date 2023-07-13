@@ -273,7 +273,6 @@ if ($centre_code != "") {
                 ?>    
                         <span style="cursor:pointer;color:blue;" onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','Foundation Mandarin','EDP')" ><?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?></span>
                             </span>
-                            <p><?php echo $sql ?></p>
                         <?php
                      }
             ?>
@@ -651,7 +650,6 @@ if ($centre_code != "") {
                 ?>    
                         <span style="cursor:pointer;color:blue;" onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','Enhanced Foundation Mandarin','EDP')" ><?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?></span>
                             </span>
-                            <p><?php echo $sql ?></p>
                         <?php
                      }
             ?>
@@ -829,6 +827,200 @@ if ($centre_code != "") {
          // }
          ?>
       </table>
+
+      <!-- Secondary Table for Robotics because it's not counted by EDP/QF1/QF2/QF3 -->
+      <table class="uk-table">
+         <tr class="uk-text-bold">
+            <td style="width: 25%;"><center>PRODUCT</center></td>
+            <td><center>Junior</center></td>
+            <td><center>Senior</center></td>
+            <td><center>TOTAL</center></td>
+         </tr>
+
+         <!-- Afternoon Programme (Basic + Robotics) START -->
+         <!-- Triggers if the fee structure is a Afternoon Programme + Robotic Fee Structure-->
+         <?php
+         $afRoboticsJR = 0;
+         $afRoboticsSR = 0;
+         $afRoboticsGtotal = 0; //You can query this, but this is much more easier on the system for workload purposes since you got the data already anyway + easier on the eyes
+         ?>
+         <tr class="founda">
+				<td>Afternoon Programme	(Basic + Robotics)</td>
+				<td>
+               <span class="gd_sb11">
+                  <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+                  inner join programme_selection ps on ps.student_id=s.id 
+                  inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+                  inner join fee_structure f on f.id=fl.fee_id 
+                  where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') 
+                  and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  if($centre_code!="ALL"){
+                     $sql.=" and s.centre_code='$centre_code' ";
+                  }
+
+                  $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) 
+                  and s.deleted='0' 
+
+                  and (ps.student_entry_level ='EDP' OR ps.student_entry_level ='QF1') 
+                  and fl.afternoon_programme =1 and f.basic_adjust < 1 
+                  and f.afternoon_robotic_adjust > 0 
+
+                  group by ps.student_entry_level, s.id) ab";
+                  
+                  $result=mysqli_query($connection, $sql);
+                  $num_row=mysqli_num_rows($result);
+
+                  while ($row=mysqli_fetch_assoc($result)) {
+                     $afRoboticsJR += $row["level_count"];
+                  ?>
+                  <span style="cursor:pointer;color:blue;" 
+                  onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','AFBasicRobotics','Junior')" >
+                     <?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?>
+                  </span>
+                  <?php } ?>
+               </span>
+            </td>
+            <td> 
+               <span class="gd_sb11">
+               <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+                  inner join programme_selection ps on ps.student_id=s.id 
+                  inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+                  inner join fee_structure f on f.id=fl.fee_id 
+                  where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') 
+                  and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  if($centre_code!="ALL"){
+                     $sql.=" and s.centre_code='$centre_code' ";
+                  }
+
+                  $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) 
+                  and s.deleted='0' 
+
+                  and (ps.student_entry_level ='QF2' OR ps.student_entry_level ='QF3') 
+                  and fl.afternoon_programme =1 and f.basic_adjust < 1 
+                  and f.afternoon_robotic_adjust > 0 
+                  
+                  group by ps.student_entry_level, s.id) ab";
+                  
+                  $result=mysqli_query($connection, $sql);
+                  $num_row=mysqli_num_rows($result);
+
+                  while ($row=mysqli_fetch_assoc($result)) {
+                     $afRoboticsSR += $row["level_count"];
+                  ?>
+                  <span style="cursor:pointer;color:blue;"
+                  onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','AFBasicRobotics','Senior')">
+                     <?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?>
+                  </span>
+                  <?php } ?>
+               </span>
+            </td>
+            <td> 
+               <span class="gd_sb11">
+                  <span style="cursor:pointer;color:blue;"
+                  onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','AFBasicRobotics')">
+                     <?php echo ($afRoboticsJR + $afRoboticsSR); ?>
+                  </span>
+               </span>
+            </td>
+		   </tr>
+         <!-- Afternoon Programme (Basic + Robotics) EMD -->
+
+         <!-- EF Plus (Robotics) START -->
+         <!-- Triggers if Robotic Plus is taken inside -->
+         <?php
+         $efPlusRoboticsJR = 0;
+         $efPlusRoboticsSR = 0;
+         $efPlusRoboticsGtotal = 0; //You can query this, but this is much more easier on the system for workload purposes since you got the data already anyway + easier on the eyes
+         ?>
+
+         <tr class="founda">
+				<td>EF Plus (Robotics)</td>
+				<td> 
+               <span class="gd_sb11">
+               <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+                  inner join programme_selection ps on ps.student_id=s.id 
+                  inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+                  inner join fee_structure f on f.id=fl.fee_id 
+                  where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') 
+                  and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  if($centre_code!="ALL"){
+                     $sql.=" and s.centre_code='$centre_code' ";
+                  }
+
+                  $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) 
+                  and s.deleted='0' 
+
+                  and (ps.student_entry_level ='EDP' OR ps.student_entry_level ='QF1') 
+	               and fl.robotic_plus=1 
+                  
+                  group by ps.student_entry_level, s.id) ab";
+                  
+                  $result=mysqli_query($connection, $sql);
+                  $num_row=mysqli_num_rows($result);
+
+                  while ($row=mysqli_fetch_assoc($result)) {
+                     $efPlusRoboticsJR += $row["level_count"];
+                  ?>
+                  <span style="cursor:pointer;color:blue;"
+                  onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','EFPlusRobotics','Junior')">
+                     <?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?>
+                  </span>
+                  <?php } ?>
+               </span>
+            </td>
+            <td> 
+               <span class="gd_sb11">
+               <?php 
+                  $sql="SELECT count(id) level_count from (SELECT ps.student_entry_level, s.id from student s 
+                  inner join programme_selection ps on ps.student_id=s.id 
+                  inner join student_fee_list fl on fl.programme_selection_id = ps.id 
+                  inner join fee_structure f on f.id=fl.fee_id 
+                  where (fl.programme_date >= '".$year_start_date."' AND fl.programme_date <= '".$year_end_date."') 
+                  and ps.student_entry_level != '' and s.student_status = 'A' ";
+
+                  if($centre_code!="ALL"){
+                     $sql.=" and s.centre_code='$centre_code' ";
+                  }
+
+                  $sql.=" and ((fl.programme_date >= '$from_date' and fl.programme_date <= '$to_date') or (fl.programme_date_end >= '$from_date' and fl.programme_date_end <= '$to_date')) 
+                  and s.deleted='0' 
+
+                  and (ps.student_entry_level ='QF2' OR ps.student_entry_level ='QF3') 
+	               and fl.robotic_plus=1 
+                  
+                  group by ps.student_entry_level, s.id) ab";
+                  
+                  $result=mysqli_query($connection, $sql);
+                  $num_row=mysqli_num_rows($result);
+
+                  while ($row=mysqli_fetch_assoc($result)) {
+                     $efPlusRoboticsSR += $row["level_count"];
+                  ?>
+                  <span style="cursor:pointer;color:blue;"
+                  onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','EFPlusRobotics','Senior')">
+                     <?php echo (empty($row["level_count"]) ? "0" : $row["level_count"]); ?>
+                  </span>
+                  <?php } ?>
+               </span>
+            </td>
+            <td> 
+               <span class="gd_sb11">
+                  <span style="cursor:pointer;color:blue;"
+                  onclick="dlgTotalStudentList('<?php echo $from_date; ?>','<?php echo $to_date; ?>','<?php echo $centre_code; ?>','EFPlusRobotics')">
+                     <?php echo ($efPlusRoboticsJR + $efPlusRoboticsSR); ?>
+                  </span>
+               </span>
+            </td>
+		   </tr>
+         <!-- EF Plus (Robotics) END -->
+      </table>
+
 
    <?php
 } else {

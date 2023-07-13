@@ -565,9 +565,11 @@ function getVisitor($sha1_id){
         <table class="uk-table uk-form-small" id="tblContact">
             <tr class="uk-text-small uk-text-bold">
                 <td>
+                    <!--
                     <a style="display: inline-block; width:20px; height:20px">
                         <img data-uk-tooltip="{pos:top}" title="Add Contact" id="addrowBtn"  src="images/add.png">
                     </a>
+                    -->
                 </td>
                 <td>Contact Type<span class="required">*</span></td>
                 <td>Name as per IC/Passport<span class="required">*</span></td>
@@ -942,6 +944,12 @@ function getVisitor($sha1_id){
             }
             ?>
         </table>
+        <a title="Add Contact" id="addrowBtn" class="uk-button full-width-blue" style="width:120px;color:white;">Add Contact</a>
+        <!--
+        <a style="display: inline-block; width:20px; height:20px">
+            <img data-uk-tooltip="{pos:top}" title="Add Contact" id="addrowBtn"  src="images/add.png">
+        </a>
+        -->
     </div>
     <p style="color: red; font-weight: bold">NOTE: The first contact above is the Primary Contact.</p>
     <button type="submit" class="uk-button uk-button-small uk-button-primary">Save</button>

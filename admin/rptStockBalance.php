@@ -93,6 +93,7 @@ if ($_SESSION["isLogin"]==1) {
             var type=$("#type").val();
             //if (from_date!="" || to_date!="") {
                // data : "from_date="+from_date+"&to_date="+to_date+"&sub_category="+sub_category,
+               /*
                 $.ajax({
                     url : "admin/a_rptStockBalReport.php",
                     type : "POST",
@@ -111,6 +112,7 @@ if ($_SESSION["isLogin"]==1) {
             // } else {
             //     UIkit.notify("Please enter a cut off date");
             // }
+            */
         }
 
         $(document).ready(function () {

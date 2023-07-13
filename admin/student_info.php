@@ -26,7 +26,11 @@ function getDOWString($dow) {
    }
 }
 
+if ($_GET['status'] == "enerror"){
+    echo "<script>UIkit.notify('Must choose at least one Enhanced Foundation')</script>";
+}
 ?>
+
 
 <div id="thetop" class="uk-margin-right uk-margin-top">
     <div class="uk-width-1-1 myheader">
@@ -37,8 +41,7 @@ function getDOWString($dow) {
         <div class="uk-width-medium-10-10 uk-text-center">
             <a href="index.php?p=collection&ssid=<?php echo $ssid ?><?php echo $_GET["back"] ? '&back='.$_GET["back"] : ''?>"
                 class="uk-button blue_button" style="padding: .4em 3em;">Pay Fees</a>
-            <button onclick="dlgProductBought()" class="blue_button_s1 blue_button" style="padding: .4em 3em;">View
-                Product Bought</button>
+            <button onclick="dlgProductBought()" class="blue_button_s1 blue_button" style="padding: .4em 3em;">View Product Bought</button>
 
             <table class="uk-table">
                 <tr class="uk-text-bold">
@@ -129,16 +132,26 @@ $row3=mysqli_fetch_assoc($result3);
                         </td>
                     </tr>
                     <tr class="uk-text-small">
+                        <script>
+                        function enhFoundationDefault(){ //By default, need to have at least one enhanced foundation
+                            d = document.getElementById("student_entry_level").value;
+
+                            if (d != "EDP"){
+                                document.getElementById("foundation_int_english").value = "1";
+                            }else{
+                                document.getElementById("foundation_int_english").value = "0";
+                            }
+                        }
+                        </script>
                         <td class="uk-width-3-10">
-                        <select name="student_entry_level" id="student_entry_level" class="uk-width-1-1" style="width: 100px;">
+                        <select <?php if ($_GET["mode"]!="EDIT"){ ?> onChange="enhFoundationDefault()" <?php } ?> name="student_entry_level" id="student_entry_level" class="uk-width-1-1" style="width: 100px;">
                                 <option value="">Select</option>
                                 <option <?php if($row3["student_entry_level"]=="EDP"){ echo "selected"; } ?> value="EDP">EDP</option>
                                 <option <?php if($row3["student_entry_level"]=="QF1"){ echo "selected"; } ?> value="QF1">QF1</option>
                                 <option <?php if($row3["student_entry_level"]=="QF2"){ echo "selected"; } ?> value="QF2">QF2</option>
                                 <option <?php if($row3["student_entry_level"]=="QF3"){ echo "selected"; } ?> value="QF3">QF3</option>
                                 </select>
-                            <span id="validationStudentEntryLevel" style="color: red; display: none;">Please
-                                select Student Entry Level</span>
+                            <span id="validationStudentEntryLevel" style="color: red; display: none;">Please select Student Entry Level</span>
                         </td>
                        
                     </tr>
@@ -223,7 +236,7 @@ $row3=mysqli_fetch_assoc($result3);
                                         Int. Eng:&nbsp;<select type="checkbox" name="foundation_int_english[]"
                                             id="foundation_int_english" class="uk-width-1-1" style="width: 61px;">
                                             <option <?php echo ($row1['foundation_int_english']==0? 'selected' : ''); ?> value="0">No</option>
-                                            <option <?php echo ($row1['foundation_int_english']==1? 'selected' : ''); ?> value="1">Yes</option>
+                                            <option <?php if ($_GET["mode"]!="EDIT"){ ?> selected <?php } ?><?php echo ($row1['foundation_int_english']==1? 'selected' : ''); ?> value="1">Yes</option>
                                             </select>&nbsp;&nbsp;
                                         EF IQ Maths:&nbsp;<select type="checkbox" name="foundation_iq_math[]" id="foundation_iq_math"
                                             class="uk-width-1-1" style="width: 61px;">

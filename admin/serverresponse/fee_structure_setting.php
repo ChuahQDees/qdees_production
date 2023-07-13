@@ -201,7 +201,7 @@
                     $num_row3=mysqli_num_rows($result3);
                     if ($num_row3==0) {
 
-                            $action .= '<a onclick=\'doDeleteRecord("'.sha1($aRow['id']).'")\' href="#" id="btnDelete"><img src="images/delete.png"></a>';
+                            $action .= '<a onclick=\'doDeleteRecord("'.sha1($aRow['id']).'")\' href="#" data-uk-tooltip title="Delete" id="btnDelete"><img src="images/delete.png"></a>';
 
                     }
 

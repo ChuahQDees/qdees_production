@@ -22,6 +22,7 @@ include_once("mysql.php");
 	$afternoon_programme=$_POST["afternoon_programme"];
     $studentArray=$_POST["studentIDArray"];
 
+
 	/*
     echo "Submitted Items:";
     echo "<br/>Fee ID = ".$fee_id[0];
@@ -44,8 +45,17 @@ include_once("mysql.php");
     //print_r($myArray);
     $i = 0;
 
-while($i < count($studentArray))
-    {
+	$enherror = "0";
+if ($student_entry_level != "EDP"){ //If it's not EDP, then it's QF1/QF2/QF3
+	if ($foundation_int_english[0]=="0" && $foundation_iq_math[0]=="0" && $foundation_int_mandarin[0]=="0" && $foundation_int_art[0]=="0" && $pendidikan_islam[0]=="0"){
+		echo '<script>window.location.href = "/index.php?p=fee_str_allocate&status=enerror";</script>';
+		$enherror = "1";
+	}
+}
+
+if ($enherror == "0"){
+	while($i < count($studentArray))
+	{
 		$name = "";
 		$student_code = "";
 		$entry_get = mysqli_query($connection, "SELECT name, student_code FROM `student` WHERE id = '$studentArray[$i]'");
@@ -96,6 +106,5 @@ while($i < count($studentArray))
 	}else{
 		$msg="Failed to save data";
 	}
-
-
+}
 ?>

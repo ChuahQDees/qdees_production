@@ -22,7 +22,7 @@ $(document).ready(function() {
    var today = new Date();
    //$("#selected_month").val(today.getFullYear()+''+(("0" + (today.getMonth()+1)).slice(-2)));
     $("#selected_month").val('<?php echo $year ?>'+''+(("0" + (today.getMonth()+1)).slice(-2)));
-   generateReport('screen');
+   //generateReport('screen');
 });
 
 function doCentreCodeChange() {

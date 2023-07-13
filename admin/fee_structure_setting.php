@@ -215,13 +215,19 @@ $from_date=convertDate2ISO($from_date);
 		$sql = "SELECT term_num, term_start, term_end from schedule_term WHERE year = '$yearSession' AND centre_code = '$centre_code'";
 		$result = mysqli_query($connection, $sql);
 		$sdate = ""; //Start Date
-		$edate = ""; //End Date
+		$edate = "asd"; //End Date
+		$term5 = false;
 		
 		while ($row = mysqli_fetch_assoc($result)) {
 			if ($row['term_num'] == "1"){
 				$sdate = $row['term_start'];
-			}else if ($row['term_num'] == "4"){
+			}else if ($row['term_num'] == "4" && $term5 == false){
 				$edate = $row['term_end'];
+			}
+
+			if ($row['term_num'] == "5"){ //If there's a magical Term 5 for some reason, get that end date instead. Pray there's no 6
+				$edate = $row['term_end'];
+				$term5 = true;
 			}
 		}
 ?>
@@ -405,14 +411,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none; text-align:center;" class="uk-width-1-10">
 							
-						 <input class="school_adjust view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> name="school_adjust" id="school_adjust" value="<?php echo $edit_row['school_adjust'] ?>" disabled onChange="autoDecimal('school_adjust')"><br>
+						 <input class="school_adjust view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> name="school_adjust" id="school_adjust" value="<?php echo $edit_row['school_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('school_adjust')"><br>
 						 <span id="validationschool_adjust" style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input  type="text" class="view-data" name="school_collection" readonly id="school_collection" value="<?php echo $edit_row['school_collection'] ?>">
 						  <?php } else { ?>
-						 <select name="school_collection" id="school_collection" class="view-data" style="width: 100%;" disabled>
+						 <select name="school_collection" id="school_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['school_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['school_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -436,14 +442,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none; text-align:center;" class="uk-width-1-10">
 							
-						 <input class="school_adjust view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> disabled onChange="autoDecimal('multimedia_adjust')" name="multimedia_adjust" id="multimedia_adjust" value="<?php echo $edit_row['multimedia_adjust'] ?>"><br>
+						 <input class="school_adjust view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('multimedia_adjust')" name="multimedia_adjust" id="multimedia_adjust" value="<?php echo $edit_row['multimedia_adjust'] ?>"><br>
 						 <span id="validationMa"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="multimedia_collection" readonly id="multimedia_collection" value="<?php echo $edit_row['multimedia_collection'] ?>">
 						  <?php } else { ?>
-							<select name="multimedia_collection" id="multimedia_collection" class="view-data" disabled style="width: 100%;">
+							<select name="multimedia_collection" id="multimedia_collection" class="view-data" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> style="width: 100%;">
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['multimedia_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['multimedia_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -469,14 +475,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="school_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="facility_adjust" id="facility_adjust" disabled onChange="autoDecimal('facility_adjust')"  value="<?php echo $edit_row['facility_adjust'] ?>"><br>
+						 <input class="school_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="facility_adjust" id="facility_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('facility_adjust')"  value="<?php echo $edit_row['facility_adjust'] ?>"><br>
 						 <span id="validationfa"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="facility_collection" readonly id="facility_collection" value="<?php echo $edit_row['facility_collection'] ?>">
 						  <?php } else { ?>
-							<select name="facility_collection" id="facility_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="facility_collection" id="facility_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['facility_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['facility_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -501,7 +507,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none; text-align:center;" class="uk-width-1-10">
 							
-						 <input class="school_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="enhanced_adjust" id="enhanced_adjust" disabled onChange="autoDecimal('enhanced_adjust')" value="<?php echo $edit_row['enhanced_adjust'] ?>"><br>
+						 <input class="school_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="enhanced_adjust" id="enhanced_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('enhanced_adjust')" value="<?php echo $edit_row['enhanced_adjust'] ?>"><br>
 						 <span id="validationea"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 
 					  </td>
@@ -509,7 +515,7 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="enhanced_collection" readonly id="enhanced_collection" value="<?php echo $edit_row['enhanced_collection'] ?>">
 						  <?php } else { ?>
-							<select name="enhanced_collection" id="enhanced_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="enhanced_collection" id="enhanced_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['enhanced_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['enhanced_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -559,14 +565,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="iq_math_adjust" id="iq_math_adjust" disabled onChange="autoDecimal('iq_math_adjust')"><br>
+						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="iq_math_adjust" value="<?php echo $edit_row['iq_math_adjust'] ?>" id="iq_math_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('iq_math_adjust')"><br>
 						 <span id="validationma"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="iq_math_collection" readonly id="iq_math_collection" value="<?php echo $edit_row['iq_math_collection'] ?>">
 						  <?php } else { ?>
-							<select name="iq_math_collection" id="iq_math_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="iq_math_collection" id="iq_math_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['iq_math_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['iq_math_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -591,14 +597,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="mandarin_adjust" id="mandarin_adjust" value="<?php echo $edit_row['mandarin_adjust'] ?>" disabled onChange="autoDecimal('mandarin_adjust')"><br>
+						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="mandarin_adjust" id="mandarin_adjust" value="<?php echo $edit_row['mandarin_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('mandarin_adjust')"><br>
 						 <span id="validationmda"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="mandarin_collection" readonly id="mandarin_collection" value="<?php echo $edit_row['mandarin_collection'] ?>">
 						  <?php } else { ?>
-							<select name="mandarin_collection" id="mandarin_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="mandarin_collection" id="mandarin_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['mandarin_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['mandarin_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -623,14 +629,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="international_adjust" id="international_adjust" value="<?php echo $edit_row['international_adjust'] ?>" disabled onChange="autoDecimal('international_adjust')"><br>
+						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="international_adjust" id="international_adjust" value="<?php echo $edit_row['international_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('international_adjust')"><br>
 						 <span id="validationina"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="international_collection" readonly id="international_collection" value="<?php echo $edit_row['international_collection'] ?>">
 						  <?php } else { ?>
-							<select name="international_collection" id="international_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="international_collection" id="international_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['international_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['international_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -655,14 +661,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="robotic_plus_adjust" id="robotic_plus_adjust" value="<?php echo $edit_row['robotic_plus_adjust'] ?>" disabled onChange="autoDecimal('robotic_plus_adjust')"><br>
+						 <input class="math_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="robotic_plus_adjust" id="robotic_plus_adjust" value="<?php echo $edit_row['robotic_plus_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('robotic_plus_adjust')"><br>
 						 <span id="validationrp"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="robotic_plus_collection" readonly id="robotic_plus_collection" value="<?php echo $edit_row['robotic_plus_collection'] ?>">
 						  <?php } else { ?>
-							<select name="robotic_plus_collection" id="robotic_plus_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="robotic_plus_collection" id="robotic_plus_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['robotic_plus_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['robotic_plus_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -712,14 +718,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="integrated_adjust" id="integrated_adjust" value="<?php echo $edit_row['integrated_adjust'] ?>" disabled onChange="autoDecimal('integrated_adjust')"><br>
+						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="integrated_adjust" id="integrated_adjust" value="<?php echo $edit_row['integrated_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('integrated_adjust')"><br>
 						 <span id="validationita"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="integrated_collection" readonly id="integrated_collection" value="<?php echo $edit_row['integrated_collection'] ?>">
 						  <?php } else { ?>
-							<select name="integrated_collection" id="integrated_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="integrated_collection" id="integrated_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['integrated_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['integrated_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -744,14 +750,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="link_adjust" id="link_adjust" value="<?php echo $edit_row['link_adjust'] ?>" disabled onChange="autoDecimal('link_adjust')"><br>
+						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="link_adjust" id="link_adjust" value="<?php echo $edit_row['link_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('link_adjust')"><br>
 						 <span id="validationlna"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="link_collection" readonly id="link_collection" value="<?php echo $edit_row['link_collection'] ?>">
 						  <?php } else { ?>
-							<select name="link_collection" id="link_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="link_collection" id="link_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['link_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['link_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -776,14 +782,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="mandarin_m_adjust" id="mandarin_m_adjust" value="<?php echo $edit_row['mandarin_m_adjust'] ?>" disabled onChange="autoDecimal('mandarin_m_adjust')"><br>
+						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="mandarin_m_adjust" id="mandarin_m_adjust" value="<?php echo $edit_row['mandarin_m_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('mandarin_m_adjust')"><br>
 						 <span id="validationmma"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="mandarin_m_collection" readonly id="mandarin_m_collection" value="<?php echo $edit_row['mandarin_m_collection'] ?>">
 						  <?php } else { ?>
-							<select name="mandarin_m_collection" id="mandarin_m_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="mandarin_m_collection" id="mandarin_m_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['mandarin_m_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['mandarin_m_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -832,14 +838,14 @@ $row_exists=mysqli_num_rows($result3);
 						 <span id="validationbasic_perent" style="color: red; display: none;font-size:11px;">Please select Student Entry Level</span>
 					  </td>
 					  <td style="text-align:center;border:none;" class="uk-width-1-10">							
-						 <input class="view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> name="basic_adjust" id="basic_adjust" value="<?php echo $edit_row['basic_adjust'] ?>" disabled onChange="autoDecimal('basic_adjust')">
+						 <input class="view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> name="basic_adjust" id="basic_adjust" value="<?php echo $edit_row['basic_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('basic_adjust')">
 						 <br><span id="validationba"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="basic_collection" readonly id="basic_collection" value="<?php echo $edit_row['basic_collection'] ?>">
 						  <?php } else { ?>
-							<select name="basic_collection" id="basic_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="basic_collection" id="basic_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['basic_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['basic_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -864,13 +870,13 @@ $row_exists=mysqli_num_rows($result3);
 						 <span id="validationafternoon_robotic_perent" style="color: red; display: none;font-size:11px;">Please select Student Entry Level</span>
 					  </td>
 					  <td style="text-align:center;" class="uk-width-1-10">							
-						 <input class="view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> name="afternoon_robotic_adjust" id="afternoon_robotic_adjust" value="<?php echo $edit_row['afternoon_robotic_adjust'] ?>" disabled onChange="autoDecimal('afternoon_robotic_adjust')"><br><span id="validationara"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
+						 <input class="view-data" type="number" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> name="afternoon_robotic_adjust" id="afternoon_robotic_adjust" value="<?php echo $edit_row['afternoon_robotic_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('afternoon_robotic_adjust')"><br><span id="validationara"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="afternoon_robotic_collection" readonly id="afternoon_robotic_collection" value="<?php echo $edit_row['afternoon_robotic_collection'] ?>">
 						  <?php } else { ?>
-							<select name="afternoon_robotic_collection" id="afternoon_robotic_collection" class="view-data" style="width: 100%;" disabled><br><span id="validationara"  style="color: red; display: none;font-size:11px;margin-left: -65px;">
+							<select name="afternoon_robotic_collection" id="afternoon_robotic_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>><br><span id="validationara"  style="color: red; display: none;font-size:11px;margin-left: -65px;">
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['afternoon_robotic_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['afternoon_robotic_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -902,14 +908,14 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="mobile_adjust" id="mobile_adjust" disabled onChange="autoDecimal('mobile_adjust')" value="<?php echo $edit_row['mobile_adjust'] ?>"><br>
+						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="mobile_adjust" id="mobile_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('mobile_adjust')" value="<?php echo $edit_row['mobile_adjust'] ?>"><br>
 						 <span id="validationmba"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="mobile_collection" readonly id="mobile_collection" value="<?php echo $edit_row['mobile_collection'] ?>">
 						  <?php } else { ?>
-							<select name="mobile_collection" id="mobile_collection" class="view-data" style="width: 100%;" disabled>
+							<select name="mobile_collection" id="mobile_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
 							<option value=""></option>
 							<option value="Monthly" <?php if($edit_row['mobile_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['mobile_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -931,7 +937,7 @@ $row_exists=mysqli_num_rows($result3);
 					  <td style="border:none;" class="uk-width-1-10"></td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="registration_adjust" id="registration_adjust" disabled onChange="autoDecimal('registration_adjust')" value="<?php echo $edit_row['registration_adjust'] ?>"><br>
+						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="registration_adjust" id="registration_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('registration_adjust')" value="<?php echo $edit_row['registration_adjust'] ?>"><br>
 						 <span id="validationra"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
@@ -954,7 +960,7 @@ $row_exists=mysqli_num_rows($result3);
 					  <td style="border:none;" class="uk-width-1-10"></td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="insurance_adjust" id="insurance_adjust" disabled onChange="autoDecimal('insurance_adjust')" value="<?php echo $edit_row['insurance_adjust'] ?>"><br>
+						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="insurance_adjust" id="insurance_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('insurance_adjust')" value="<?php echo $edit_row['insurance_adjust'] ?>"><br>
 						 <span id="validationinsa"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
@@ -976,7 +982,7 @@ $row_exists=mysqli_num_rows($result3);
 					  <td style="border:none;" class="uk-width-1-10"></td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="uniform_adjust" id="uniform_adjust" disabled onChange="autoDecimal('uniform_adjust')" value="<?php echo $edit_row['uniform_adjust'] ?>"><br>
+						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="uniform_adjust" id="uniform_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('uniform_adjust')" value="<?php echo $edit_row['uniform_adjust'] ?>"><br>
 						 <span id="validationuia"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
@@ -998,7 +1004,7 @@ $row_exists=mysqli_num_rows($result3);
 					  <td style="border:none;" class="uk-width-1-10"></td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="gymwear_adjust" id="gymwear_adjust" disabled onChange="autoDecimal('gymwear_adjust')" value="<?php echo $edit_row['gymwear_adjust'] ?>"><br>
+						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="gymwear_adjust" id="gymwear_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('gymwear_adjust')" value="<?php echo $edit_row['gymwear_adjust'] ?>"><br>
 						 <span id="validationgya"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
@@ -1020,7 +1026,7 @@ $row_exists=mysqli_num_rows($result3);
 					  <td style="border:none;" class="uk-width-1-10"></td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="q_dees_adjust" id="q_dees_adjust" disabled onChange="autoDecimal('q_dees_adjust')" value="<?php echo $edit_row['q_dees_adjust'] ?>"><br>
+						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="q_dees_adjust" id="q_dees_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('q_dees_adjust')" value="<?php echo $edit_row['q_dees_adjust'] ?>"><br>
 						 <span id="validationqa"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
@@ -1042,7 +1048,7 @@ $row_exists=mysqli_num_rows($result3);
 					  <td style="border:none;" class="uk-width-1-10"></td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">
 							
-						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="q_bag_adjust" id="q_bag_adjust" disabled onChange="autoDecimal('q_bag_adjust')"  value="<?php echo $edit_row['q_bag_adjust'] ?>"><br>
+						 <input class="registration_adjust view-data" step="0.01" <?php if($row_exists>0){ echo 'readonly'; } ?> type="number" name="q_bag_adjust" id="q_bag_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('q_bag_adjust')"  value="<?php echo $edit_row['q_bag_adjust'] ?>"><br>
 						 <span id="validationqbad"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
@@ -1089,13 +1095,13 @@ $row_exists=mysqli_num_rows($result3);
 						 	<span id="validationislam_perent" style="color: red; display: none;font-size:11px;">Please select Student Entry Level</span>
 					  	</td>
 					  	<td style="text-align:center;" class="uk-width-1-10">
-						 	<input class="view-data" step="0.01" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> name="islam_adjust" id="islam_adjust" disabled onChange="autoDecimal('islam_adjust')" value="<?php echo $edit_row['islam_adjust'] ?>"><br><span id="validationisa"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
+						 	<input class="view-data" step="0.01" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> name="islam_adjust" id="islam_adjust" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('islam_adjust')" value="<?php echo $edit_row['islam_adjust'] ?>"><br><span id="validationisa"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
 					  	</td>
 					  	<td class="uk-width-1-10">
 					  		<?php if($row_exists>0){ ?>
 						  		<input class="view-data" type="text" name="islam_collection" readonly id="islam_collection" value="<?php echo $edit_row['islam_collection'] ?>">
 						  	<?php } else { ?>
-								<select name="islam_collection" id="islam_collection" disabled class="view-data" style="width: 100%;">
+								<select name="islam_collection" id="islam_collection" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> class="view-data" style="width: 100%;">
 									<option value=""></option>
 									<option value="Monthly" <?php if($edit_row['islam_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 									<option value="Termly" <?php if($edit_row['islam_collection']=='Termly') {echo 'selected';}?>>Termly</option>
@@ -1112,7 +1118,11 @@ $row_exists=mysqli_num_rows($result3);
 			<table class="uk-table uk-table-small">
 				<tr>
 					<td style="margin-top:50px;border:none;" class="uk-width-1-10 uk-text-bold">Remarks:</td>
-					<td style="border:none;"><textarea class="view-data" id="remarks" name="remarks" rows="5" <?php if($row_exists>0){ echo 'readonly'; } ?> cols="65"><?php echo $edit_row['remarks'] ?></textarea></td>
+					<td style="border:none;">
+						<textarea class="view-data" id="remarks" name="remarks" rows="5" <?php if($row_exists>0){ echo 'readonly'; } ?> cols="65"><?php echo $edit_row['remarks'] ?></textarea>
+						<br />
+						<span id="validationRemarks" style="color: red; font-size:11px; display: none;">Please state the reason why the fee structure is changed from the default in the Remarks</span>
+					</td>
 				</tr>
 				
 				<tr class="uk-text-small">
@@ -1534,6 +1544,9 @@ $(document).ready(function(){
 
 	//Checking if there's any differences in numbers
 	document.getElementById("alertPop").value = "";
+
+	var basicAPPrice = document.getElementById("basic_adjust").value; //Check if the user is electing to do a Afternoon Programme + Robotics instead, if it's 0, then check robotics
+	var proPackage = document.getElementById("programme_package").value; 
 	
 	comparePrice('school_default', 'school_default_perent', 'school_adjust', 'school_collection');
 	comparePrice('multimedia_default', 'multimedia_default_perent', 'multimedia_adjust', 'multimedia_collection');
@@ -1543,14 +1556,19 @@ $(document).ready(function(){
 	comparePrice('iq_math_default', 'iq_math_default_perent', 'iq_math_adjust', 'iq_math_collection');
 	comparePrice('mandarin_default', 'mandarin_default_perent', 'mandarin_adjust', 'mandarin_collection');
 	comparePrice('international_default', 'international_perent', 'international_adjust', 'international_collection');
-	comparePrice('robotic_plus_default_perent', 'robotic_plus_default_perent', 'robotic_plus_adjust', 'robotic_plus_collection');
+	comparePrice('robotic_plus_default', 'robotic_plus_default_perent', 'robotic_plus_adjust', 'robotic_plus_collection');
 
 	comparePrice('integrated_default', 'integrated_default_perent', 'integrated_adjust', 'integrated_collection');
 	comparePrice('link_default', 'link_default_perent', 'link_adjust', 'link_collection');
 	comparePrice('mandarin_m_defauft', 'mandarin_m_default_perent', 'mandarin_m_adjust', 'mandarin_m_collection');
 
-	comparePrice('basic_default', 'basic_default_perent', 'basic_adjust', 'basic_collection');
-	comparePrice('afternoon_robotic_default', 'afternoon_robotic_default_perent', 'afternoon_robotic_adjust', 'afternoon_robotic_collection');
+	if (proPackage == "Full Day"){
+		if (basicAPPrice > 0){
+			comparePrice('basic_default', 'basic_default_perent', 'basic_adjust', 'basic_collection');
+		}else{
+			comparePrice('afternoon_robotic_default', 'afternoon_robotic_default_perent', 'afternoon_robotic_adjust', 'afternoon_robotic_collection');
+		}
+	}
 
 	comparePrice('mobile_default', 'mobile_perent', 'mobile_adjust', 'mobile_collection');
 	comparePrice('registration_default', '', 'registration_adjust', '');
@@ -1564,12 +1582,6 @@ $(document).ready(function(){
 
 	var adjustedPrice = document.getElementById("alertPop").value;
 	var remarkContent = document.getElementById("remarks").value;
-
-	if (adjustedPrice != "" && remarkContent == ""){
-		if (confirm("You are required to write a remark if you made any changes to the fee structure. Do you still wish to proceed?") == false) {
-			return false;
-		}
-	}
 
 	var errorFlag = "";
     if (!school_adjust || !fees_structure || to_date < from_date) {
@@ -1977,6 +1989,19 @@ $(document).ready(function(){
 		$('#validationrpc').show();errorFlag = "1";
 	}else{
 		$('#validationrpc').hide();
+	}
+
+	if (adjustedPrice != ""){ //Check to see if there's remarks input if the price changed
+		if (remarkContent == "") {
+			$('#validationRemarks').show();errorFlag = "1";
+		}else{
+			$('#validationRemarks').hide();
+
+			if (confirm("Adjusted Fee Structures from the Default Fee take between 3-5 working days to check and approve. Proceed?") == false) {
+				e.preventDefault();
+				return false;
+			}
+		}
 	}
 
 	if (errorFlag == "1"){

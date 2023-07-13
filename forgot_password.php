@@ -6,15 +6,13 @@ include_once("bootstrap.php");
 
 ?>
 
-
-
 <div class="login-container d-flex justify-content-center align-items-center">
     <div class="login-content">
         <div class="row position-relative">
             <div class="col-md-6 col-sm-12 no-padding" style="background:#F7FCFF;border-radius: 50px 0px 0px 50px;">
                 <div style="width: 100%; height:87%" class="pt-3 d-flex justify-content-center">
                     <img src="/images/Qdees_Globe.png" alt="" class="img_bg">
-                    <img src="/images/Q-dees Starters Logo.png" alt="" class="img_logo">
+                    <img src="/images/Qdees-logo-n.png" alt="" class="img_logo">
                 </div>
                 <h2 style="text-align:center; padding-bottom:20px;"><a href="https://www.q-dees.com/" style="color:#707070;">www.q-dees.com</a></h2>
             </div>

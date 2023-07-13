@@ -199,7 +199,7 @@ table {
    <table>
       <tr>
         <td class="td-no-border" style="text-align:right;">
-        <img src="../images/Q-dees Starters Logo.png" alt="logo" style="width:150px;">
+        <img src="../images/Qdees-logo-n.png" alt="logo" style="width:150px;">
         </td>
       </tr>
    </table>
@@ -572,8 +572,10 @@ echo "<p align='left' style='font-weight:bold;margin-bottom: 0;'>". strtoupper($
   <p class="uk-text-bold">ALL CASH AND CHEQUES MUST BE MADE PAYABLE TO :(<?php echo $company_name?>  - <?php echo getAOCentreFranciseeCompanyNOByCenterCode($centre_code)?>)</p></td>
   
 </tr>
+<?php if ($bank_detail != ""){ ?>
 <h4>Bank Account Details</h4>
 <?php echo $bank_detail; ?>
+<?php } ?>
 <script>
 function printDialog() {
    //$("#btnPrint").hide();

@@ -12,9 +12,16 @@ if (($_SESSION["isLogin"] == 1) & (($_SESSION["UserType"] == "A") || ($_SESSION[
 include_once("../mysql.php");
 include_once("functions.php");
 
-if ($_GET['status'] == "completed"){
-    echo "<script>UIkit.notify('Record saved!')</script>";
-};
+if ($_SESSION['Year'] != '2023-2024'){
+    if ($_GET['status'] == "completed"){
+        $_SESSION['Year']='2023-2024';
+        echo '<script>window.location.href = "/index.php?p=student_multitransfer&status=done";</script>';
+    };
+}else{
+    if ($_GET['status'] == 'done'){
+        echo "<script>UIkit.notify('Students have been transferred!')</script>";
+    };
+}
 
 //Get array of students who are already in 2023-2024
 $studentFeeStructureArray = array();
@@ -56,7 +63,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
 <br />
 -->
 <!--<form name="" id="entryLevel" method="post" class="uk-form uk-form-small" action="index.php?p=student_list_func&ssid=<?php echo $ssid ?>">-->
-<form name="" id="entryLevel" method="post" class="uk-form uk-form-small" action="index.php?p=fee_str_allocate_func">
+<form name="" id="entryLevel" method="post" class="uk-form uk-form-small" action="index.php?p=student_multitransfer_function">
     <div id="thetop" class="uk-margin-right uk-margin-top">
         <div class="uk-width-1-1 myheader">
             <h2 class="uk-text-center myheader-text-color myheader-text-style">Student Multi-Transfer</h2>
@@ -65,69 +72,68 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
         <style>
-            .d_none{
-                display:none!important;   
-            }
+        .d_none{
+            display:none!important;   
+        }
 
-            .page_title {
-                position: absolute;
-                right: 34px;
-            }
+        .page_title {
+            position: absolute;
+            right: 34px;
+        }
 
-            .highlight{
-                background: #FFFFB3;
-            }
+        .highlight{
+            background: #FFFFB3;
+        }
 
-            #myInput {
-                width: 100%; /* Full-width */
-                font-size: 16px; /* Increase font-size */
-                padding: 12px 20px 12px 40px; /* Add some padding */
-                border: 1px solid #ddd; /* Add a grey border */
-                margin-bottom: 12px; /* Add some space below the input */
-            }
+        #myInput {
+            width: 100%; /* Full-width */
+            font-size: 16px; /* Increase font-size */
+            padding: 12px 20px 12px 40px; /* Add some padding */
+            border: 1px solid #ddd; /* Add a grey border */
+            margin-bottom: 12px; /* Add some space below the input */
+        }
 
-            #mydatatable {
-                border-collapse: collapse; /* Collapse borders */
-                width: 100%; /* Full-width */
-                border: 1px solid #ddd; /* Add a grey border */
-                font-size: 12px; /* Increase font-size */
-            }
+        #mydatatable {
+            border-collapse: collapse; /* Collapse borders */
+            width: 100%; /* Full-width */
+            border: 1px solid #ddd; /* Add a grey border */
+            font-size: 12px; /* Increase font-size */
+        }
 
-            #mydatatable th, #mydatatable td {
-                text-align: left; /* Left-align text */
-                padding: 12px; /* Add padding */
-            }
+        #mydatatable th, #mydatatable td {
+            text-align: left; /* Left-align text */
+            padding: 12px; /* Add padding */
+        }
 
-            #mydatatable tr {
-            /* Add a bottom border to all table rows */
-                border-bottom: 1px solid #ddd;
-            }
+        #mydatatable tr {
+        /* Add a bottom border to all table rows */
+            border-bottom: 1px solid #ddd;
+        }
 
         /*  #mydatatable tr.header, #mydatatable tr:hover {*/
-            /* Add a grey background color to the table header and on hover */
-            #mydatatable tr.header {
-                background-color: #E3E3E3;
-            }
+        /* Add a grey background color to the table header and on hover */
+        #mydatatable tr.header {
+            background-color: #E3E3E3;
+        }
 
-            /* Strikout table */
-            table {
-                border-collapse: collapse;
-            }
+        /* Strikout table */
+        table {
+            border-collapse: collapse;
+        }
 
-            td {
-                position: relative;
-                padding: 5px 10px;
-            }
+        td {
+            position: relative;
+            padding: 5px 10px;
+        }
 
-            tr.strikeout td:before {
-                content: " ";
-                position: absolute;
-                top: 50%;
-                left: 0;
-                border-bottom: 1px solid #9E9E9E;
-                width: 100%;
-            }
-            
+        tr.strikeout td:before {
+            content: " ";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            border-bottom: 1px solid #9E9E9E;
+            width: 100%;
+        }   
         </style>
 
         <div id="sctListing">
@@ -135,7 +141,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
             <input type="text" id="studentIDArray" name="studentIDArray" hidden>
             <?php 
             if ($enableAccess == false){?>
-                <h3>You can transfer multiple students from the previous year in this screen. <br /> Navigate to the <a href="javascript:doYear('2022-2023')">previous term</a> to get started.</h3>
+                <h3>You can transfer multiple students from the previous year in this screen. <br /> <b>Navigate to the <a href="javascript:doYear('2022-2023')">previous term</a> to get started.</b></h3>
             <?php }else{ ?>
                 <h3><b>Currently in previous term.</b> <a href="javascript:doYear('2023-2024')">Click here to return to the latest year.</a></h3>
             <?php } ?>

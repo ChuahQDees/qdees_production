@@ -22,7 +22,8 @@ function isMaster($master_code) {
 $(document).ready(function() {
    var today = new Date();
    $("#selected_month").val("13");
-   generateReport('screen');
+   outstanding_pdf_listing();
+   //generateReport('screen');
 });
 
 function generateReport(method) {
@@ -41,15 +42,17 @@ function generateReport(method) {
    if (centre_code!="") {
       if (method=="screen") {
          $.ajax({
-            url : "admin/a_rptOutstanding.php",
+            url : "admin/run_generate_outstanding_pdf.php",
             type : "POST",
-            data : "centre_code="+centre_code+"&month="+month+"&year="+year+"&student="+student,
+            data : "centre_code="+centre_code+"&month="+month+"&year="+year+"&student="+student+"&UserName=<?php echo $_SESSION['UserName']; ?>&session_year=<?php echo $_SESSION['Year']; ?>",
             dataType : "text",
             beforeSend : function(http) {
             },
-            success : function(response, status, http) {				
+            success : function(response, status, http) {	
+               UIkit.notify("Background process is running for generating report pdf. You will notify when pdf generated.");	
+               outstanding_pdf_listing();		
                $("#aBack").attr("href", "/index.php?p=rpt_outstanding");
-               $("#sctResult").html(response);
+               //$("#sctResult").html(response);
             },
             error : function(http, status, error) {
                UIkit.notify("Error:"+error);
@@ -66,6 +69,19 @@ function generateReport(method) {
       //UIkit.notify("Please select a centre");
    }
 
+}
+
+function outstanding_pdf_listing() {
+   $.ajax({
+      url : "admin/outstanding_pdf_listing.php",
+      type : "GET",
+      success : function(response, status, http) {	
+         $("#mydatatable").html(response);
+      },
+      error : function(http, status, error) {
+         UIkit.notify("Error:"+error);
+      }
+   });
 }
 </script>
 
@@ -161,15 +177,15 @@ function generateReport(method) {
                   ?>
                </select>
             <input type="hidden" name="selected_year" id="selected_year" value="">			
-            <button onclick="generateReport('screen');" id="btnGenerate" class="uk-button">Show on screen</button>			
-            <button onclick="generateReport('print');" id="btnGenerate" class="uk-button">Print
-         </button>
+            <button onclick="generateReport('screen');" id="btnGenerate" class="uk-button">Generate PDF</button>			
+           <!--  <button onclick="generateReport('print');" id="btnGenerate" class="uk-button">Print
+         </button> -->
          </div>
          
       </div>
 </div>
 <div id="sctResult" style="border-top-right-radius: 15px;border-top-left-radius: 15px;background:white;"></div>
-
+                  </div>
 <script>
 $(function() {
 	var year = '<?php echo $year; ?>';
@@ -197,3 +213,15 @@ $(function() {
       display: none;
    }
 </style>
+
+<div class="uk-margin-right" style="margin-top: 4%;">
+    <div class="uk-width-1-1 myheader">
+        <h2 class="uk-text-center myheader-text-color">LISTING</h2>
+    </div>
+
+    <div class="uk-overflow-container">
+        <table class="uk-table" id='mydatatable'>
+            
+        </table>
+    </div>
+</div>
