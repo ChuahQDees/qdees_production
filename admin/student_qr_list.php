@@ -70,8 +70,13 @@ function doDelete(id) {
    });
 }
 
-function doImport(id) {
-   UIkit.modal.confirm("<h2>Are you sure to continue?</h2>", function () {
+function doImport(id, extendYear) {
+
+   msgString = "<h2>Are you sure to continue?</h2>";
+   if (extendYear != "0"){
+      msgString = "<h2>Student is registered for Academic Year "+extendYear+".<br/><br/>You can find this student by clicking the year at the left and changing it to <b>"+extendYear+"</b>, then going to <b>Student Population.</b><br/><br/>Continue?</h2>"
+   }
+   UIkit.modal.confirm(msgString, function () {
       $.ajax({
          url : "admin/import_student.php",
          type : "POST",
@@ -138,10 +143,10 @@ $year=$_SESSION['Year'];
 
 $current_year=date("Y");
 //$base_sql="SELECT s.*, ec.email, ec.mobile, ec.mobile_country_code from tmp_student s RIGHT JOIN tmp_student_emergency_contacts ec on s.student_code=ec.student_code ";
-$base_sql="SELECT s.*, ec.email, ec.mobile, ec.mobile_country_code from tmp_student s RIGHT JOIN tmp_student_emergency_contacts ec on s.student_code=ec.student_code and start_date_at_centre <= '".$year_end_date."' and extend_year >= '$year'";
-//echo $base_sql;
+//$base_sql="SELECT s.*, ec.email, ec.mobile, ec.mobile_country_code from tmp_student s RIGHT JOIN tmp_student_emergency_contacts ec on s.student_code=ec.student_code and start_date_at_centre <= '".$year_end_date."' and extend_year >= '$year'";
+$base_sql="SELECT s.*, ec.email, ec.mobile, ec.mobile_country_code from tmp_student s RIGHT JOIN tmp_student_emergency_contacts ec on s.student_code=ec.student_code";
+
 $centre_token=ConstructToken("s.centre_code", $_SESSION["CentreCode"], "=");
-//$name_token=ConstructToken("s.name", "%".$_POST["name"]."%", "like");
 $name_token=ConstructToken("s.name", "%".$_POST["name"]."%", "like");
 $name_start_date=ConstructToken("s.start_date_at_centre", "%".$_POST["start_date"]."%", "like");
 //$mobile_token=ConstructToken("CONCAT(ec.mobile_country_code, ec.mobile)", "%".$_POST["mobile"]."%", "like");
@@ -156,6 +161,7 @@ $final_token=ConcatToken($final_token, $name_start_date, "and");
 $final_sql=ConcatWhere($base_sql, $final_token);
 //$final_sql.= " ORDER BY s.start_date_at_centre DESC, s.name ASC";
 $final_sql.= " ORDER BY s.start_date_at_centre DESC, s.name DESC";
+
 $result=mysqli_query($connection, $final_sql);
 $num_row=mysqli_num_rows($result);
 ?>
@@ -183,6 +189,8 @@ if ($num_row>0) {
       <tr class="uk-text-small">
         <td><?php
           $student_photo_src = getStudentPhotoSrc($student['photo_file_name']);
+
+          $inCurrentAcademicYear = "0";
           if( $student_photo_src ){
             echo '<img src="' . $student_photo_src . '" width="60px" height="80px">';
           }
@@ -190,14 +198,20 @@ if ($num_row>0) {
          <td><?php echo $student["name"]?></td>
          <td><?php echo calculateAge($student["dob"])?></td>
          <td><?php echo $student["nationality"]?></td>
-         <td><?php echo $student["start_date_at_centre"]?></td>
+         <td><?php echo $student["start_date_at_centre"]?>
+         <?php if ($student["extend_year"] != $_SESSION['Year']){
+            echo "<br />Not in current academic year";
+            $inCurrentAcademicYear = $student["extend_year"];
+         } ?>
+      </td>
+
          <td><?php echo "+".$student["mobile_country_code"].$student["mobile"]?><br><?php echo $student["email"]?></td>
          <td>
             <?php
             //if ($current_year == $year) {
             ?>
               <a href="/student_qr.php?centre_code=<?php echo $student["centre_code"]; ?>&id=<?php echo sha1($student["id"]); ?>"  data-uk-tooltip title="Edit" style="display: inline-block; margin-top: 5px; width: 30px; height: 30px;"><i class="fas fa-user-edit" style="width: 30px; height: 30px; vertical-align: top"></i></a>
-              <a style="display: inline-block; width: 30px; height: 30px;"><img data-uk-tooltip="{pos:top}" title="Import Student" onclick="doImport('<?php echo sha1($student["id"])?>')" src="images/approve.jpeg" style="width: 30px;"></a>
+              <a style="display: inline-block; width: 30px; height: 30px;"><img data-uk-tooltip="{pos:top}" title="Import Student" onclick="doImport('<?php echo sha1($student["id"])?>','<?php echo $inCurrentAcademicYear ?>')" src="images/approve.jpeg" style="width: 30px;"></a>
               <?php
               //}
               ?>

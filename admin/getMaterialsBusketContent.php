@@ -35,7 +35,7 @@ function calcTotal($student_code) {
 
 
 
-   $sql="SELECT sum(qty*unit_price) as total from tmp_busket where session_id='$session_id' and student_code=sha1('$student_code') and (collection_type = 'link' or collection_type = 'mandarinmodules'or collection_type = 'integrated')";
+   $sql="SELECT sum(qty*unit_price) as total from tmp_busket where session_id='$session_id' and student_code=sha1('$student_code') and (collection_type = 'link' or collection_type = 'mandarinmodules'or collection_type = 'integrated' or collection_type= 'stem-programme' or collection_type = 'stem-student-kit')";
 
    $result=mysqli_query($connection, $sql);
 
@@ -49,11 +49,9 @@ function calcTotal($student_code) {
 
 $student_code=getStudentCodeFromSSID11($ssid);
 
-
-
 //$sql="SELECT b.product_code as course_name, b.id as bid, b.qty, b.unit_price, b.collection_type from tmp_busket b where b.session_id='$session_id' and b.student_code='$student_code' and b.year = '$year' and collection_type = 'link' or collection_type = 'mandarinmodules'or collection_type = 'integrated'";
 //$sql="SELECT b.product_code as course_name, b.id as bid, b.qty, b.unit_price, b.collection_type from tmp_busket b where b.session_id='$session_id' and b.year = '$year' and collection_type = 'link' or collection_type = 'mandarinmodules'or collection_type = 'integrated'";
-$sql="SELECT b.product_code as course_name, b.id as bid, b.qty, b.unit_price, b.collection_type, b.collection_month, b.collection_pattern from tmp_busket b where b.session_id='$session_id' and (collection_type = 'link' or collection_type = 'mandarinmodules'or collection_type = 'integrated')";
+$sql="SELECT b.product_code as course_name, b.id as bid, b.qty, b.unit_price, b.collection_type, b.collection_month, b.collection_pattern from tmp_busket b where b.session_id='$session_id' and (collection_type = 'link' or collection_type = 'mandarinmodules' or collection_type = 'integrated' or collection_type = 'stem-programme' or collection_type = 'stem-student-kit')";
 
 //var_dump($sql);
 
@@ -62,8 +60,6 @@ $result=mysqli_query($connection, $sql);
 $num_row=mysqli_num_rows($result);
 
 ?>
-
-
 
 <script>
 

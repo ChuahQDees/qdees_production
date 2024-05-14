@@ -542,7 +542,7 @@ function dlgAddOnProduct(student_code) {
                </tr>
 <script>
 function doRemove(id) {
-   UIkit.modal.confirm("<h2>Are you sure to continue?</h2>", function () {
+   UIkit.modal.confirm("<h2>Are you sure you wish to continue?</h2>", function () {
       $.ajax({
          url : "admin/remove_from_basket.php",
          type : "POST",
@@ -582,51 +582,62 @@ function doPayAll() {
       }
    }
 
+   var verify = "1"; //If 0, do not proceed
+
    if (payment_method!="") {
       if (payment_method=="CHEQUE") {
          if ((cheque_no!="") & (bank!="") & (ref_no!="")) {
-            $("#frmPayment").submit();
-            window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
+           // $("#frmPayment").submit();
+           // window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
          } else {
             UIkit.notify("Please provide a cheque number, bank and ref no");
+            verify = "0";
          }
       } else {
          if (payment_method=="CC") {
             if (bank!="") {
-               $("#frmPayment").submit();
-               window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
+              // $("#frmPayment").submit();
+              // window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
             } else {
                UIkit.notify("Please provide a bank");
+               verify = "0";
             }
          } else if (payment_method=="CN") {
             if (remarks!="") {
                UIkit.notify("This is not no payment received.");
-               $("#frmPayment").submit();
-               window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
+               //$("#frmPayment").submit();
+               //window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
             } else {
                UIkit.notify("Please fill in remarks");
+               verify = "0";
             }
          } else {
             if (payment_method=="BT") {
                if (bank!="" & (ref_no!="")) {
-                  $("#frmPayment").submit();
-                  window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
+                 // $("#frmPayment").submit();
+                  //window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
                } else {
                   UIkit.notify("Please provide a bank and reference number");
+                  verify = "0";
                }
-            } else {
-               $("#frmPayment").submit();
-               window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
             }
          }
       }
+
+      if (verify == "1"){
+         UIkit.modal.confirm("<h2>Paying receipt. Continue?</h2>", function () {
+         $("#frmPayment").submit();
+         window.location.href = "index.php?p=<?php echo $_GET["back"] ? 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"] : 'student_info&ssid='.$_GET["ssid"].'&back='.$_GET["back"]; ?>";
+         });   
+      }
+
    } else {
       UIkit.notify("Please fill in a payment method");
    }
 }
 
 function clearBasket() {
-   UIkit.modal.confirm("<h2>Are you sure to continue?</h2>", function () {
+   UIkit.modal.confirm("<h2>Are you sure you wish to continue?</h2>", function () {
       $.ajax({
          url : "admin/clearBasket.php",
          type : "POST",

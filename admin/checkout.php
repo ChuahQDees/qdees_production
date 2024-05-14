@@ -273,8 +273,8 @@ if ($_SESSION["isLogin"]==1) {
     var d = new Date();
     var day = d.getDay();
     //if(day>=0 && day<=3) return 7;
-	//CHS: Changed to 10 days instead of 7 upon request
-	if(day>=0 && day<=3) return 10;
+	//CHS: Changed to 9 days instead of 7 upon request
+	if(day>=0 && day<=3) return 9;
     else if(day!=6) return 8;
     else return 9;
 }

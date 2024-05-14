@@ -144,7 +144,7 @@ include_once("admin/declaration_func.php");
 
 <span>
     <span class="page_title"><img src="/images/title_Icons/Visitor Reg.png">DECLARATION OF Q-DEES AND PAYMENTS
-        REPORT assas</span>
+        REPORT</span>
 </span><br>
 <div style="<?php if($pdf_name != '') { echo 'display:none;'; } ?>" >
     <button style="margin-left: 30px;margin-bottom: 13px; position: relative; bottom: 40px;  " id="btnPrint" onclick="printDiv('print_1')"
@@ -3117,10 +3117,905 @@ include_once("admin/declaration_func.php");
 
 
 
+
+
+                            <?php if($monthyear >= '2024-03') { ?>
+
+                            <!--b 1  start -->
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none; font-size:18px;"
+                                    class="uk-width-6-10 uk-text-bold">(iii) STEM Programme</td>
+                            </tr>
+                            <!--  b 1 edp start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">EDP</td>
+                            </tr>
+                            <?php
+                            if($mode=="EDIT"){
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount
+                            from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='EDP'";
+                            }else{
+                                $sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='EDP' and status='Approved' and extend_year='$year'";
+                            }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+
+                            $total_EDP_stem_programme_adjust = 0;
+                            $total_EDP_stem_programme_student = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_stem_programme_adjust +=  $row['amount'];
+                                $total_EDP_stem_programme_student += $level_count;
+                            }else{
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_programme_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_programme_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                              
+                                while ($roww=mysqli_fetch_array($resultt)) {
+                                    $student_id_array[] = $roww['id'];
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_stem_programme_adjust += $level_count * $row['stem_programme_adjust'];
+                                $total_EDP_stem_programme_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Programme" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_EDP_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total EDP" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_EDP_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <!--  b edp end -->
+                            <!--  b QF1 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF1</td>
+                            </tr>
+                            <?php
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='QF1'";
+                        }else{
+							$sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='QF1' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF1_stem_programme_student = 0;
+							$total_QF1_stem_programme_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_stem_programme_adjust +=  $row['amount'];
+                                $total_QF1_stem_programme_student += $level_count;
+                            }else{
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_programme_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_programme_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                
+                                while ($roww=mysqli_fetch_array($resultt)) {
+                                    $student_id_array[] = $roww['id'];
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF1_stem_programme_adjust += $level_count * $row['stem_programme_adjust'];
+                                $total_QF1_stem_programme_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Programme" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF1_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF1" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF1_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            <!--  b QF1 end -->
+                            <!--  b QF2 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF2</td>
+                            </tr>
+                            <?php
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='QF2'";
+                        }else{
+							$sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='QF2' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF2_stem_programme_student = 0;
+							$total_QF2_stem_programme_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_stem_programme_adjust +=  $row['amount'];
+                                $total_QF2_stem_programme_student += $level_count;
+                            }else{
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_programme_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_programme_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                            
+                                while ($roww=mysqli_fetch_array($resultt)) {
+                                    $student_id_array[] = $roww['id']; 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF2_stem_programme_adjust += $level_count * $row['stem_programme_adjust'];
+                                $total_QF2_stem_programme_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Programme" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo  number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF2_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF2" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF2_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            <!--  b QF2 end -->
+                            <!--  b QF3 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF3</td>
+                            </tr>
+                            <?php
+                         if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='QF3'";
+                        }else{
+							$sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='QF3' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF3_stem_programme_student = 0;
+							$total_QF3_stem_programme_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF3_stem_programme_adjust +=  $row['amount'];
+                                $total_QF3_stem_programme_student += $level_count;
+                            }else{
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_programme_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_programme_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_programme_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF3_stem_programme_adjust += $level_count * $row['stem_programme_adjust'];
+                                $total_QF3_stem_programme_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>      
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Programme" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF3_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF3" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF3_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            </tr>
+                            <!--  b QF3 end -->
+
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student (iii)</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php echo $total_stem_programme_student = $total_EDP_stem_programme_student + $total_QF1_stem_programme_student + $total_QF2_stem_programme_student + $total_QF3_stem_programme_student; $total_student_B += $total_stem_programme_student; ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total (iii)" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php  $total_stem_programme_adjust = $total_EDP_stem_programme_adjust + $total_QF1_stem_programme_adjust  + $total_QF2_stem_programme_adjust + $total_QF3_stem_programme_adjust; 
+                                        echo  number_format((float)$total_stem_programme_adjust, 2, '.', '')?>"
+                                        readonly>
+                                    <?php $total_b += $total_stem_programme_adjust; ?>
+                                </td>
+                            </tr>
+                            <!--  b 1 end -->
+
+
+
+                            <!--b 1  start -->
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none; font-size:18px;"
+                                    class="uk-width-6-10 uk-text-bold">(iv) STEM Student Kit</td>
+                            </tr>
+                            <!--  b 1 edp start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">EDP</td>
+                            </tr>
+                            <?php
+                            if($mode=="EDIT"){
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount
+                            from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='EDP'";
+                            }else{
+                                $sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='EDP' and status='Approved' and extend_year='$year'";
+                            }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+
+                            $total_EDP_stem_studentKit_adjust = 0;
+                            $total_EDP_stem_studentKit_student = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                             if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_EDP_stem_studentKit_adjust +=  $row['amount'];
+                                $total_EDP_stem_studentKit_student += $level_count;
+                            }else{
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='EDP' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_studentKit_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_studentKit_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                           
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id']; 
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_EDP_stem_studentKit_adjust += $level_count * $row['stem_studentKit_adjust'];
+                                $total_EDP_stem_studentKit_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Student Kit" />
+                                <input type="hidden" id="subject" name="subject[]" value="EDP" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_EDP_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total EDP" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_EDP_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <!--  b edp end -->
+                            <!--  b QF1 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF1</td>
+                            </tr>
+                            <?php
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='QF1'";
+                        }else{
+							$sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='QF1' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF1_stem_studentKit_student = 0;
+							$total_QF1_stem_studentKit_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF1_stem_studentKit_adjust +=  $row['amount'];
+                                $total_QF1_stem_studentKit_student += $level_count;
+                            }else{
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF1' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_studentKit_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_studentKit_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                                
+                                while ($roww=mysqli_fetch_array($resultt)) {
+                                    $student_id_array[] = $roww['id'];
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF1_stem_studentKit_adjust += $level_count * $row['stem_studentKit_adjust'];
+                                $total_QF1_stem_studentKit_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>     
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Student Kit" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF1" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF1_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF1" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF1_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            <!--  b QF1 end -->
+                            <!--  b QF2 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF2</td>
+                            </tr>
+                            <?php
+                        if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='QF2'";
+                        }else{
+							$sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='QF2' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF2_stem_studentKit_student = 0;
+							$total_QF2_stem_studentKit_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF2_stem_studentKit_adjust +=  $row['amount'];
+                                $total_QF2_stem_studentKit_student += $level_count;
+                            }else{
+
+                            $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_studentKit_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_studentKit_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+                            
+                                while ($roww=mysqli_fetch_array($resultt)) {
+                                    $student_id_array[] = $roww['id'];
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF2_stem_studentKit_adjust += $level_count * $row['stem_studentKit_adjust'];
+                                $total_QF2_stem_studentKit_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>    
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Student Kit" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF2" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo  number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF2_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF2" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF2_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            <!--  b QF2 end -->
+                            <!--  b QF3 start -->
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF3</td>
+                            </tr>
+                            <?php
+                         if($mode=="EDIT"){
+                            $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount
+                        from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='QF3'";
+                        }else{
+							$sql="SELECT * from `fee_structure` where centre_code='$centre_code' and subject='QF3' and status='Approved' and extend_year='$year'";
+                        }
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF3_stem_studentKit_student = 0;
+							$total_QF3_stem_studentKit_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                
+                                    <?php
+                            if($mode=="EDIT"){
+                                $level_count = $row['active_student'];
+                                $total_QF3_stem_studentKit_adjust +=  $row['amount'];
+                                $total_QF3_stem_studentKit_student += $level_count;
+                            }else{
+
+                                $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF3' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."' ";
+
+                                $sql .= " and case when f.stem_studentKit_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
+                                when f.stem_studentKit_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                when f.stem_studentKit_collection='Annually' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (3) or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
+                                end ";
+
+                                $sql .= "   group by ps.student_entry_level, s.id";
+                                $resultt=mysqli_query($connection, $sql);
+                                
+                                $student_id_array = array();
+
+                                $level_count=mysqli_num_rows($resultt);
+
+                                while ($roww=mysqli_fetch_array($resultt)) {
+
+                                    $student_id_array[] = $roww['id'];
+                                }
+
+                                $student_id_array = implode(', ', $student_id_array);
+
+                                $total_QF3_stem_studentKit_adjust += $level_count * $row['stem_studentKit_adjust'];
+                                $total_QF3_stem_studentKit_student += $level_count;
+                            }
+                                ?>
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <span onClick="dlgDeclarationStudentList('<?php echo $student_id_array; ?>')" class="studentLink" ><?php echo $row['fees_structure']?><span class="text-danger"></span>:</span>      
+                                </td>
+                                <input type="hidden" id="form" name="form[]" value="Form1" />
+                                <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
+                                    value="STEM Student Kit" />
+                                <input type="hidden" id="subject" name="subject[]" value="QF3" />
+                                <input type="hidden" id="programme_package" name="programme_package[]"
+                                    value="<?php echo $row['fees_structure']?>" />
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF3_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF3" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF3_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            </tr>
+                            <!--  b QF3 end -->
+
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student (iv)</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php echo $total_stem_studentKit_student = $total_EDP_stem_studentKit_student + $total_QF1_stem_studentKit_student + $total_QF2_stem_studentKit_student + $total_QF3_stem_studentKit_student; $total_student_B += $total_stem_studentKit_student; ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total (iv)" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php  $total_stem_studentKit_adjust = $total_EDP_stem_studentKit_adjust + $total_QF1_stem_studentKit_adjust  + $total_QF2_stem_studentKit_adjust + $total_QF3_stem_studentKit_adjust; 
+                                        echo  number_format((float)$total_stem_studentKit_adjust, 2, '.', '')?>"
+                                        readonly>
+                                    <?php $total_b += $total_stem_studentKit_adjust; ?>
+                                </td>
+                            </tr>
+                            <!--  b 1 end -->
+
+                        <?php 
+                        }
+                        ?>
+
+
                             <!--b 3  start -->
                             <tr class="">
                                 <td style=" margin-top:50px;border:none; font-size:18px;"
-                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Fee qqq</td>
+                                    class="uk-width-6-10 uk-text-bold">(<?php echo ($monthyear >= '2024-03') ? 'v' : 'iii'; ?>) Registration Fee</td>
                             </tr>
                             <!--  b 3 edp start -->
 
@@ -3521,7 +4416,7 @@ include_once("admin/declaration_func.php");
                             <!--  b 3 QF3 end -->
                             <tr class="">
                                 <td style="margin-top:50px; padding-top: 11px; text-align: right;"
-                                    class="uk-width-1-10">Total Student (iii)</td>
+                                    class="uk-width-1-10">Total Student (<?php echo ($monthyear >= '2024-03') ? 'v' : 'iii'; ?>)</td>
                                 <td class="uk-width-1-10">
                                     <input class="total_s" type="number" step="0.01" name="school_total_f"
                                         id="school_total_f"
@@ -3530,7 +4425,7 @@ include_once("admin/declaration_func.php");
                                 </td>
                                 <td style="text-align:center;" class="uk-width-1-10">
                                     <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
-                                        placeholder="Total (iii)" readonly> <span style="font-size:14px;"
+                                        placeholder="Total (<?php echo ($monthyear >= '2024-03') ? 'v' : 'iii'; ?>)" readonly> <span style="font-size:14px;"
                                         class="edp_eq">RM</span>
                                 </td>
                                 <td style="text-align:center;" class="uk-width-1-10">
@@ -3672,7 +4567,7 @@ include_once("admin/declaration_func.php");
                             </tr>
                             <tr class="">
                                 <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
-                                    (ii)Memories to Cherishasfasf<span class="text-danger"></span>:</td>
+                                    (ii)Memories to Cherish<span class="text-danger"></span>:</td>
                                 <input type="hidden" id="form" name="form[]" value="Form1" />
                                 <input type="hidden" id="fee_structure_mame" name="fee_structure_mame[]"
                                     value="Memories to Cherish" />
@@ -3701,7 +4596,6 @@ include_once("admin/declaration_func.php");
                                 $sql .=" SELECT count(id) level_count, fees from (SELECT ps.student_entry_level, s.id, c.unit_price as fees from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id inner join `collection` c on c.allocation_id = ps.id where c.void='0' and (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and c.product_code='MEMORIES TO CHERISH' and month(c.collection_date_time) = $month group by ps.student_entry_level, s.id) ab ";
                                 $sql .= " )abc ";
 								
-                                echo $sql;
                             
                                 $resultt=mysqli_query($connection, $sql);
                                 

@@ -20,7 +20,7 @@ $ssid=getSSIDByStudentCode($student_code);
 
 <script>
 function removeAOFromTempBusket(bid, product_code, student_code) {
-   UIkit.modal.confirm("<h2>Are you sure to continue?</h2>", function () {
+   //UIkit.modal.confirm("<h2>Are you sure to wish to continue?</h2>", function () {
       var allocation_id=$("#allocation_id").val();
 
       $.ajax({
@@ -45,7 +45,7 @@ function removeAOFromTempBusket(bid, product_code, student_code) {
             UIkit.notify("Error:"+error);
          }
       });
-   })
+   //})
 }
 
 function getAOTempBusket() {

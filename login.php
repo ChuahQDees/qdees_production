@@ -1,6 +1,7 @@
 <?php
 //include_once("uikit.php");
 include_once("bootstrap.php");
+include_once("uikit.php");
 ?>
 <script>
 $(document).ready(function () {
@@ -273,9 +274,10 @@ input {
                         <div class="mt-5">
                             <a id="btnLogin" class="btn btn-block btn-success btn-lg font-weight-medium">Login</a>
                         </div>
+                        <!--
 						 <div class="form-group">
                            <a href="./forgot_password.php" class="auth-link text-black" style="float:right;">Forgot password?</a>
-                        </div>
+                        </div>-->
                         
                     </form>
 

@@ -273,7 +273,7 @@ if ($_SESSION["isLogin"] == 1) {
 						<option value="Students Attire" <?php if ($_GET["sub_company"] == 'Student Attire') { echo "selected"; } ?>>Students Attire</option>
 						<option value="Administrative Material" <?php if ($_GET["sub_company"] == 'Administrative Materials') { echo "selected"; } ?>>Administrative Material</option>
 						<option value="Promotional Items" <?php if ($_GET["sub_company"] == 'Promotional Items') { echo "selected"; } ?>>Promotional Items</option>
-						<option value="Security Deposits" <?php if ($_GET["sub_company"] == 'Security Deposits') { echo "selected"; } ?>>Security Deposits and Requisition Forms</option>
+						<option value="Software Access" <?php if ($_GET["sub_company"] == 'Software Access') { echo "selected"; } ?>>Software Access</option>
                      </select>
 					  
 
@@ -349,7 +349,7 @@ if ($_SESSION["isLogin"] == 1) {
                }
                if ($category_name != "") {
                   //$sql .= "and company_name = '$sub_company'";
-                  $sql .= "and (c.category_name like '%$category_name%' or c.category_description like '%$category_name%') ";
+                  $sql .= "and (c.category_name like '%$category_name%' or c.category_description like '%$category_name%' OR p.product_name LIKE '%$category_name%') ";
                }
                if ($term != "") {
                   $sql .= "and p.term = '$term' ";

@@ -15,14 +15,24 @@ $from_date= isset($_POST['from_date']) ? $_POST['from_date'] : '';
 
 $extend_year = isset($_POST['from_date']) ? getYearFromMonth(date('Y',strtotime($from_date)),date('m',strtotime($from_date))) : '';
 
+function clean($string) {
+$string2 = str_replace("'","",$string);
+return $string2;
+}
+
 $from_date=convertDate2ISO($from_date);
 
       if (isset($mode) and $mode=="EDIT" && $get_sha1_fee_id!="") {
 		 if(isset($_POST['fees_structure'],$_POST['subject'],$_POST['programme_package'],$_POST['from_date'],$_POST['to_date'],$_POST['school_adjust'])) {
 			$fees_structure=mysqli_real_escape_string($connection, $_POST['fees_structure']);
+
+			//Remove special characters
+			$cleanedFeesStructure = clean($fees_structure);
+			$cleanedRemarks = clean($_POST['remarks']);
+
         $save_sql="update  fee_structure set 
 			centre_code='$centre_code',
-			fees_structure='$fees_structure',
+			fees_structure='$cleanedFeesStructure',
 			subject='".$_POST['subject']."',			
 			programme_package='".$_POST['programme_package']."',
 			from_date='".$_POST['from_date']."',			
@@ -92,7 +102,7 @@ $from_date=convertDate2ISO($from_date);
 			robotic_plus_default='".$_POST['robotic_plus_default']."',
 			robotic_plus_adjust='".$_POST['robotic_plus_adjust']."',
 			robotic_plus_collection='".$_POST['robotic_plus_collection']."',
-			remarks='".$_POST['remarks']."',
+			remarks='".$cleanedRemarks."',
 			school_default_perent='".$_POST['school_default_perent']."',
 			multimedia_default_perent='".$_POST['multimedia_default_perent']."',
 			facility_default_perent='".$_POST['facility_default_perent']."',
@@ -107,6 +117,17 @@ $from_date=convertDate2ISO($from_date);
 			afternoon_robotic_default_perent='".$_POST['afternoon_robotic_default_perent']."',
 			robotic_plus_default_perent='".$_POST['robotic_plus_default_perent']."',
 			islam_default_perent='".$_POST['islam_default_perent']."',
+
+			stem_programme_default='".$_POST['stem_programme_default']."',
+			stem_programme_default_parent='".$_POST['stem_programme_default_parent']."',
+			stem_programme_adjust='".$_POST['stem_programme_adjust']."',
+			stem_programme_collection='".$_POST['stem_programme_collection']."',
+
+			stem_studentKit_default='".$_POST['stem_studentKit_default']."',
+			stem_studentKit_default_parent='".$_POST['stem_studentKit_default_parent']."',
+			stem_studentKit_adjust='".$_POST['stem_studentKit_adjust']."',
+			stem_studentKit_collection='".$_POST['stem_studentKit_collection']."',
+
 			extend_year='$extend_year',
 			submission_date='$time_date',
 			status='Pending'";
@@ -129,46 +150,66 @@ $from_date=convertDate2ISO($from_date);
 	  }
 	  
 	  }
+
+	  $link = preg_replace('~(\?|&)counter=[^&]*~','$1',$link);
+
 	  if (isset($mode) and $mode=="SAVE") {
 		  $from_date= $_POST['from_date'];
 		  $time_date= date("Y-m-d H:i:s");
 		  $from_date=convertDate2ISO($from_date);
 		  $extend_year = getYearFromMonth(date('Y',strtotime($from_date)),date('m',strtotime($from_date)));
 		  $feeStatus = "Approved";
+		  $autoApprove = "Y";
+		  $adjusted = "Default";
 
-		  if ($_POST['alertPop'] != ""){
+		  //$approveDate = date("Y-m-d H:i:s");
+
+		  if ($_POST['alertPop'] != ""){ //User changed something in the fee structure, set to Pending and disable Auto Approve
 			$feeStatus = "Pending";
+			$autoApprove = "N";
+			//$approveDate = NULL;
 		  }
 
 		  $fees_structure=mysqli_real_escape_string($connection, $_POST['fees_structure']);
-		   if(isset($_POST['fees_structure'],$_POST['subject'],$_POST['programme_package'],$_POST['from_date'],$_POST['to_date'],$_POST['school_adjust'])) {
-		   $save_sql="INSERT INTO  fee_structure ( centre_code,fees_structure,subject,programme_package,from_date,to_date,school_default,school_adjust,school_collection,multimedia_default,multimedia_adjust,multimedia_collection,facility_default,facility_adjust,facility_collection,enhanced_default,enhanced_adjust,enhanced_collection,school_total_d,school_total_f,iq_math_default,iq_math_adjust,iq_math_collection,mandarin_default,mandarin_adjust,mandarin_collection,international_default,international_adjust,international_collection,total_default_c,total_adjust_c,integrated_default,integrated_adjust,integrated_collection,link_default,link_adjust,link_collection,mandarin_m_defauft,mandarin_m_adjust,mandarin_m_collection,total_default_d,total_adjust_d,basic_default,basic_adjust,basic_collection,afternoon_robotic_default,
-		   afternoon_robotic_adjust,afternoon_robotic_collection,registration_default,registration_adjust,mobile_default,mobile_adjust,mobile_collection,insurance_default,insurance_adjust,uniform_default,uniform_adjust,gymwear_default,gymwear_adjust,q_dees_default,q_dees_adjust,q_bag_default,q_bag_adjust,total_default_f,total_adjust_f,islam_default,islam_adjust,islam_collection,robotic_plus_default,robotic_plus_adjust,robotic_plus_collection,remarks,school_default_perent,multimedia_default_perent,facility_default_perent,enhanced_default_perent,iq_math_default_perent,mandarin_default_perent,international_perent,mandarin_m_default_perent,integrated_default_perent,link_default_perent,basic_default_perent,mobile_perent,afternoon_robotic_default_perent,robotic_plus_default_perent,islam_default_perent, extend_year, submission_date, status) VALUES ('$centre_code','$fees_structure','".$_POST['subject']."','".$_POST['programme_package']."','".$_POST['from_date']."','".$_POST['to_date']."','".$_POST['school_default']."','".$_POST['school_adjust']."','".$_POST['school_collection']."','".$_POST['multimedia_default']."','".$_POST['multimedia_adjust']."','".$_POST['multimedia_collection']."','".$_POST['facility_default']."','".$_POST['facility_adjust']."','".$_POST['facility_collection']."','".$_POST['enhanced_default']."','".$_POST['enhanced_adjust']."','".$_POST['enhanced_collection']."','".$_POST['school_total_d']."','".$_POST['school_total_f']."','".$_POST['iq_math_default']."','".$_POST['iq_math_adjust']."','".$_POST['iq_math_collection']."','".$_POST['mandarin_default']."','".$_POST['mandarin_adjust']."','".$_POST['mandarin_collection']."','".$_POST['international_default']."','".$_POST['international_adjust']."','".$_POST['international_collection']."','".$_POST['total_default_c']."','".$_POST['total_adjust_c']."','".$_POST['integrated_default']."','".$_POST['integrated_adjust']."','".$_POST['integrated_collection']."','".$_POST['link_default']."','".$_POST['link_adjust']."','".$_POST['link_collection']."','".$_POST['mandarin_m_defauft']."','".$_POST['mandarin_m_adjust']."','".$_POST['mandarin_m_collection']."','".$_POST['total_default_d']."','".$_POST['total_adjust_d']."','".$_POST['basic_default']."','".$_POST['basic_adjust']."','".$_POST['basic_collection']."','".$_POST['afternoon_robotic_default']."','".$_POST['afternoon_robotic_adjust']."','".$_POST['afternoon_robotic_collection']."','".$_POST['registration_default']."','".$_POST['registration_adjust']."','".$_POST['mobile_default']."','".$_POST['mobile_adjust']."','".$_POST['mobile_collection']."','".$_POST['insurance_default']."','".$_POST['insurance_adjust']."','".$_POST['uniform_default']."','".$_POST['uniform_adjust']."','".$_POST['gymwear_default']."','".$_POST['gymwear_adjust']."','".$_POST['q_dees_default']."','".$_POST['q_dees_adjust']."','".$_POST['q_bag_default']."','".$_POST['q_bag_adjust']."','".$_POST['total_default_f']."','".$_POST['total_adjust_f']."','".$_POST['islam_default']."','".$_POST['islam_adjust']."','".$_POST['islam_collection']."','".$_POST['robotic_plus_default']."','".$_POST['robotic_plus_adjust']."','".$_POST['robotic_plus_collection']."','".$_POST['remarks']."','".$_POST['school_default_perent']."','".$_POST['multimedia_default_perent']."','".$_POST['facility_default_perent']."','".$_POST['enhanced_default_perent']."','".$_POST['iq_math_default_perent']."','".$_POST['mandarin_default_perent']."','".$_POST['international_perent']."','".$_POST['mandarin_m_default_perent']."','".$_POST['integrated_default_perent']."','".$_POST['link_default_perent']."','".$_POST['basic_default_perent']."','".$_POST['mobile_perent']."','".$_POST['afternoon_robotic_default_perent']."','".$_POST['robotic_plus_default_perent']."','".$_POST['islam_default_perent']."','$extend_year', '$time_date', '$feeStatus')";	  
+				
+			if(isset($_POST['fees_structure'],$_POST['subject'],$_POST['programme_package'],$_POST['from_date'],$_POST['to_date'],$_POST['school_adjust'])) {
 
-			$result=mysqli_query($connection, $save_sql);
+				$cleanedFeesStructure = clean($fees_structure);
+				$cleanedRemarks = clean($_POST['remarks']);
 
-			$action_id = mysqli_insert_id($connection);
+			$save_sql="INSERT INTO  fee_structure ( centre_code,fees_structure,subject,programme_package,from_date,to_date,school_default,school_adjust,school_collection,multimedia_default,multimedia_adjust,multimedia_collection,facility_default,facility_adjust,facility_collection,enhanced_default,enhanced_adjust,enhanced_collection,school_total_d,school_total_f,iq_math_default,iq_math_adjust,iq_math_collection,mandarin_default,mandarin_adjust,mandarin_collection,international_default,international_adjust,international_collection,total_default_c,total_adjust_c,integrated_default,integrated_adjust,integrated_collection,link_default,link_adjust,link_collection,mandarin_m_defauft,mandarin_m_adjust,mandarin_m_collection,total_default_d,total_adjust_d,basic_default,basic_adjust,basic_collection,afternoon_robotic_default,
+			afternoon_robotic_adjust,afternoon_robotic_collection,registration_default,registration_adjust,mobile_default,mobile_adjust,mobile_collection,insurance_default,insurance_adjust,uniform_default,uniform_adjust,gymwear_default,gymwear_adjust,q_dees_default,q_dees_adjust,q_bag_default,q_bag_adjust,total_default_f,total_adjust_f,islam_default,islam_adjust,islam_collection,robotic_plus_default,robotic_plus_adjust,robotic_plus_collection,remarks,school_default_perent,multimedia_default_perent,facility_default_perent,enhanced_default_perent,iq_math_default_perent,mandarin_default_perent,international_perent,mandarin_m_default_perent,integrated_default_perent,link_default_perent,basic_default_perent,mobile_perent,afternoon_robotic_default_perent,robotic_plus_default_perent,islam_default_perent, extend_year, submission_date, status, auto_approve, adjusted, stem_programme_default, stem_programme_default_parent, stem_programme_adjust, stem_programme_collection, stem_studentKit_default, stem_studentKit_default_parent, stem_studentKit_adjust, stem_studentKit_collection) VALUES ('$centre_code','$cleanedFeesStructure','".$_POST['subject']."','".$_POST['programme_package']."','".$_POST['from_date']."','".$_POST['to_date']."','".$_POST['school_default']."','".$_POST['school_adjust']."','".$_POST['school_collection']."','".$_POST['multimedia_default']."','".$_POST['multimedia_adjust']."','".$_POST['multimedia_collection']."','".$_POST['facility_default']."','".$_POST['facility_adjust']."','".$_POST['facility_collection']."','".$_POST['enhanced_default']."','".$_POST['enhanced_adjust']."','".$_POST['enhanced_collection']."','".$_POST['school_total_d']."','".$_POST['school_total_f']."','".$_POST['iq_math_default']."','".$_POST['iq_math_adjust']."','".$_POST['iq_math_collection']."','".$_POST['mandarin_default']."','".$_POST['mandarin_adjust']."','".$_POST['mandarin_collection']."','".$_POST['international_default']."','".$_POST['international_adjust']."','".$_POST['international_collection']."','".$_POST['total_default_c']."','".$_POST['total_adjust_c']."','".$_POST['integrated_default']."','".$_POST['integrated_adjust']."','".$_POST['integrated_collection']."','".$_POST['link_default']."','".$_POST['link_adjust']."','".$_POST['link_collection']."','".$_POST['mandarin_m_defauft']."','".$_POST['mandarin_m_adjust']."','".$_POST['mandarin_m_collection']."','".$_POST['total_default_d']."','".$_POST['total_adjust_d']."','".$_POST['basic_default']."','".$_POST['basic_adjust']."','".$_POST['basic_collection']."','".$_POST['afternoon_robotic_default']."','".$_POST['afternoon_robotic_adjust']."','".$_POST['afternoon_robotic_collection']."','".$_POST['registration_default']."','".$_POST['registration_adjust']."','".$_POST['mobile_default']."','".$_POST['mobile_adjust']."','".$_POST['mobile_collection']."','".$_POST['insurance_default']."','".$_POST['insurance_adjust']."','".$_POST['uniform_default']."','".$_POST['uniform_adjust']."','".$_POST['gymwear_default']."','".$_POST['gymwear_adjust']."','".$_POST['q_dees_default']."','".$_POST['q_dees_adjust']."','".$_POST['q_bag_default']."','".$_POST['q_bag_adjust']."','".$_POST['total_default_f']."','".$_POST['total_adjust_f']."','".$_POST['islam_default']."','".$_POST['islam_adjust']."','".$_POST['islam_collection']."','".$_POST['robotic_plus_default']."','".$_POST['robotic_plus_adjust']."','".$_POST['robotic_plus_collection']."','".$cleanedRemarks."','".$_POST['school_default_perent']."','".$_POST['multimedia_default_perent']."','".$_POST['facility_default_perent']."','".$_POST['enhanced_default_perent']."','".$_POST['iq_math_default_perent']."','".$_POST['mandarin_default_perent']."','".$_POST['international_perent']."','".$_POST['mandarin_m_default_perent']."','".$_POST['integrated_default_perent']."','".$_POST['link_default_perent']."','".$_POST['basic_default_perent']."','".$_POST['mobile_perent']."','".$_POST['afternoon_robotic_default_perent']."','".$_POST['robotic_plus_default_perent']."','".$_POST['islam_default_perent']."','$extend_year', '$time_date', '$feeStatus', '$autoApprove', '$adjusted', '".$_POST['stem_programme_default']."', '".$_POST['stem_programme_default_parent']."', '".$_POST['stem_programme_adjust']."', '".$_POST['stem_programme_collection']."', '".$_POST['stem_studentKit_default']."', '".$_POST['stem_studentKit_default_parent']."', '".$_POST['stem_studentKit_adjust']."', '".$_POST['stem_studentKit_collection']."')";	  
 
-			$centre_data = mysqli_fetch_array(mysqli_query($connection,"SELECT `company_name` FROM `centre` WHERE `centre_code` = '".$_SESSION['CentreCode']."'"));
+				$result=mysqli_query($connection, $save_sql);
 
-			$n_data['action_id'] = $action_id;
-			$n_data['send_to'] = 'hq';
-			$n_data['send_from'] = $_SESSION['CentreCode'];
-			$n_data['is_center_read'] = 1;
-			$n_data['is_hq_read'] = 0;
-			$n_data['type'] = "fee_structure_adjusted";
-			$n_data['subject'] = $centre_data['company_name'].", ".$fees_structure.' has been adjusted.'; 
-			notification($n_data);
+				$action_id = mysqli_insert_id($connection);
 
-		if($result){
-			//echo "<script type='text/javascript'>window.top.location='index.php?p=fee_structure_setting&msg=Record saved';</script>";
-			//$msg="Record saved";
-			$msg="Your respond has been submitted successfully";
-		}else{
-			$msg="Failed to save data";
-		}
-		   }
+				$centre_data = mysqli_fetch_array(mysqli_query($connection,"SELECT `company_name` FROM `centre` WHERE `centre_code` = '".$_SESSION['CentreCode']."'"));
+
+				$n_data['action_id'] = $action_id;
+				$n_data['send_to'] = 'hq';
+				$n_data['send_from'] = $_SESSION['CentreCode'];
+				$n_data['is_center_read'] = 1;
+				$n_data['is_hq_read'] = 0;
+				$n_data['type'] = "fee_structure_adjusted";
+				$n_data['subject'] = $centre_data['company_name'].", ".$fees_structure.' has been adjusted.'; 
+				notification($n_data);
+
+				if($result){
+					echo "<script type='text/javascript'>window.top.location='index.php?p=fee_structure_setting&mode=SAVED';</script>";
+					//$msg="Record saved";
+					//$msg="Your respond has been submitted successfully";
+				}else{
+					$msg="Failed to save data";
+				}
+			
+			}
 	  }
+
+	  if (isset($mode) and $mode=="SAVED") {
+		$msg="Your response has been submitted successfully";
+	  }
+
 	   $get_sha1_id=$_GET['id'];
 	  if (isset($mode) and $mode=="DUPLICATE" AND $get_sha1_id != '') {
 	/* 	   $save_sql="INSERT INTO fee_structure (`centre_code`, `fees_structure`, `subject`, `programme_package`, `from_date`, `to_date`, `school_default`, `school_adjust`, `school_collection`, `multimedia_default`, `multimedia_adjust`, `multimedia_collection`, `facility_default`, `facility_adjust`, `facility_collection`, `enhanced_default`, `enhanced_adjust`, `enhanced_collection`, `school_total_d`, `school_total_f`, `iq_math_default`, `iq_math_adjust`, `iq_math_collection`, `mandarin_default`, `mandarin_adjust`, `mandarin_collection`, `international_default`, `international_adjust`, `international_collection`, `total_default_c`, `total_adjust_c`, `integrated_default`, `integrated_adjust`, `integrated_collection`, `link_default`, `link_adjust`, `link_collection`, `mandarin_m_defauft`, `mandarin_m_adjust`, `mandarin_m_collection`, `total_default_d`, `total_adjust_d`, `basic_default`, `basic_adjust`, `basic_collection`, `registration_default`, `registration_adjust`, `mobile_default`, `mobile_adjust`, `mobile_collection`, `insurance_default`, `insurance_adjust`, `uniform_default`, `uniform_adjust`, `gymwear_default`, `gymwear_adjust`, `q_dees_default`, `q_dees_adjust`, `q_bag_default`, `q_bag_adjust`, `total_default_f`, `total_adjust_f`, `islam_default`, `islam_adjust`, `remarks`, `school_default_perent`, `multimedia_default_perent`, `facility_default_perent`, `enhanced_default_perent`, `iq_math_default_perent`, `mandarin_default_perent`, `international_perent`, `integrated_default_perent`, `link_default_perent`, `mandarin_m_default_perent`, `basic_default_perent`, `mobile_perent`, `extend_year`, `status`, `submission_date`) SELECT  `centre_code`, `fees_structure`, `subject`, `programme_package`, `from_date`, `to_date`, `school_default`, `school_adjust`, `school_collection`, `multimedia_default`, `multimedia_adjust`, `multimedia_collection`, `facility_default`, `facility_adjust`, `facility_collection`, `enhanced_default`, `enhanced_adjust`, `enhanced_collection`, `school_total_d`, `school_total_f`, `iq_math_default`, `iq_math_adjust`, `iq_math_collection`, `mandarin_default`, `mandarin_adjust`, `mandarin_collection`, `international_default`, `international_adjust`, `international_collection`, `total_default_c`, `total_adjust_c`, `integrated_default`, `integrated_adjust`, `integrated_collection`, `link_default`, `link_adjust`, `link_collection`, `mandarin_m_defauft`, `mandarin_m_adjust`, `mandarin_m_collection`, `total_default_d`, `total_adjust_d`, `basic_default`, `basic_adjust`, `basic_collection`, `registration_default`, `registration_adjust`, `mobile_default`, `mobile_adjust`, `mobile_collection`, `insurance_default`, `insurance_adjust`, `uniform_default`, `uniform_adjust`, `gymwear_default`, `gymwear_adjust`, `q_dees_default`, `q_dees_adjust`, `q_bag_default`, `q_bag_adjust`, `total_default_f`, `total_adjust_f`, `islam_default`, `islam_adjust`, `remarks`, `school_default_perent`, `multimedia_default_perent`, `facility_default_perent`, `enhanced_default_perent`, `iq_math_default_perent`, `mandarin_default_perent`, `international_perent`, `integrated_default_perent`, `link_default_perent`, `mandarin_m_default_perent`, `basic_default_perent`, `mobile_perent`, `extend_year`, 'Pending', '".$time_date."' FROM fee_structure WHERE sha1(id) ='$get_sha1_id'";   
@@ -215,7 +256,7 @@ $from_date=convertDate2ISO($from_date);
 		$sql = "SELECT term_num, term_start, term_end from schedule_term WHERE year = '$yearSession' AND centre_code = '$centre_code'";
 		$result = mysqli_query($connection, $sql);
 		$sdate = ""; //Start Date
-		$edate = "asd"; //End Date
+		$edate = ""; //End Date
 		$term5 = false;
 		
 		while ($row = mysqli_fetch_assoc($result)) {
@@ -316,7 +357,7 @@ $row_exists=mysqli_num_rows($result3);
                         <option value="">Please Select Programme Package</option>
                         <option value="Full Day" <?php if($edit_row['programme_package']=='Full Day') {echo 'selected';}?>>Full Day</option>
                         <option value="Half Day" <?php if($edit_row['programme_package']=='Half Day') {echo 'selected';}?>>Half Day</option>
-                        <option value="3/4 Day" <?php if($edit_row['programme_package']=='3/4 Day') {echo 'selected';}?>>3/4 Day</option>
+                        <!--<option value="3/4 Day" <?php if($edit_row['programme_package']=='3/4 Day') {echo 'selected';}?>>3/4 Day</option>-->
                      </select>
                      <span id="validationprogramme_package"  style="color: red; display: none;">Please select Programme Package</span>
 						 <?php } ?>
@@ -329,8 +370,8 @@ $row_exists=mysqli_num_rows($result3);
                   <td style="border:none;font-size:13px;" class="uk-width-3-10 uk-text-bold">Commencement Date<span class="text-danger">*</span></td>
 				  <td style="border:none;" class="uk-width-7-10">
 				  <select name="year_select" id="year_select" class="uk-width-1-1 subject_3 view-data" onChange="dateChange()">
-				    <!--<option value="2024-2025">2024-2025</option>-->
-                	<option value="2023-2024" selected>2023-2024</option>
+				    <option value="2024-2025" selected>2024-2025</option>
+                	<option value="2023-2024">2023-2024</option>
                 	<!--<option value="2022-2023" <?php if($edit_row['programme_package']=='Half Day') {echo 'selected';}?>>2022-2023</option>-->
                   </select> 
 				  </td>
@@ -345,11 +386,11 @@ $row_exists=mysqli_num_rows($result3);
                   </td>
 					-->
 				  <td style="border:none;" class="uk-width-3-10" hidden>
-                    <input style="width: 100%;" type="text" class="subject_3 view-data" <?php if($row_exists>0){ echo 'readonly'; } ?> name="from_date" id="from_date" placeholder="Start Date" <?php if($row_exists==0){ ?> data-uk-datepicker="{format: 'YYYY-MM-DD'}" <?php } ?> value="2023-03-06" autocomplete="off">
+                    <input style="width: 100%;" type="text" class="subject_3 view-data" <?php if($row_exists>0){ echo 'readonly'; } ?> name="from_date" id="from_date" placeholder="Start Date" <?php if($row_exists==0){ ?> data-uk-datepicker="{format: 'YYYY-MM-DD'}" <?php } ?> value="2024-03-01" autocomplete="off">
 					 <span id="validationdf"  style="color: red; display: none;">Please input Start Date</span>
                   </td>
 				  <td style="border:none;" class="uuk-width-3-10" hidden>
-                     <input style="width: 100%;" type="text" class="subject_3 view-data" <?php if($row_exists>0){ echo 'readonly'; } ?> name="to_date" id="to_date" placeholder="End Date" <?php if($row_exists==0){ ?> data-uk-datepicker="{format: 'YYYY-MM-DD'}" <?php } ?>  value="2024-02-29" autocomplete="off">
+                     <input style="width: 100%;" type="text" class="subject_3 view-data" <?php if($row_exists>0){ echo 'readonly'; } ?> name="to_date" id="to_date" placeholder="End Date" <?php if($row_exists==0){ ?> data-uk-datepicker="{format: 'YYYY-MM-DD'}" <?php } ?>  value="2025-02-28" autocomplete="off">
 					 <span id="validationdt"  style="color: red; display: none;">Please input End Date</span>
                   </td>
                </tr>
@@ -362,7 +403,7 @@ $row_exists=mysqli_num_rows($result3);
 
 						if(text == "2024-2025"){
 							document.getElementById("from_date").value = "2024-03-01";
-							document.getElementById("to_date").value = "2024-12-30";
+							document.getElementById("to_date").value = "2025-02-29";
 						}else{
 							document.getElementById("from_date").value = "2023-03-06";
 							document.getElementById("to_date").value = "2024-02-29";
@@ -418,8 +459,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input  type="text" class="view-data" name="school_collection" readonly id="school_collection" value="<?php echo $edit_row['school_collection'] ?>">
 						  <?php } else { ?>
-						 <select name="school_collection" id="school_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+						 <select name="school_collection" id="school_collection" class="view-data" onChange="autoCalculateAdjustFee('school_default', 'school_default_perent', 'school_adjust', 'school_collection')" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['school_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['school_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['school_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -449,8 +490,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="multimedia_collection" readonly id="multimedia_collection" value="<?php echo $edit_row['multimedia_collection'] ?>">
 						  <?php } else { ?>
-							<select name="multimedia_collection" id="multimedia_collection" class="view-data" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> style="width: 100%;">
-							<option value=""></option>
+							<select name="multimedia_collection" id="multimedia_collection" class="view-data" onChange="autoCalculateAdjustFee('multimedia_default', 'multimedia_default_perent', 'multimedia_adjust', 'multimedia_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> style="width: 100%;">
+							
 							<option value="Monthly" <?php if($edit_row['multimedia_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['multimedia_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['multimedia_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -482,8 +523,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="facility_collection" readonly id="facility_collection" value="<?php echo $edit_row['facility_collection'] ?>">
 						  <?php } else { ?>
-							<select name="facility_collection" id="facility_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="facility_collection" id="facility_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('facility_default', 'facility_default_perent', 'facility_adjust', 'facility_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['facility_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['facility_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['facility_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -515,8 +556,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="enhanced_collection" readonly id="enhanced_collection" value="<?php echo $edit_row['enhanced_collection'] ?>">
 						  <?php } else { ?>
-							<select name="enhanced_collection" id="enhanced_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="enhanced_collection" id="enhanced_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('enhanced_default', 'enhanced_default_perent', 'enhanced_adjust', 'enhanced_collection')"  <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['enhanced_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['enhanced_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['enhanced_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -539,7 +580,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="" style="width: 100%;">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -572,8 +613,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="iq_math_collection" readonly id="iq_math_collection" value="<?php echo $edit_row['iq_math_collection'] ?>">
 						  <?php } else { ?>
-							<select name="iq_math_collection" id="iq_math_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="iq_math_collection" id="iq_math_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('iq_math_default', 'iq_math_default_perent', 'iq_math_adjust', 'iq_math_collection')"  <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['iq_math_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['iq_math_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['iq_math_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -604,8 +645,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="mandarin_collection" readonly id="mandarin_collection" value="<?php echo $edit_row['mandarin_collection'] ?>">
 						  <?php } else { ?>
-							<select name="mandarin_collection" id="mandarin_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="mandarin_collection" id="mandarin_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('mandarin_default', 'mandarin_default_perent', 'mandarin_adjust', 'mandarin_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['mandarin_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['mandarin_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['mandarin_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -636,8 +677,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="international_collection" readonly id="international_collection" value="<?php echo $edit_row['international_collection'] ?>">
 						  <?php } else { ?>
-							<select name="international_collection" id="international_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="international_collection" id="international_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('international_default', 'international_perent', 'international_adjust', 'international_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['international_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['international_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['international_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -668,8 +709,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="robotic_plus_collection" readonly id="robotic_plus_collection" value="<?php echo $edit_row['robotic_plus_collection'] ?>">
 						  <?php } else { ?>
-							<select name="robotic_plus_collection" id="robotic_plus_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="robotic_plus_collection" id="robotic_plus_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('robotic_plus_default', 'robotic_plus_default_perent', 'robotic_plus_adjust', 'robotic_plus_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['robotic_plus_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['robotic_plus_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['robotic_plus_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -692,7 +733,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="" style="width: 100%;">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -725,8 +766,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="integrated_collection" readonly id="integrated_collection" value="<?php echo $edit_row['integrated_collection'] ?>">
 						  <?php } else { ?>
-							<select name="integrated_collection" id="integrated_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="integrated_collection" id="integrated_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('integrated_default', 'integrated_default_perent', 'integrated_adjust', 'integrated_collection')"  <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['integrated_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['integrated_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['integrated_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -757,8 +798,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="link_collection" readonly id="link_collection" value="<?php echo $edit_row['link_collection'] ?>">
 						  <?php } else { ?>
-							<select name="link_collection" id="link_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="link_collection" id="link_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('link_default', 'link_default_perent', 'link_adjust', 'link_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['link_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['link_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['link_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -789,8 +830,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="mandarin_m_collection" readonly id="mandarin_m_collection" value="<?php echo $edit_row['mandarin_m_collection'] ?>">
 						  <?php } else { ?>
-							<select name="mandarin_m_collection" id="mandarin_m_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="mandarin_m_collection" id="mandarin_m_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('mandarin_m_defauft', 'mandarin_m_default_perent', 'mandarin_m_adjust', 'mandarin_m_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['mandarin_m_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['mandarin_m_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['mandarin_m_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -801,6 +842,73 @@ $row_exists=mysqli_num_rows($result3);
 						
 					  </td>
 					</tr>
+					<!-- STEM START -->
+					<tr class="">
+					   <td style="margin-top:50px; border:none;" class="uk-width-1-10 uk-text-bold">STEM Programme<span class="text-danger">*</span>:</td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">							
+						 <input class="int_default view-data" style="font-weight:bold;border:none;" type="number" step="0.01" name="stem_programme_default" id="stem_programme_default" value="<?php echo $edit_row['stem_programme_default'] ?>" readonly><br>
+						 <span id="validationSTEMpgm"  style="color: red; display: none;font-size:11px;margin-left: -17px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+						 <input class="view-data" type="text" style="font-weight:bold;border:none;" name="stem_programme_default_parent" id="stem_programme_default_parent" value="<?php echo $edit_row['stem_programme_default_parent'] ?>" readonly><br>
+						 <span id="validationSTEMpgm_perent" style="color: red; display: none;font-size:11px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">
+							
+						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="stem_programme_adjust" id="stem_programme_adjust" value="<?php echo $edit_row['stem_programme_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('stem_programme_adjust')"><br>
+						 <span id="validationSTEMpgm2"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+					  <?php if($row_exists>0){ ?>
+						  <input class="view-data" type="text" name="stem_programme_collection" readonly id="stem_programme_collection" value="<?php echo $edit_row['stem_programme_collection'] ?>">
+						  <?php } else { ?>
+							<select name="stem_programme_collection" id="stem_programme_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('stem_programme_default', 'stem_programme_default_parent', 'stem_programme_adjust', 'stem_programme_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
+							<option value="Monthly" <?php if($edit_row['stem_programme_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
+							<option value="Termly" <?php if($edit_row['stem_programme_collection']=='Termly') {echo 'selected';}?>>Termly</option>
+							<option value="Half Year" <?php if($edit_row['stem_programme_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
+							<option value="Annually" <?php if($edit_row['stem_programme_collection']=='Annually') {echo 'selected';}?>>Annually</option>
+						 </select><br>
+						 <span id="validationSTEMpgmCollection"  style="color: red; display: none;font-size:11px;">Please select Collection Pattern</span>
+						 <?php } ?>
+						
+					  </td>
+					</tr>
+
+					<!-- STEM 2 -->
+					<tr class="">
+					   <td style="margin-top:50px; border:none;" class="uk-width-1-10 uk-text-bold">STEM Student Kit<span class="text-danger">*</span>:</td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">							
+						 <input class="int_default view-data" style="font-weight:bold;border:none;" type="number" step="0.01" name="stem_studentKit_default" id="stem_studentKit_default" value="<?php echo $edit_row['stem_programme_default'] ?>" readonly><br>
+						 <span id="validationmm"  style="color: red; display: none;font-size:11px;margin-left: -17px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+							
+						 <input class="view-data" type="text" style="font-weight:bold;border:none;" name="stem_studentKit_default_parent" id="stem_studentKit_default_parent" value="<?php echo $edit_row['stem_studentKit_default_parent'] ?>" readonly><br>
+						 <span id="validationmandarin_m_perent" style="color: red; display: none;font-size:11px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">
+							
+						 <input class="integrated_adjust view-data" type="number" <?php if($row_exists>0){ echo 'readonly'; } ?> step="0.01" name="stem_studentKit_adjust" id="stem_studentKit_adjust" value="<?php echo $edit_row['stem_studentKit_adjust'] ?>" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> onChange="autoDecimal('stem_studentKit_adjust')"><br>
+						 <span id="validationStuKit"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+					  <?php if($row_exists>0){ ?>
+						  <input class="view-data" type="text" name="stem_studentKit_collection" readonly id="stem_studentKit_collection" value="<?php echo $edit_row['stem_studentKit_collection'] ?>">
+						  <?php } else { ?>
+							<select name="stem_studentKit_collection" id="stem_studentKit_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('stem_studentKit_default', 'stem_studentKit_default_parent', 'stem_studentKit_adjust', 'stem_studentKit_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
+							<option value="Monthly" <?php if($edit_row['stem_studentKit_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
+							<option value="Termly" <?php if($edit_row['stem_studentKit_collection']=='Termly') {echo 'selected';}?>>Termly</option>
+							<option value="Half Year" <?php if($edit_row['stem_studentKit_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
+							<option value="Annually" <?php if($edit_row['stem_studentKit_collection']=='Annually') {echo 'selected';}?>>Annually</option>
+						 </select><br>
+						 <span id="validationSTEMkit"  style="color: red; display: none;font-size:11px;">Please select Collection Pattern</span>
+						 <?php } ?>
+						
+					  </td>
+					</tr>
+					<!-- STEM END -->
 					<tr class="">
 					   <td style="margin-top:50px;" class="uk-width-1-10 uk-text-bold">Total:</td>
 					  <td style="text-align:center;" class="uk-width-1-10">							
@@ -813,7 +921,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="" style="width: 100%;">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -845,8 +953,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="basic_collection" readonly id="basic_collection" value="<?php echo $edit_row['basic_collection'] ?>">
 						  <?php } else { ?>
-							<select name="basic_collection" id="basic_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="basic_collection" id="basic_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('basic_default', 'basic_default_perent', 'basic_adjust', 'basic_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['basic_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['basic_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['basic_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -876,8 +984,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="afternoon_robotic_collection" readonly id="afternoon_robotic_collection" value="<?php echo $edit_row['afternoon_robotic_collection'] ?>">
 						  <?php } else { ?>
-							<select name="afternoon_robotic_collection" id="afternoon_robotic_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>><br><span id="validationara"  style="color: red; display: none;font-size:11px;margin-left: -65px;">
-							<option value=""></option>
+							<select name="afternoon_robotic_collection" id="afternoon_robotic_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('afternoon_robotic_default', 'afternoon_robotic_default_perent', 'afternoon_robotic_adjust', 'afternoon_robotic_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>><br><span id="validationara"  style="color: red; display: none;font-size:11px;margin-left: -65px;">
+							
 							<option value="Monthly" <?php if($edit_row['afternoon_robotic_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['afternoon_robotic_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['afternoon_robotic_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -915,8 +1023,8 @@ $row_exists=mysqli_num_rows($result3);
 					  <?php if($row_exists>0){ ?>
 						  <input class="view-data" type="text" name="mobile_collection" readonly id="mobile_collection" value="<?php echo $edit_row['mobile_collection'] ?>">
 						  <?php } else { ?>
-							<select name="mobile_collection" id="mobile_collection" class="view-data" style="width: 100%;" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
-							<option value=""></option>
+							<select name="mobile_collection" id="mobile_collection" class="view-data" style="width: 100%;" onChange="autoCalculateAdjustFee('mobile_default', 'mobile_perent', 'mobile_adjust', 'mobile_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?>>
+							
 							<option value="Monthly" <?php if($edit_row['mobile_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php if($edit_row['mobile_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php if($edit_row['mobile_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -942,7 +1050,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -965,7 +1073,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -987,7 +1095,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -1009,7 +1117,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -1031,7 +1139,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -1053,7 +1161,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -1073,7 +1181,7 @@ $row_exists=mysqli_num_rows($result3);
 					  </td>
 					  <td class="uk-width-1-10">
 						<!--<select name="monthly" id="monthly" class="" style="width: 100%;">
-							<option value=""></option>
+							
 							<option value="Monthly" <?php // if($edit_row['programme_package']=='Monthly') {echo 'selected';}?>>Monthly</option>
 							<option value="Termly" <?php // if($edit_row['programme_package']=='Termly') {echo 'selected';}?>>Termly</option>
 							<option value="Half Year" <?php // if($edit_row['programme_package']==' Half Year') {echo 'selected';}?>> Half Year</option>
@@ -1101,8 +1209,8 @@ $row_exists=mysqli_num_rows($result3);
 					  		<?php if($row_exists>0){ ?>
 						  		<input class="view-data" type="text" name="islam_collection" readonly id="islam_collection" value="<?php echo $edit_row['islam_collection'] ?>">
 						  	<?php } else { ?>
-								<select name="islam_collection" id="islam_collection" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> class="view-data" style="width: 100%;">
-									<option value=""></option>
+								<select name="islam_collection" id="islam_collection" onChange="autoCalculateAdjustFee('islam_default', 'islam_default_perent', 'islam_adjust', 'islam_collection')" <?php if ($mode != "EDIT" && $mode !="DUPLICATE"){ ?>disabled <?php } ?> class="view-data" style="width: 100%;">
+									
 									<option value="Monthly" <?php if($edit_row['islam_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
 									<option value="Termly" <?php if($edit_row['islam_collection']=='Termly') {echo 'selected';}?>>Termly</option>
 									<option value="Half Year" <?php if($edit_row['islam_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
@@ -1242,6 +1350,29 @@ if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "Sal
    <div class="uk-width-1-1 myheader">
       <h2 class="uk-text-center myheader-text-color">LISTING</h2>
    </div>
+   	<?php 
+   	//P
+	global $connection;
+
+	$enableAccess = true;
+
+	if ($_SESSION['Year'] != "2024-2025"){ //Hardcoding latest year :D
+		$enableAccess = false; //No need to use this if the students are already in the latest year. At most, it'll be a glorified list of all students in one page.
+	}
+
+	$sqlchk = "SELECT id from fee_structure WHERE extend_year = '2024-2025' AND centre_code = '$centre_code'";
+	$resultchk = mysqli_query($connection, $sqlchk);
+		
+		if ($enableAccess == false){
+			if ($rowchk = mysqli_fetch_assoc($resultchk)) {
+		?>
+		<br/>
+		Looking for your fee structures for 2024-2025? <a href="javascript:doYear('2024-2025')"><b>Click here!</b></a>
+		<?php 
+				
+			}
+		}
+	?>
  <div class="uk-overflow-container">
  				<?php
 					$n=isset($_GET['n']) ? $_GET['n'] : '';
@@ -1295,11 +1426,55 @@ function comparePrice(default_price, default_collection, adjusted_price, adjuste
 	}
 }
 
-function autoDecimal(adjusted_price){
+function autoDecimal(adjusted_price){ //Put trailing 00s at the back
 	var adjustedPrice = document.getElementById(adjusted_price).value;
 	
 	var newAdjustedPrice = (Math.round(adjustedPrice * 100) / 100).toFixed(2);
 	document.getElementById(adjusted_price).value = newAdjustedPrice;
+}
+
+//autoCalculateAdjustFee('school_default', 'school_default_perent', 'school_adjust', 'school_collection')
+function autoCalculateAdjustFee(default_fee, default_dropdown, adjust_fee, adjusted_dropdown){ //Auto calculates when user uses the dropdown
+	var defaultFee = document.getElementById(default_fee).value;
+	var defaultDropdown = document.getElementById(default_dropdown).value;
+	var adjustFee = document.getElementById(adjust_fee).value;
+	var adjustedDropdown = document.getElementById(adjusted_dropdown).value;
+	//var adjustedDropdown = document.getElementById(adjusted_dropdown).value;
+	
+	//Reset value back to monthly for calculation
+	if (defaultDropdown != 'Monthly'){
+		if (defaultDropdown == 'Termly'){
+			defaultFee = defaultFee / 3;
+		}else if (defaultDropdown == 'Half Year'){
+			defaultFee = defaultFee / 6;
+		}else if (defaultDropdown == 'Annually'){
+			defaultFee = defaultFee / 12;
+		}
+	}
+
+	if (adjustedDropdown == 'Termly'){
+		defaultFee = defaultFee * 3;
+	}else if (adjustedDropdown == 'Half Year'){
+		defaultFee = defaultFee * 6;
+	}else if (adjustedDropdown == 'Annually'){
+		defaultFee = defaultFee * 12;
+	}
+	//alert(adjustedDropdown);
+
+	document.getElementById(adjust_fee).value = defaultFee;
+
+	//Put trailing 00s at the back after 
+	autoDecimal(adjust_fee);
+
+	//Autocalculate sum
+	sumSchoolNumber();
+	summathNumber();
+	sumintNumber();
+	sumregistNumber();
+	sumadjustNumber();
+	sumadNumber();
+	sumintegNumber();
+	sumregistrationNumber();
 }
 
 function sumSchoolNumber(){
@@ -1542,6 +1717,17 @@ $(document).ready(function(){
     var basic_default_perent=$("#basic_default_perent").val();
     var mobile_perent=$("#mobile_perent").val();
 
+	//STEM Stuff
+	var stem_programme_default=$("#stem_programme_default").val();
+	var stem_programme_default_parent=$("#stem_programme_default_parent").val();
+	var stem_programme_adjust=$("#stem_programme_adjust").val();
+	var stem_programme_collection=$("#stem_programme_collection").val();
+
+	var stem_studentKit_default=$("#stem_studentKit_default").val();
+	var stem_studentKit_default_parent=$("#stem_studentKit_default_parent").val();
+	var stem_studentKit_adjust=$("#stem_studentKit_adjust").val();
+	var stem_studentKit_collection=$("#stem_studentKit_collection").val();
+
 	//Checking if there's any differences in numbers
 	document.getElementById("alertPop").value = "";
 
@@ -1579,6 +1765,11 @@ $(document).ready(function(){
 	comparePrice('q_bag_default', '', 'q_bag_adjust', '');
 
 	comparePrice('islam_default', '', 'islam_adjust', '');
+
+	//STEM Stuff
+	comparePrice('stem_programme_default', 'stem_programme_default_parent', 'stem_programme_adjust', 'stem_programme_collection');
+	comparePrice('stem_studentKit_default', 'stem_studentKit_default_parent', 'stem_studentKit_adjust', 'stem_studentKit_collection');
+
 
 	var adjustedPrice = document.getElementById("alertPop").value;
 	var remarkContent = document.getElementById("remarks").value;
@@ -1991,7 +2182,40 @@ $(document).ready(function(){
 		$('#validationrpc').hide();
 	}
 
-	if (adjustedPrice != ""){ //Check to see if there's remarks input if the price changed
+	var yearChk=$("#year_select").val();
+
+	if (yearChk == "2024-2025"){
+		//STEM STUFF. Removing Temporarily
+		
+		if (!stem_programme_adjust) {
+			$('#validationSTEMpgm2').show();errorFlag = "1";
+		}else{
+			$('#validationSTEMpgm2').hide();
+		}
+
+		if (!stem_programme_collection) {
+			$('#validationSTEMpgmCollection').show();errorFlag = "1";
+		}else{
+			$('#validationSTEMpgmCollection').hide();
+		}
+
+		//STEM PART 2
+		
+		if (!stem_studentKit_adjust) {
+			$('#validationStuKit').show();errorFlag = "1";
+		}else{
+			$('#validationStuKit').hide();
+		}
+
+		if (!stem_studentKit_collection) {
+			$('#validationSTEMkit').show();errorFlag = "1";
+		}else{
+			$('#validationSTEMkit').hide();
+		}
+	}
+		
+
+	if (adjustedPrice != ""){	 //Check to see if there's remarks input if the price changed
 		if (remarkContent == "") {
 			$('#validationRemarks').show();errorFlag = "1";
 		}else{
@@ -2012,7 +2236,7 @@ $(document).ready(function(){
 	//console.log("in");
 	$(".school_number").on('keyup keypress blur change', function (e) {
 		sumSchoolNumber()
-        });
+	});
 	$(".math_default").on('keyup keypress blur change', function (e) {
 		summathNumber()
 	});
@@ -2038,8 +2262,15 @@ $(document).ready(function(){
 	$(".subject_3").change(function () {
       var subject=$("#subject").val();
       var programme_package=$("#programme_package").val();
-      var from_date="2023-03-06";
-	  var to_date="2024-02-29";
+	  var yearChk=$("#year_select").val();
+
+	  if (yearChk == "2024-2025"){
+		var from_date="2024-03-01";
+		var to_date="2025-02-28";
+	  }else{
+		var from_date="2023-03-06";
+		var to_date="2024-02-29";
+	  }
 	  //var from_date=$("#from_date").val();
       //var to_date=$("#to_date").val();
 	  var UserName='<?php echo $_SESSION["UserName"]; ?>';
@@ -2085,6 +2316,9 @@ $(document).ready(function(){
 
 				removeDisable('basic_adjust', 'basic_collection');
 				removeDisable('afternoon_robotic_adjust', 'afternoon_robotic_collection');
+
+				removeDisable('stem_programme_adjust', 'stem_programme_collection');
+				removeDisable('stem_studentKit_adjust', 'stem_studentKit_collection');
 
 				removeDisable('mobile_adjust', 'mobile_collection');
 				removeDisable('registration_adjust', '');
@@ -2173,6 +2407,16 @@ $(document).ready(function(){
                $("#mobile_perent").val(response.mobile_collection);
                $("#mobile_collection").val(response.mobile_collection);
                $("#school_collection").val(response.school_collection);
+			   //STEM Stuff
+			   $("#stem_programme_default").val(response.stem_programme);
+			   $("#stem_programme_default_parent").val(response.stem_programme_collection);
+			   $("#stem_programme_adjust").val(response.stem_programme);
+			   $("#stem_programme_collection").val(response.stem_programme_collection);
+
+			   $("#stem_studentKit_default").val(response.stem_student_kit);
+			   $("#stem_studentKit_default_parent").val(response.stem_student_kit_collection);
+			   $("#stem_studentKit_adjust").val(response.stem_student_kit);
+			   $("#stem_studentKit_collection").val(response.stem_student_kit_collection);
             } else {
 			$("#school_default").val(response.school_fee);
                $("#school_adjust").val(response.school_fee);
@@ -2220,6 +2464,17 @@ $(document).ready(function(){
                $("#mobile_perent").val(response.mobile_collection);
                $("#mobile_collection").val(response.mobile_collection);
                $("#school_collection").val(response.school_collection);
+
+			   //STEM Stuff
+			   $("#stem_programme_default").val(response.stem_programme);
+			   $("#stem_programme_default_parent").val(response.stem_programme_collection);
+			   $("#stem_programme_adjust").val(response.stem_programme_adjust);
+			   $("#stem_programme_collection").val(response.stem_programme_collection);
+
+			   $("#stem_studentKit_default").val(response.stem_student_kit);
+			   $("#stem_studentKit_default_parent").val(response.stem_student_kit_collection);
+			   $("#stem_studentKit_adjust").val(response.stem_student_kit);
+			   $("#stem_studentKit_collection").val(response.stem_student_kit_collection);
                //$("#state").html("<select name='state' id='state' class='uk-width-1-1'><option value=''>Please select a country</option></select>");
               // UIkit.notify("No state found in "+country);
             }
@@ -2270,6 +2525,16 @@ $(document).ready(function(){
 			   $("#basic_default_perent").val(response.basic_collection);
                $("#mobile_perent").val(response.mobile_collection);
                $("#school_collection").val(response.school_collection);
+
+			   $("#stem_programme_default").val(response.stem_programme);
+			   $("#stem_programme_default_parent").val(response.stem_programme_collection);
+			   $("#stem_programme_adjust").val(response.stem_programme_adjust);
+			   $("#stem_programme_collection").val(response.stem_programme_collection);
+
+			   $("#stem_studentKit_default").val(response.stem_student_kit);
+			   $("#stem_studentKit_default_parent").val(response.stem_student_kit_collection);
+			   $("#stem_studentKit_adjust").val(response.stem_student_kit);
+			   $("#stem_studentKit_collection").val(response.stem_student_kit_collection);
 			sumSchoolNumber();
 			summathNumber();
 			sumintNumber();

@@ -598,6 +598,61 @@ if (($_SESSION["UserType"]=="S") & (hasRightGroupXOR($_SESSION["UserName"], "Sal
 						 <span id="validationmmc"  style="color: red; display: none;font-size:11px;">Please select Collection Pattern</span>
 					  </td>
 					</tr>
+					<!-- STEM Programme Start -->
+					<tr class="">
+					   <td style="margin-top:50px; border:none;" class="uk-width-1-10 uk-text-bold">STEM Programme<span class="text-danger">*</span>:</td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">							
+						 <input class="int_default" type="number" step="0.01" name="stem_programme_default" id="stem_programme_default" value="<?php echo $edit_row['stem_programme_default'] ?>" readonly><br>
+						 <span id="validationStemDefault"  style="color: red; display: none;font-size:11px;margin-left: -17px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+						 <input class="" type="text" name="stem_programme_default_parent" id="stem_programme_default_parent" value="<?php echo $edit_row['stem_programme_default_parent'] ?>" readonly><br>
+						 <span id="validationStemDefaultParent" style="color: red; display: none;font-size:11px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">
+						 <input class="integrated_adjust" type="number" step="0.01" name="stem_programme_adjust" id="stem_programme_adjust" value="<?php echo $edit_row['stem_programme_adjust'] ?>" ><br>
+						 <span id="validationSTEMDefault"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+						<select name="stem_programme_collection" id="stem_programme_collection" class="" style="width: 100%;">
+							<option value=""></option>
+							<option value="Monthly" <?php if($edit_row['stem_programme_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
+							<option value="Termly" <?php if($edit_row['stem_programme_collection']=='Termly') {echo 'selected';}?>>Termly</option>
+							<option value="Half Year" <?php if($edit_row['stem_programme_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
+							<option value="Annually" <?php if($edit_row['stem_programme_collection']=='Annually') {echo 'selected';}?>>Annually</option>
+						 </select><br>
+						 <span id="validationStemP"  style="color: red; display: none;font-size:11px;">Please select Collection Pattern</span>
+					  </td>
+					</tr>
+					<!-- END STEM -->
+
+					<!-- STEM Student Kit Start -->
+					<tr class="">
+					   <td style="margin-top:50px; border:none;" class="uk-width-1-10 uk-text-bold">STEM Student Kit<span class="text-danger">*</span>:</td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">							
+						 <input class="int_default" type="number" step="0.01" name="stem_studentKit_default" id="stem_studentKit_default" value="<?php echo $edit_row['stem_studentKit_default'] ?>" readonly><br>
+						 <span id="validationStemDefault"  style="color: red; display: none;font-size:11px;margin-left: -17px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+						 <input class="" type="text" name="stem_studentKit_default_parent" id="stem_studentKit_default_parent" value="<?php echo $edit_row['stem_studentKit_default_parent'] ?>" readonly><br>
+						 <span id="validationStemDefaultParent" style="color: red; display: none;font-size:11px;">Please select Student Entry Level</span>
+					  </td>
+					  <td style="border:none;text-align:center;" class="uk-width-1-10">
+						 <input class="integrated_adjust" type="number" step="0.01" name="stem_studentKit_adjust" id="stem_studentKit_adjust" value="<?php echo $edit_row['stem_studentKit_adjust'] ?>" ><br>
+						 <span id="validationSTEMDefault"  style="color: red; display: none;font-size:11px;margin-left: -65px;">Please input Adjust Fee</span>
+					  </td>
+					  <td style="border:none;" class="uk-width-1-10">
+						<select name="stem_studentKit_collection" id="stem_studentKit_collection" class="" style="width: 100%;">
+							<option value=""></option>
+							<option value="Monthly" <?php if($edit_row['stem_studentKit_collection']=='Monthly') {echo 'selected';}?>>Monthly</option>
+							<option value="Termly" <?php if($edit_row['stem_studentKit_collection']=='Termly') {echo 'selected';}?>>Termly</option>
+							<option value="Half Year" <?php if($edit_row['stem_studentKit_collection']=='Half Year') {echo 'selected';}?>> Half Year</option>
+							<option value="Annually" <?php if($edit_row['stem_studentKit_collection']=='Annually') {echo 'selected';}?>>Annually</option>
+						 </select><br>
+						 <span id="validationStemStuKit"  style="color: red; display: none;font-size:11px;">Please select Collection Pattern</span>
+					  </td>
+					</tr>
+					<!-- END STEM -->
 					<tr class="">
 					   <td style="margin-top:50px;" class="uk-width-1-10 uk-text-bold">Total:</td>
 					  <td style="text-align:center;" class="uk-width-1-10">							
@@ -1315,6 +1370,16 @@ $(document).ready(function(){
     var mandarin_m_default_perent=$("#mandarin_m_default_perent").val();
     var basic_default_perent=$("#basic_default_perent").val();
     var mobile_perent=$("#mobile_perent").val();
+	//STEM START
+	var stem_programme_default=$("#stem_programme_default").val();
+    var stem_programme_default_parent=$("#stem_programme_default_parent").val();
+	var stem_programme_adjust=$("#stem_programme_adjust").val();
+    var stem_programme_collection=$("#stem_programme_collection").val();
+
+	var stem_studentKit_default=$("#stem_studentKit_default").val();
+    var stem_studentKit_default_parent=$("#stem_studentKit_default_parent").val();
+	var stem_studentKit_adjust=$("#stem_studentKit_adjust").val();
+    var stem_studentKit_collection=$("#stem_studentKit_collection").val();
 
     if (!school_adjust || !fees_structure ) {
 
@@ -1676,6 +1741,19 @@ $(document).ready(function(){
 	}else{
 		$('#validationrpc').hide();
 	}
+
+	if (!stem_programme_collection) {
+		$('#validationStemP').show();
+	}else{
+		$('#validationStemP').hide();
+	}
+
+	if (!stem_studentKit_collection) {
+		$('#validationStemStuKit').show();
+	}else{
+		$('#validationStemStuKit').hide();
+	}
+
         return false;
   }
   });
@@ -1797,6 +1875,12 @@ $(document).ready(function(){
                $("#mobile_perent").val(response.mobile_collection);
                $("#mobile_collection").val(response.mobile_collection);
                $("#school_collection").val(response.school_collection);
+
+			   //STEM stuff
+			   $("#stem_programme_default").val(response.stem_programme);
+               $("#stem_programme_default_parent").val(response.stem_programme_collection);
+			   $("#stem_studentKit_default").val(response.stem_student_kit);
+               $("#stem_studentKit_default_parent").val(response.stem_student_kit_collection);
             } else {
 			$("#school_default").val(response.school_fee);
                $("#school_adjust").val(response.school_fee);
@@ -1842,6 +1926,13 @@ $(document).ready(function(){
                $("#mobile_perent").val(response.mobile_collection);
                $("#mobile_collection").val(response.mobile_collection);
                $("#school_collection").val(response.school_collection);
+
+			//STEM stuff
+			   $("#stem_programme_default").val(response.stem_programme);
+               $("#stem_programme_default_parent").val(response.stem_programme_collection);
+			   $("#stem_studentKit_default").val(response.stem_student_kit);
+               $("#stem_studentKit_default_parent").val(response.stem_student_kit_collection);
+			   
                //$("#state").html("<select name='state' id='state' class='uk-width-1-1'><option value=''>Please select a country</option></select>");
               // UIkit.notify("No state found in "+country);
             }
@@ -1892,6 +1983,11 @@ $(document).ready(function(){
 			   $("#basic_default_perent").val(response.basic_collection);
                $("#mobile_perent").val(response.mobile_collection);
                $("#school_collection").val(response.school_collection);
+			   //STEM ADD
+			   $("#stem_studentKit_default").val(response.stem_student_kit);
+               $("#stem_studentKit_default_parent").val(response.stem_student_kit_collection);
+			   $("#stem_programme_default").val(response.stem_programme);
+               $("#stem_programme_collection").val(response.stem_programme_collection);
 			sumSchoolNumber();
 			summathNumber();
 			sumintNumber();

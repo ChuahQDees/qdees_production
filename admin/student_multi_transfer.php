@@ -12,9 +12,9 @@ if (($_SESSION["isLogin"] == 1) & (($_SESSION["UserType"] == "A") || ($_SESSION[
 include_once("../mysql.php");
 include_once("functions.php");
 
-if ($_SESSION['Year'] != '2023-2024'){
+if ($_SESSION['Year'] != '2024-2025'){
     if ($_GET['status'] == "completed"){
-        $_SESSION['Year']='2023-2024';
+        $_SESSION['Year']='2024-2025';
         echo '<script>window.location.href = "/index.php?p=student_multitransfer&status=done";</script>';
     };
 }else{
@@ -23,7 +23,7 @@ if ($_SESSION['Year'] != '2023-2024'){
     };
 }
 
-//Get array of students who are already in 2023-2024
+//Get array of students who are already in 2024-2025
 $studentFeeStructureArray = array();
 
 $entry_get = mysqli_query($connection, "SELECT student_code
@@ -32,7 +32,7 @@ $entry_get = mysqli_query($connection, "SELECT student_code
             FROM student s
             WHERE s.student_status = 'A' 
             AND s.centre_code='".$_SESSION["CentreCode"]."' 
-            AND s.extend_year = '2023-2024'
+            AND s.extend_year = '2024-2025'
             AND s.deleted = '0' 
         ) ab ");
 
@@ -45,7 +45,7 @@ global $connection;
 
 $enableAccess = true;
 
-if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
+if ($_SESSION['Year'] == "2024-2025"){ //Hardcoding latest year :D
     $enableAccess = false; //No need to use this if the students are already in the latest year. At most, it'll be a glorified list of all students in one page.
 }
 ?>
@@ -141,9 +141,9 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
             <input type="text" id="studentIDArray" name="studentIDArray" hidden>
             <?php 
             if ($enableAccess == false){?>
-                <h3>You can transfer multiple students from the previous year in this screen. <br /> <b>Navigate to the <a href="javascript:doYear('2022-2023')">previous term</a> to get started.</b></h3>
+                <h3>You can transfer multiple students from the previous year in this screen. <br /> <b>Navigate to the <a href="javascript:doYear('2023-2024')">previous term</a> to get started.</b></h3>
             <?php }else{ ?>
-                <h3><b>Currently in previous term.</b> <a href="javascript:doYear('2023-2024')">Click here to return to the latest year.</a></h3>
+                <h3><b>Currently in previous term.</b> <a href="javascript:doYear('2024-2025')">Click here to return to the latest year.</a></h3>
             <?php } ?>
             <input type="text" id="myInput" onkeyup="tableSearch()" placeholder="Student Name Search">
             <?php if ($enableAccess == true){?>
@@ -159,7 +159,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
                     <th style="width:10%">Centre Start Date</th>
                     <th style="width:20%">NRIC</th>
                     <?php
-                    if ($_SESSION['Year'] != "2023-2024"){ 
+                    if ($_SESSION['Year'] != "2024-2025"){ 
                         ?>
                     <th style="width:10%">Latest term</th> <!-- Maybe keep in mind about the start date where students join this term if it's latest term too? -->
                     <?php } ?>
@@ -176,6 +176,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
                 $result=mysqli_query($connection, $sql);
                 //$num_row=mysqli_num_rows($result);
 
+                $counter = 0;
                 //echo $sql;
                 while ($row=mysqli_fetch_assoc($result)) {
                     $not_disabled = "0";
@@ -185,6 +186,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
                 ?>
                 <tbody>
                     <tr <?php if ($not_disabled == "1" || $enableAccess == false) { ?> class="checkBoxChecked" <?php }else{ ?> class="strikeout" style="background-color: #F0F0F0; color: #707070;" <?php } ?> id="stu_id<?php echo $row['id']?>">
+                        <?php $counter++; ?>
                         <td>
                             <input type="checkbox" 
                             specId="<?php echo $row['id']?>" 
@@ -222,10 +224,10 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
                         </td>
                         <td><?php echo $row['start_date_at_centre']?></td>
                         <td><?php echo $row['nric_no']?></td>
-                            <?php if ($_SESSION['Year'] != "2023-2024"){ ?>    
+                            <?php if ($_SESSION['Year'] != "2024-2025"){ ?>    
                             <td>                    
                                 <?php
-                                if ($row['extend_year'] == "2023-2024"){
+                                if ($row['extend_year'] == "2024-2025"){
                                     echo "Transferred";
                                 }else{ 
                                     echo $row['extend_year'];
@@ -238,6 +240,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
                 <?php 
                 }?>
             </table>
+            <b>Total Students: </b> <?php echo $counter; ?>
             <center>
                 <?php if ($enableAccess == false){ ?>
                 <button disabled class="uk-button form_btn uk-text-center" disabled>Currently in latest year</button>
@@ -309,6 +312,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
         //     getFee($(this).val());
         //     });
         //  })
+        /*
         $("#entryLevel").submit(function(e) {
             var student_entry_level = $("#student_entry_level").val();
             //alert(student_entry_level);
@@ -371,6 +375,7 @@ if ($_SESSION['Year'] == "2023-2024"){ //Hardcoding latest year :D
                 }
             }
         });
+        */
     });
 
     $('.checkBoxChecked').on('click', function(){

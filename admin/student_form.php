@@ -232,6 +232,7 @@ if (!defined('IS_PUBLIC_STUDENT_FORM')) {
                                 </td>
                             </tr>
 
+                            <!--
                             <tr class="uk-text-small">
                                 <td class="uk-width-4-10 uk-text-bold">Chinese Name : </td>
                                 <td class="uk-width-6-10">
@@ -239,6 +240,7 @@ if (!defined('IS_PUBLIC_STUDENT_FORM')) {
                                         value="<?php echo $data_array['chinese_name']?>">
                                 </td>
                             </tr>
+                            -->
 
                             <tr class="uk-text-small">
                                 <td class="uk-width-4-10 uk-text-bold">Start Date at Centre* : </td>

@@ -29,6 +29,7 @@ function getDOWString($dow) {
 if ($_GET['status'] == "enerror"){
     echo "<script>UIkit.notify('Must choose at least one Enhanced Foundation')</script>";
 }
+
 ?>
 
 
@@ -50,17 +51,27 @@ if ($_GET['status'] == "enerror"){
                     <td>Student Code</td>
                     <td>Receipt Date</td>
                     <td>Receipt No.</td>
+                    <td>Print Type</td>
                     <td>Payment Method</td>
                     <td class="uk-text-right">Amount</td>
+                    <td class="uk-text-right">Action</td>
                 </tr>
                 <?php
-$sql="SELECT s.name, s.student_code, c.collection_date_time, c.batch_no, pd.payment_method, sum(amount) as amount, sum(discount) as discount from student s, collection c 
+$sql="SELECT s.name, s.student_code, pd.print_option, c.collection_date_time, c.batch_no, pd.payment_method, sum(amount) as amount, sum(discount) as discount from student s, collection c 
   left join payment_detail pd on pd.id=c.payment_detail_id where s.id=c.student_id and sha1(student_id)='$ssid'  and c.void=0
   group by c.batch_no order by c.collection_date_time desc";
  //echo $sql;
 $result=mysqli_query($connection, $sql);
 $num_row=mysqli_num_rows($result);
 if ($num_row>0) {
+
+    //Get company name for Email
+      
+    $sqlCenterName="SELECT company_name from centre where centre_code='".$_SESSION["CentreCode"]."'";
+    $resultCN=mysqli_query($connection, $sqlCenterName);
+    $rowCN=mysqli_fetch_assoc($resultCN);
+    $companyName = $rowCN["company_name"];
+
    $count=0;
    while ($row=mysqli_fetch_assoc($result)) {
 	  
@@ -78,17 +89,26 @@ if ($num_row>0) {
                     <td><?php echo $row["name"]?></td>
                     <td><?php echo $row["student_code"]?></td>
                     <td><?php echo date('d/m/Y', strtotime($row["collection_date_time"]))?></td>
-                    <td><a target="_blank"
+                    <td>
+                        <?php if ($row["print_option"] == "Total"){
+                           ?>
+                        <a target="_blank"
+                            href="admin/print_receipt_total.php?batch_no=<?php echo sha1($row["batch_no"])?>&display=1"><?php echo $row["batch_no"]?></a>
+                            <?php }else{ ?>
+                        <a target="_blank"
                             href="admin/print_receipt.php?batch_no=<?php echo sha1($row["batch_no"])?>&display=1"><?php echo $row["batch_no"]?></a>
+                                <?php } ?>
                     </td>
+                    <td><?php echo $row["print_option"] ?></td>
                     <td><?php echo $payment_method?></td>
                     <td class="uk-text-right"><?php echo number_format($row["amount"], 2)?></td>
+                    <td><center><a data-uk-tooltip title='Send Mail' onclick="sendMail('<?php echo $row['student_code']?>','<?php echo number_format($row['amount'], 2) ?>', '<?php echo $companyName ?>', '<?php echo $row['batch_no']?>', '<?php echo $row['print_option'] ?>', '<?php echo sha1($row['batch_no'])?>')" id="sendMail"><i class="fa fa-envelope" aria-hidden="true"></i></a> <a onClick="copyLink('<?php echo sha1($row['batch_no'])?>', '<?php echo $row['print_option'] ?>')"><i data-uk-tooltip title='Copy Link' class="fas fa-link"></i></center></a></td>
                 </tr>
                 <?php
 				
    }
 } else {
-   echo "<tr class='uk-text-bold uk-text-small'><td colspan='7'>No Record Found</td></tr>";
+   echo "<tr class='uk-text-bold uk-text-small'><td colspan='9'>No Record Found</td></tr>";
 }
 
 ?>
@@ -439,6 +459,62 @@ $row3=mysqli_fetch_assoc($result3);
             }
 	})
 	}
+
+    function copyLink(shaBatchNo, itemizedTotal){
+        url = "admin/print_receipt.php?batch_no="+shaBatchNo;
+
+        if (itemizedTotal == "Total"){
+            url = "admin/print_receipt_total.php?batch_no="+shaBatchNo;
+        }
+
+
+        // Copy the text inside the text field
+        navigator.clipboard.writeText("https://starters.q-dees.com/"+url+"&display=1");
+        UIkit.notify("Link copied!");
+    }
+
+    function sendMail(student_code, total_amount, centre_name, batch_no, itemizedTotal, shaBatchNo){
+        //Attempt to get the parents E-Mail and Name from the DB. If there's no email present, leave the contact blank
+
+        $.ajax({
+            url: "admin/sendMail.php",
+            type: "POST",
+            data: "student_code=" + student_code,
+            dataType: "text",
+            beforeSend: function(http) {},
+            success: function(response, status, http) {
+                //console.log(response);
+                if (response != "") { 
+                    id_numbers = JSON.parse(response);
+                    console.log(id_numbers[0]);
+                    console.log(id_numbers[1]);
+                    console.log(id_numbers[2]);
+                    suffix = id_numbers[0];
+                    full_name = id_numbers[1];
+                    email = id_numbers[2];
+
+                    url = "admin/print_receipt.php?batch_no="+shaBatchNo;
+
+                    if (itemizedTotal == "Total"){
+                        url = "admin/print_receipt_total.php?batch_no="+shaBatchNo;
+                    }
+
+                    suffixtitle = "";
+
+                    if (suffix == "Father"){
+                        suffixtitle = "Mr.";
+                    }else if (suffix == "Mother"){
+                        suffixtitle = "Ms.";
+                    }
+                    window.location.href = "mailto:"+email+"?subject=Q-Dees Receipt "+batch_no+"&body=Dear "+suffixtitle+""+full_name+",%0D%0A%0DThe following enclosed is the link to the receipt for review, totalling up to RM"+total_amount+".%0D%0A%0Dhttps://starters.q-dees.com/"+url+"%26display%3D1 %0D%0A%0DThank you!%0D%0A%0DBest Regards,%0D%0AQ-Dees "+centre_name;
+                }
+            },
+            error: function(http, status, error) {
+
+                }
+        })
+	}
+    
 	 $(document).ready(function() {
           $(document).on("change", "#afternoon_programme", function(){
                 if($(this).val()=="yes"){

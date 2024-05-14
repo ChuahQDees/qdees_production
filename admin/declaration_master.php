@@ -5804,21 +5804,31 @@ if ($_SESSION["isLogin"] == 1) {
                     <input type="text" name="n" id="n" value="<?php echo $_GET['n'] ?>" placeholder="Centre Name" class="uk-width-1-1">
 
                 </div>
+
+                <?php
+                
+                $monthSearch = $_GET['month'];
+
+                if ($_GET['month'] == ""){
+                    $monthSearch = date("m", strtotime ( '-1 month' , time() )) ;
+                    $monthSearch = ltrim($monthSearch, "0"); 
+                }
+                ?>
                 <div class="uk-width-2-10 uk-text-small">
                     <select name="month" id="month" class="uk-width-1-1">
-                        <option value="">Select Month</option>
-                        <option value="1" <?php  if( $_GET["month"]=='1') {echo 'selected';}?>>January</option>
-                        <option value="2" <?php  if( $_GET["month"]=='2') {echo 'selected';}?>>February</option>
-                        <option value="3" <?php  if( $_GET["month"]=='3') {echo 'selected';}?>>March</option>
-                        <option value="4" <?php  if( $_GET["month"]=='4') {echo 'selected';}?>>April</option>
-                        <option value="5" <?php  if( $_GET["month"]=='5') {echo 'selected';}?>>May</option>
-                        <option value="6" <?php  if( $_GET["month"]=='6') {echo 'selected';}?>>June</option>
-                        <option value="7" <?php  if( $_GET["month"]=='7') {echo 'selected';}?>>July</option>
-                        <option value="8" <?php  if( $_GET["month"]=='8') {echo 'selected';}?>>August</option>
-                        <option value="9" <?php  if( $_GET["month"]=='9') {echo 'selected';}?>>September</option>
-                        <option value="10" <?php  if( $_GET["month"]=='10') {echo 'selected';}?>>October</option>
-                        <option value="11" <?php  if( $_GET["month"]=='11') {echo 'selected';}?>>November</option>
-                        <option value="12" <?php  if( $_GET["month"]=='12') {echo 'selected';}?>>December</option>
+                        <option value="emptyMonth">View All Months</option>
+                        <option value="1" <?php  if( $monthSearch=='1') {echo 'selected';}?>>January</option>
+                        <option value="2" <?php  if( $monthSearch=='2') {echo 'selected';}?>>February</option>
+                        <option value="3" <?php  if( $monthSearch=='3') {echo 'selected';}?>>March</option>
+                        <option value="4" <?php  if( $monthSearch=='4') {echo 'selected';}?>>April</option>
+                        <option value="5" <?php  if( $monthSearch=='5') {echo 'selected';}?>>May</option>
+                        <option value="6" <?php  if( $monthSearch=='6') {echo 'selected';}?>>June</option>
+                        <option value="7" <?php  if( $monthSearch=='7') {echo 'selected';}?>>July</option>
+                        <option value="8" <?php  if( $monthSearch=='8') {echo 'selected';}?>>August</option>
+                        <option value="9" <?php  if( $monthSearch=='9') {echo 'selected';}?>>September</option>
+                        <option value="10" <?php  if( $monthSearch=='10') {echo 'selected';}?>>October</option>
+                        <option value="11" <?php  if( $monthSearch=='11') {echo 'selected';}?>>November</option>
+                        <option value="12" <?php  if( $monthSearch=='12') {echo 'selected';}?>>December</option>
                     </select>
                 </div>
                 <div class="uk-width-2-10 uk-text-small">
@@ -5900,13 +5910,52 @@ if ($_SESSION["isLogin"] == 1) {
 
                     <tbody>
                         <?php
+                        //Get current term date
+                        $year_data = mysqli_fetch_array(mysqli_query($connection,"SELECT MIN(`term_start`) AS `start_date`, MAX(`term_end`) AS `end_date` FROM `schedule_term` WHERE `year` = '".$_SESSION['Year']."' GROUP BY `year`"));
+
+                        $year_start_date = $year_data['start_date'];
+                        $year_end_date = $year_data['end_date'];
+                    
+                        if($year_start_date == '')
+                        {
+                            if($_SESSION['Year'] == '2022-2023')
+                            {
+                            $year_data = mysqli_fetch_array(mysqli_query($connection,"SELECT MIN(`term_start`) AS `start_date`, MAX(`term_end`) AS `end_date` FROM `schedule_term` WHERE `year` = '2022' GROUP BY `year`"));
+                    
+                            $year_start_date = $year_data['start_date'];
+                            $year_end_date = $year_data['end_date'];
+                            }
+                            else if($_SESSION['Year'] == '2022')
+                            {
+                            $year_data = mysqli_fetch_array(mysqli_query($connection,"SELECT MIN(`term_start`) AS `start_date`, MAX(`term_end`) AS `end_date` FROM `schedule_term` WHERE `year` = '2022-2023' GROUP BY `year`"));
+                    
+                            $year_start_date = $year_data['start_date'];
+                            $year_end_date = $year_data['end_date'];
+                            }
+                        }
+
+                        $dateTimeStart = $year_start_date . ' ' . '00:00:00';
+                        $dateTimeEnd = $year_end_date . ' ' . '23:59:59';
+
+                        //End get current Term Date
+
                         $n = $_GET['n'];
                         $st = $_GET['st'];
                         $sb = $_GET['sb'];
                         $month=$_GET['month'];
-                        $sql = "SELECT d.*, c.company_name from declaration d INNER JOIN centre c on d.`centre_code`=c.`centre_code` ";
-                        
-                        if($month!=""){
+
+                        if ($month == ""){
+                            $month = date("m", strtotime ( '-1 month' , time() )) ;
+                            $month = ltrim($month, "0"); 
+                        }
+                        $sql = "SELECT d.*, c.company_name from declaration d INNER JOIN centre c on d.`centre_code`=c.`centre_code`
+                        WHERE d.submited_date >= '$dateTimeStart' AND d.submited_date < '$dateTimeEnd'";
+
+                        //Added 'WHERE' condition, because it's loading 5255+ records, making server crash
+                        //Temporary fix, consider making an actual, proper pagination
+
+                        //if($month!=""){
+                        if($month != "emptyMonth"){
                             $sql=$sql."and month like '%$month%' ";
                         }
                         if ($n != "") {
@@ -5929,8 +5978,7 @@ if ($_SESSION["isLogin"] == 1) {
                         ?>
 
 
-                        <?php
-
+                        <?php     
                         if ($num_row > 0) {
                             while ($browse_row = mysqli_fetch_assoc($result)) {
                                 $sha1_id = sha1($browse_row["id"]);
@@ -5952,7 +6000,7 @@ if ($_SESSION["isLogin"] == 1) {
                                     <td><?php echo $browse_row["remarks_master_1"] ?></td>
                                     <td><?php echo $browse_row["attachment_1_master"] ?></td>
                                     <td style="width:120px;padding-left: 25px;">
-                                        <a href="index.php?p=declaration_master&id=<?php echo $sha1_id ?>&mode=EDIT" data-uk-tooltip title="View"><img src="images/edit.png"></a>
+                                        <a href="index.php?p=declaration_master&id=<?php echo $sha1_id ?>&month=<?php echo $monthNum ?>&mode=EDIT" data-uk-tooltip title="View"><img src="images/edit.png"></a>
                                         &nbsp; &nbsp;
                                         <!-- <a onclick="doDeleteRecord('<?php //echo $sha1_id ?>')" href="#" id="btnDelete"><img src="images/delete.png"></a> -->
                                     </td>
@@ -6675,6 +6723,7 @@ if ($_SESSION["isLogin"] == 1) {
                     "order": [
                         [0, "desc"]
                     ],
+                    "pageLength": 50,
                     'columnDefs': [{
                         'targets': [9], // column index (start from 0)
                         'orderable': false, // set orderable false for selected columns

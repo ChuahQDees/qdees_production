@@ -356,13 +356,20 @@ if ($_SESSION["isLogin"] == 1) {
 						      <tr class="uk-text-small">
                            <td class="uk-width-3-10 uk-text-bold">Product Code<span class="text-danger">*</span> : </td>
                            <td class="uk-width-7-10">
-						   <?php $product_code = $edit_row['product_code'];
-							$product_code = explode("((--",$product_code)[0];
-						   ?>
-                              <input class="uk-width-1-1" type="text" name="product_code" id="product_code" value="<?php echo $product_code ?>">
-                              <input type="hidden" name="hidden_product_code" id="hidden_product_code" value="<?php echo $edit_row['product_code'] ?>">
-                              <input type="hidden" name="hidden_id" id="hidden_id" value="<?php echo $edit_row['id'] ?>">
-							  <span id="validationproduct_code"  style="color: red; display: none;">Please input Product Code</span>
+                           <?php $product_code = $edit_row['product_code'];
+                           $product_code = explode("((--",$product_code)[0];
+                           ?>
+                                    <input class="uk-width-1-1" type="text" name="product_code" id="product_code" value="<?php echo $product_code ?>">
+                                    <input type="hidden" name="hidden_product_code" id="hidden_product_code" value="<?php echo $edit_row['product_code'] ?>">
+                                    <input type="hidden" name="hidden_id" id="hidden_id" value="<?php echo $edit_row['id'] ?>">
+                           <span id="validationproduct_code"  style="color: red; display: none;">Please input Product Code</span>
+                           </td>
+                        </tr>
+
+                        <tr class="uk-text-small">
+                           <td class="uk-width-3-10 uk-text-bold">Remarks to Franchisee: </td>
+                           <td class="uk-width-7-10">
+                           <textarea id="remarks" name="remarks" rows="4" cols="50" style="resize: none;"><?php echo $edit_row['remarks']?></textarea>
                            </td>
                         </tr>
                      </table>
@@ -401,9 +408,15 @@ if ($_SESSION["isLogin"] == 1) {
                         <tr class="uk-text-small">
                            <td class="uk-width-3-10 uk-text-bold">Unit Price<span class="text-danger">*</span> : </td>
                            <td class="uk-width-7-10"><input class="uk-width-1-1" type="number" name="unit_price" id="unit_price" step="0.01" value="<?php echo $edit_row['unit_price'] ?>">
-						   <span id="validationUnit"  style="color: red; display: none;">Please input Unit Price</span>
-						   </td>
+                           <span id="validationUnit"  style="color: red; display: none;">Please input Unit Price</span>
+                           </td>
                         </tr> 
+                        <tr class="uk-text-small">
+                           <td class="uk-width-3-10 uk-text-bold">Remarks in Invoice: </td>
+                           <td class="uk-width-7-10">
+                           <textarea id="remarks_invoice" name="remarks_invoice" rows="4" cols="50" style="resize: none;"><?php echo $edit_row['remarks_invoice']?></textarea>
+                           </td>
+                        </tr>
                         <script>
                            function dlgProductCourse() {
                               if ($("#product_code").val() != "") {

@@ -1197,7 +1197,7 @@ if ($year == date('Y')) {
 
 <script>
 function removeFromTempBusket(bid, product_code, student_code) {
-   UIkit.modal.confirm("<h2>Are you sure to continue?</h2>", function () {
+   //UIkit.modal.confirm("<h2>Are you sure to continue?</h2>", function () { //Remove Confirmation
       $.ajax({
          url : "admin/removeFromTempBusket.php",
          type : "POST",
@@ -1220,7 +1220,7 @@ function removeFromTempBusket(bid, product_code, student_code) {
             UIkit.notify("Error:"+error);
          }
       });
-   })
+   //})
 }
 
 function getOutstandingBusket() {

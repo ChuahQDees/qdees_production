@@ -147,9 +147,9 @@ if ($company_num_row > 0) {
                   ?>
                      <img src="../images/MindSpectrum.png" alt="logo" style="width:150px;"><br>
                   <?php } elseif ($company_name == "Q-DEES HOLDINGS SDN. BHD.") { ?>
-                     <img src="../images/Logo Qdees Starter.png" alt="logo" style="width:150px;"><br>
+                     <img src="../images/Qdees-logo-n.png" alt="logo" style="width:150px;"><br>
                   <?php } elseif ($company_name == "Q-DEES GLOBAL PTE. LTD.") { ?>
-                     <img src="../images/Logo Qdees Starter.png" alt="logo" style="width:150px;"><br>
+                     <img src="../images/Qdees-logo-n.png" alt="logo" style="width:150px;"><br>
                   <?php } else { ?>
                      <img src="../images/Tenations.png" alt="logo" style="width:150px;"><br>
                   <?php } ?>
@@ -268,7 +268,26 @@ if ($company_num_row > 0) {
 						//echo $row["product_code"] 
 						
 						?></td>
-                        <td><?php echo $row["product_name"] ?></td>
+                        <td><?php echo $row["product_name"] ?>
+                     <?php 
+                        //Not working why
+                     
+                     if ($row["remarks_invoice"] != ""){
+                        echo "<i><br />";
+                        echo $row["remarks_invoice"]; 
+                        echo "</i>";
+                     }
+                     /*
+                     
+                     if ($product_code == "MY-MATHS.HANDS-ON-BATCH"){
+                        echo "<br /> <i>All sets are to be fully returned at the end of the franchise tenure, failing which a penalty of RM8,000 will be charged.</i>";
+                     }else if ($product_code == "MY-MATHS.HANDS-ON"){
+                        echo "<br /> <i>This marketing set is to be returned at the end of the franchise tenure, failing which a penalty of RM1,000 will be charged.</i>";
+                     }
+                     */
+                     
+                     ?>
+                        </td>
                         <td style="text-align:right"><?php echo number_format($row["qty"], 0) ?></td>
                         <td style="text-align:right"><?php echo number_format($row["unit_price"], 2) ?></td>
                         <td style="text-align:right"><?php echo number_format($row["qty"] * $row["unit_price"], 2) ?></td>

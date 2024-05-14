@@ -487,9 +487,27 @@ if ($_SESSION["isLogin"] == 1) {
                $v_token = ConstructToken("vendor", $v, "=");
                $pn_token = ConstructTokenGroup("product_name", "%$pn%", "like", "product_code", "%$pn%", "like", "or");
                $cat_token = ConstructToken("category", $category, "=");
-               $cat_term = ConstructToken("term", $term, "=");
+
+               if ($_GET["category-id"] != "112"){
+                  $cat_term = ConstructToken("term", $term, "=");
+               }else{
+                  $cat_term = ConstructToken("term", $term, "=");
+               
+               }
+
                $subcat_token = ConstructToken("sub_category", $sub_category, "=");
-               $subsubcat_token = ConstructToken("sub_sub_category", $sub_sub_category, "=");
+
+               if ($_GET["category-id"] != "112"){
+                  $subsubcat_token = ConstructToken("sub_sub_category", $sub_sub_category, "=");
+               }else{
+                  //Temporary Hardcode for STEM
+                  if ($sub_sub_category == "EDP" || $sub_sub_category == "QF1" ){
+                     $subsubcat_token = "(sub_sub_category = 'EDP' OR sub_sub_category = 'QF1')";
+                  }else if ($sub_sub_category == "QF2" || $sub_sub_category == "QF3" ){
+                     $subsubcat_token = "(sub_sub_category = 'QF2' OR sub_sub_category = 'QF3')";
+                  }
+               }
+
                $category_id = ConstructToken("category_id", $category_id, "=");
                $final_token = ConcatToken($v_token, $pn_token, "and");
                $final_token = ConcatToken($final_token, $cat_token, "and");
@@ -531,7 +549,9 @@ if ($_SESSION["isLogin"] == 1) {
 				  }
                }
 			   
+               if ($_GET["category-id"] == "112"){
                //echo $final_sql;
+               }
                $result = mysqli_query($connection, $final_sql);
                $num_row = mysqli_num_rows($result);
 
@@ -556,10 +576,13 @@ if ($_SESSION["isLogin"] == 1) {
                   <div class="container display_n">
                      <div class="row">
                         <?php
+                        if ($_GET["category-id"] == "112"){
+                           echo '<h3 style="width:100%"><center><b>Notice:</b> STEM Bundle includes: Student Kit + Materials. For marketing set book purchases, please navigate to <b><a href="index.php?p=purchasing&category-id=111&term=&sub_sub_category=">Form 1C</a></b> instead.</center></h3>';
+                        }
                         while ($row = mysqli_fetch_assoc($final_result)) {
                            if ($level == '') {
                               $level = getLevelCss($row["sub_sub_category"]);
-                              echo '<h3 style="width:100%">' . ucwords(str_replace('level-', 'level ', substr($level, 4))) . '</h3>';
+                              //echo '<h3 style="width:100%">' . ucwords(str_replace('level-', 'level ', substr($level, 4))) . '</h3>';
                            }
                            if ($level != getLevelCss($row["sub_sub_category"])) {
                               echo '<hr style="width:100%; color: #222;">';
@@ -567,6 +590,7 @@ if ($_SESSION["isLogin"] == 1) {
                               $level = getLevelCss($row["sub_sub_category"]);
                               echo '<h3 style="width:100%">' . ucwords(str_replace('level-', 'level ', substr($level, 4))) . '</h3>';
                            }
+
                         ?>
 
                            <div class="col-xl-3 col-lg-4 col-md-6 qdees-4-element">
@@ -575,7 +599,8 @@ if ($_SESSION["isLogin"] == 1) {
                                  <div class="product-desc <?php echo getLevelCss($row["sub_sub_category"]); ?>">
                                     <h4 class="font-weight-bold text-black"><?php echo $row["product_name"]; ?></h4>
                                     <!-- <p style="opacity: .8"><?php //echo 'k' . $row["trimmed_level"] . $row["product_code"]; ?></p> -->
-                                        <p style="opacity: .8"><?php $product_code = $row["product_code"];$product_code = explode("((--",$product_code)[0];echo $product_code; ?></p>
+                                        <p style="opacity: .8"><?php $product_code = $row["product_code"];$product_code = explode("((--",$product_code)[0];echo $product_code; ?><br />
+                                       <?php echo $row["remarks"]; ?></p>
                                     <div class="uk-flex uk-flex-space-between">
                                        <div style="font-size: 15px"><b><?php echo number_format($row["retail_price"], 2); ?></b></div>
                                        <?php

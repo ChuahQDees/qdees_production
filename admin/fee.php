@@ -64,7 +64,11 @@ $state = ($state != '') ? implode (", ", $state) : '';
 			total_fee='".$_POST['total_fee']."',
 			total_default_c='".$_POST['total_default_c']."',
 			total_default_d='".$_POST['total_default_d']."',
-			school_total_f='".$_POST['school_total_f']."'";
+			school_total_f='".$_POST['school_total_f']."',
+            stem_programme='".$_POST['stem_programme']."',
+            stem_programme_collection='".$_POST['stem_programme_collection']."',
+            stem_student_kit='".$_POST['stem_student_kit']."',
+            stem_student_kit_collection='".$_POST['stem_student_kit_collection']."'";
 			//extend_year='$extend_year'";
 			
 		$save_sql .= isset($_POST['deposit_locked']) ? ", deposit_locked='".$_POST['deposit_locked']."'" : ", deposit_locked='N'"; 
@@ -88,7 +92,7 @@ $state = ($state != '') ? implode (", ", $state) : '';
 		  $from_date=convertDate2ISO($from_date);
 		  $extend_year = explode('-', $from_date)[0];
 		   if(isset($_POST['country'],$_POST['state'],$_POST['registration'],$_POST['mobile_app'])) {
-		   $save_sql="INSERT INTO fee ( country,state,fees_structure,subject,registration,mobile_app,programme_package,from_date,to_date,school_fee,multimedia_fee,facility_fee,eife,iq_math,mandarin,international_art,integrated_modules,link_think,mandarin_modules,basic_afternoon_p,afternoon_robotic,insurance,uniform,gymwear,q_dees_kit,q_dees_bag,pendidikan_islam,robotic_plus,school_collection,multimedia_collection,facility_collection,enhanced_collection,iq_math_collection,mandarin_collection,international_collection,integrated_collection,link_collection,mandarin_m_collection,basic_collection,afternoon_robotic_collection,mobile_collection,pendidikan_islam_collection,robotic_plus_collection,total_fee,total_default_c,total_default_d,school_total_f,extend_year) VALUES ('".$_POST['country']."','$state','".$_POST['fees_structure']."','".$_POST['subject']."','".$_POST['registration']."','".$_POST['mobile_app']."','".$_POST['programme_package']."','".$_POST['from_date']."','".$_POST['to_date']."','".$_POST['school_fee']."','".$_POST['multimedia_fee']."','".$_POST['facility_fee']."','".$_POST['eife']."','".$_POST['iq_math']."','".$_POST['mandarin']."','".$_POST['international_art']."','".$_POST['integrated_modules']."','".$_POST['link_think']."','".$_POST['mandarin_modules']."','".$_POST['basic_afternoon_p']."','".$_POST['afternoon_robotic']."','".$_POST['insurance']."','".$_POST['uniform']."','".$_POST['gymwear']."','".$_POST['q_dees_kit']."','".$_POST['q_dees_bag']."','".$_POST['pendidikan_islam']."','".$_POST['robotic_plus']."','".$_POST['school_collection']."','".$_POST['multimedia_collection']."','".$_POST['facility_collection']."','".$_POST['enhanced_collection']."','".$_POST['iq_math_collection']."','".$_POST['mandarin_collection']."','".$_POST['international_collection']."','".$_POST['integrated_collection']."','".$_POST['link_collection']."','".$_POST['mandarin_m_collection']."','".$_POST['basic_collection']."','".$_POST['afternoon_robotic_collection']."','".$_POST['mobile_collection']."','".$_POST['pendidikan_islam_collection']."','".$_POST['robotic_plus_collection']."','".$_POST['total_fee']."','".$_POST['total_default_c']."','".$_POST['total_default_d']."','".$_POST['school_total_f']."','$extend_year')";
+		   $save_sql="INSERT INTO fee ( country,state,fees_structure,subject,registration,mobile_app,programme_package,from_date,to_date,school_fee,multimedia_fee,facility_fee,eife,iq_math,mandarin,international_art,integrated_modules,link_think,mandarin_modules,basic_afternoon_p,afternoon_robotic,insurance,uniform,gymwear,q_dees_kit,q_dees_bag,pendidikan_islam,robotic_plus,school_collection,multimedia_collection,facility_collection,enhanced_collection,iq_math_collection,mandarin_collection,international_collection,integrated_collection,link_collection,mandarin_m_collection,basic_collection,afternoon_robotic_collection,mobile_collection,pendidikan_islam_collection,robotic_plus_collection,total_fee,total_default_c,total_default_d,school_total_f,extend_year, stem_programme, stem_programme_collection, stem_student_kit, stem_student_kit_collection) VALUES ('".$_POST['country']."','$state','".$_POST['fees_structure']."','".$_POST['subject']."','".$_POST['registration']."','".$_POST['mobile_app']."','".$_POST['programme_package']."','".$_POST['from_date']."','".$_POST['to_date']."','".$_POST['school_fee']."','".$_POST['multimedia_fee']."','".$_POST['facility_fee']."','".$_POST['eife']."','".$_POST['iq_math']."','".$_POST['mandarin']."','".$_POST['international_art']."','".$_POST['integrated_modules']."','".$_POST['link_think']."','".$_POST['mandarin_modules']."','".$_POST['basic_afternoon_p']."','".$_POST['afternoon_robotic']."','".$_POST['insurance']."','".$_POST['uniform']."','".$_POST['gymwear']."','".$_POST['q_dees_kit']."','".$_POST['q_dees_bag']."','".$_POST['pendidikan_islam']."','".$_POST['robotic_plus']."','".$_POST['school_collection']."','".$_POST['multimedia_collection']."','".$_POST['facility_collection']."','".$_POST['enhanced_collection']."','".$_POST['iq_math_collection']."','".$_POST['mandarin_collection']."','".$_POST['international_collection']."','".$_POST['integrated_collection']."','".$_POST['link_collection']."','".$_POST['mandarin_m_collection']."','".$_POST['basic_collection']."','".$_POST['afternoon_robotic_collection']."','".$_POST['mobile_collection']."','".$_POST['pendidikan_islam_collection']."','".$_POST['robotic_plus_collection']."','".$_POST['total_fee']."','".$_POST['total_default_c']."','".$_POST['total_default_d']."','".$_POST['school_total_f']."','$extend_year','".$_POST['stem_programme']."','".$_POST['stem_programme_collection']."','".$_POST['stem_student_kit']."','".$_POST['stem_student_kit_collection']."')";
 		 
 			$result=mysqli_query($connection, $save_sql);
 			 
@@ -104,7 +108,7 @@ $state = ($state != '') ? implode (", ", $state) : '';
 	  
 	  $get_sha1_id=$_GET['id'];
 	  if (isset($mode) and $mode=="DUPLICATE" AND $get_sha1_id != '') {
-		  $save_sql="INSERT INTO fee  (`subject`, `deposit`, `deposit_locked`, `placement`, `placement_locked`, `registration`, `registration_locked`, `mobile_app`, `mobile_app_locked`, `country`, `state`, `fees_structure`, `programme_package`, `from_date`, `to_date`, `school_fee`, `multimedia_fee`, `facility_fee`, `eife`, `iq_math`, `mandarin`, `international_art`, `integrated_modules`, `link_think`, `mandarin_modules`, `basic_afternoon_p`, `afternoon_robotic`, `insurance`, `uniform`, `gymwear`, `q_dees_kit`, `q_dees_bag`, `pendidikan_islam`, `robotic_plus`, `school_collection`, `multimedia_collection`, `facility_collection`, `enhanced_collection`, `iq_math_collection`, `mandarin_collection`, `international_collection`, `integrated_collection`, `link_collection`, `mandarin_m_collection`, `basic_collection`, `afternoon_robotic_collection`, `mobile_collection`, `pendidikan_islam_collection`, `robotic_plus_collection`, `total_fee`, `total_default_c`, `total_default_d`, `school_total_f`, `extend_year`) SELECT  `subject`, `deposit`, `deposit_locked`, `placement`, `placement_locked`, `registration`, `registration_locked`, `mobile_app`, `mobile_app_locked`, `country`, `state`, `fees_structure`, `programme_package`, `from_date`, `to_date`, `school_fee`, `multimedia_fee`, `facility_fee`, `eife`, `iq_math`, `mandarin`, `international_art`, `integrated_modules`, `link_think`, `mandarin_modules`, `basic_afternoon_p`, `afternoon_robotic`, `insurance`, `uniform`, `gymwear`, `q_dees_kit`, `q_dees_bag`, `pendidikan_islam`, `robotic_plus`, `school_collection`, `multimedia_collection`, `facility_collection`, `enhanced_collection`, `iq_math_collection`, `mandarin_collection`, `international_collection`, `integrated_collection`, `link_collection`, `mandarin_m_collection`, `basic_collection`, `afternoon_robotic_collection`, `mobile_collection`, `pendidikan_islam_collection`, `robotic_plus_collection`, `total_fee`, `total_default_c`, `total_default_d`, `school_total_f`, `extend_year` FROM fee WHERE sha1(id) ='$get_sha1_id'";  
+		  $save_sql="INSERT INTO fee  (`subject`, `deposit`, `deposit_locked`, `placement`, `placement_locked`, `registration`, `registration_locked`, `mobile_app`, `mobile_app_locked`, `country`, `state`, `fees_structure`, `programme_package`, `from_date`, `to_date`, `school_fee`, `multimedia_fee`, `facility_fee`, `eife`, `iq_math`, `mandarin`, `international_art`, `integrated_modules`, `link_think`, `mandarin_modules`, `basic_afternoon_p`, `afternoon_robotic`, `insurance`, `uniform`, `gymwear`, `q_dees_kit`, `q_dees_bag`, `pendidikan_islam`, `robotic_plus`, `school_collection`, `multimedia_collection`, `facility_collection`, `enhanced_collection`, `iq_math_collection`, `mandarin_collection`, `international_collection`, `integrated_collection`, `link_collection`, `mandarin_m_collection`, `basic_collection`, `afternoon_robotic_collection`, `mobile_collection`, `pendidikan_islam_collection`, `robotic_plus_collection`, `total_fee`, `total_default_c`, `total_default_d`, `school_total_f`, `extend_year`, `stem_programme`,`stem_programme_collection`,`stem_student_kit`,`stem_student_kit_collection`) SELECT  `subject`, `deposit`, `deposit_locked`, `placement`, `placement_locked`, `registration`, `registration_locked`, `mobile_app`, `mobile_app_locked`, `country`, `state`, `fees_structure`, `programme_package`, `from_date`, `to_date`, `school_fee`, `multimedia_fee`, `facility_fee`, `eife`, `iq_math`, `mandarin`, `international_art`, `integrated_modules`, `link_think`, `mandarin_modules`, `basic_afternoon_p`, `afternoon_robotic`, `insurance`, `uniform`, `gymwear`, `q_dees_kit`, `q_dees_bag`, `pendidikan_islam`, `robotic_plus`, `school_collection`, `multimedia_collection`, `facility_collection`, `enhanced_collection`, `iq_math_collection`, `mandarin_collection`, `international_collection`, `integrated_collection`, `link_collection`, `mandarin_m_collection`, `basic_collection`, `afternoon_robotic_collection`, `mobile_collection`, `pendidikan_islam_collection`, `robotic_plus_collection`, `total_fee`, `total_default_c`, `total_default_d`, `school_total_f`, `extend_year`,`stem_programme`,`stem_programme_collection`,`stem_student_kit`,`stem_student_kit_collection` FROM fee WHERE sha1(id) ='$get_sha1_id'";  
 		$result=mysqli_query($connection, $save_sql);
 		if($result){
 			echo "<script type='text/javascript'>window.top.location='index.php?p=fee&mode=DUPLICATE&msg=Record duplicated';</script>";
@@ -749,6 +753,60 @@ if (($_SESSION["UserType"]=="S") & (hasRightGroupXOR($_SESSION["UserName"], "Fee
                                 </td>
                             </tr>
                         </table>
+                        <!-- BEGIN STEM ADD -->
+                        <table class="uk-table uk-table-small">
+                            <tr class="uk-text-small">
+                                <td style="font-size:13px;" class="uk-width-1-10 uk-text-bold">STEM Programme<span
+                                        class="text-danger">*</span>:</td>
+                                <td class="uk-width-2-10">
+                                    <input class="uk-width-1-1 int_default" type="number" name="stem_programme"
+                                        id="stem_programme" step="0.01"
+                                        value="<?php echo $edit_row['stem_programme'] ?>">
+                                    <span id="validationSTEM" style="color: red; display: none;">Please input
+                                        STEM Programme</span>
+                                </td>
+                                <td class="uk-width-2-10">
+                                    <select name="stem_programme_collection" id="stem_programme_collection" class=""
+                                        style="width: 100%;">
+                                        <option value=""></option>
+                                        <option value="Termly"
+                                            <?php if($edit_row['stem_programme_collection']=='Termly') {echo 'selected';}?>>
+                                            Termly</option>
+                                    </select><br>
+                                    <span id="validationCollectionStemPgm" style="color: red; display: none;">Please select Collection
+                                        Pattern</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- END STEM ADD -->
+
+                        <!-- BEGIN STEM STUDENT KIT ADD -->
+                        <table class="uk-table uk-table-small">
+                            <tr class="uk-text-small">
+                                <td style="font-size:13px;" class="uk-width-1-10 uk-text-bold">STEM Student Kit<span
+                                        class="text-danger">*</span>:</td>
+                                <td class="uk-width-2-10">
+                                    <input class="uk-width-1-1 int_default" type="number" name="stem_student_kit"
+                                        id="stem_student_kit" step="0.01"
+                                        value="<?php echo $edit_row['stem_student_kit'] ?>">
+                                    <span id="validationSTEMStudentKit" style="color: red; display: none;">Please input
+                                        STEM Programme</span>
+                                </td>
+                                <td class="uk-width-2-10">
+                                    <select name="stem_student_kit_collection" id="stem_student_kit_collection" class=""
+                                        style="width: 100%;">
+                                        <option value=""></option>
+                                        <option value="Termly"
+                                            <?php if($edit_row['stem_student_kit_collection']=='Termly') {echo 'selected';}?>>
+                                            Termly</option>
+                                    </select><br>
+                                    <span id="validationCollectionStemKit" style="color: red; display: none;">Please select Collection
+                                        Pattern</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- END STEM ADD -->
+
                         <table class="uk-table uk-table-small">
                             <tr class="uk-text-small">
                                 <td style="font-size:13px;" class="uk-width-1-10 uk-text-bold">Total:</td>
@@ -1305,6 +1363,11 @@ $("#frmCourse").submit(function(e) {
     var mobile_collection = $("#mobile_collection").val();
     var pendidikan_islam_collection = $("#pendidikan_islam_collection").val();
     var robotic_plus_collection = $("#robotic_plus_collection").val();
+    // STEM ADD
+    var stem_programme = $("#stem_programme").val();
+    var stem_programme_collection = $("#stem_programme_collection").val();
+    var stem_student_kit = $("#stem_student_kit").val();
+    var stem_student_kit_collection = $("#stem_student_kit_collection").val();
 
     if (!country || !state || !subject || !school_fee || !multimedia_fee || !registration || !facility_fee || !
         mobile_collection || !fees_structure || !robotic_plus || !robotic_plus_collection || !pendidikan_islam_collection || !afternoon_robotic || !afternoon_robotic_collection) {
@@ -1534,6 +1597,28 @@ $("#frmCourse").submit(function(e) {
             $('#validationarc').show();
         } else {
             $('#validationarc').hide();
+        }
+
+        if (!stem_programme) {
+            $('#validationSTEM').show();
+        } else {
+            $('#validationSTEM').hide();
+        }
+        if (!stem_programme_collection) {
+            $('#validationCollectionStemPgm').show();
+        } else {
+            $('#validationCollectionStemPgm').hide();
+        }
+
+        if (!stem_student_kit) {
+            $('#validationSTEMStudentKit').show();
+        } else {
+            $('#validationSTEMStudentKit').hide();
+        }
+        if (!stem_student_kit_collection) {
+            $('#stem_student_kit_collection').show();
+        } else {
+            $('#stem_student_kit_collection').hide();
         }
 
         return false;

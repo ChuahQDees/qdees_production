@@ -62,7 +62,7 @@ if ($mode=="SAVE") {
 
       if (($product_code!="") & ($product_name!="") & ($unit_price!="") & ($country!="") & ($state!="")) {
          $term1 = !empty($term) ? "$term" : "0";
-         $update_sql="UPDATE `$table` set product_code='$product_code', product_name='$product_name', category='$category', category_name='$category_name', country='$country', `state`='$state', unit_price='$unit_price', sub_sub_category='$sub_sub_category', term='$term1', category_id='$category_id', retail_price='$retail_price', foundation='$foundation'
+         $update_sql="UPDATE `$table` set product_code='$product_code', product_name='$product_name', category='$category', category_name='$category_name', country='$country', `state`='$state', unit_price='$unit_price', sub_sub_category='$sub_sub_category', term='$term1', category_id='$category_id', retail_price='$retail_price', foundation='$foundation', remarks = '$remarks', remarks_invoice = '$remarks_invoice'
          where id='$hidden_id'";
          $result=mysqli_query($connection, $update_sql);
 
@@ -89,7 +89,7 @@ if ($mode=="SAVE") {
          $product_photo_filename=generateRandomString(8).".jpg";
 		 copy($tmp_document, 'admin/uploads/'.$product_photo_filename);
 		 $term1 = !empty($term) ? "$term" : "0";
-         $insert_sql="INSERT into `$table` (product_code, product_name, category, unit_price, retail_price, sub_sub_category, `country`, `state`, `product_photo`, category_id, term, category_name, foundation) values ('$product_code', '$product_name', '$category', '$unit_price', '$retail_price', '$sub_sub_category', '$country', '$state', '$product_photo_filename', '$category_id', '$term1', '$category_name', '$foundation')";
+         $insert_sql="INSERT into `$table` (product_code, product_name, category, unit_price, retail_price, sub_sub_category, `country`, `state`, `product_photo`, category_id, term, category_name, foundation, remarks, remarks_invoice) values ('$product_code', '$product_name', '$category', '$unit_price', '$retail_price', '$sub_sub_category', '$country', '$state', '$product_photo_filename', '$category_id', '$term1', '$category_name', '$foundation', '$remarks', '$remarks_invoice')";
          //echo $insert_sql; die;
          $result=mysqli_query($connection, $insert_sql);
 		 

@@ -1,11 +1,15 @@
 <script src="lib/uikit/js/jquery.js"></script>
 <?php
-require 'sendgrid-php_test/vendor/autoload.php';
+echo 'Current PHP version: ' . phpversion();
+?>
+<?php
+//require 'sendgrid_chs/vendor/autoload.php';
+require 'sendgrid-php/vendor/autoload.php';
 
 $email = new \SendGrid\Mail\Mail();
-$email->setFrom("support@q-dees.com", "Q-dees");
+$email->setFrom("chuah@mindspectrum.com.my", "Q-Dees IT Support");
 $email->setSubject("Reset Password");
-$email->addTo("chuah@mindspectrum.com.my", "TestUsername");
+$email->addTo("chuah@mindspectrum.com.my", "Chuah HS");
 $body="<html><table>";
 $body.='<tr><td><img src="http://starters.q-dees.com.my/images/Qdees.png" style="width: 30%;">';
 $body.='</td></tr>';
@@ -34,12 +38,13 @@ $body.='</td></tr>';
 $body.='<tr><td>Q-dees support team';
 $body.='</td></tr>';
 $body.='</table></html>';
-echo $body;
+//echo $body;
 $email->addContent(
     "text/html", $body
 );
 echo "Sssasd";
-$sendgrid = new \SendGrid('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');
+$sendgrid = new \SendGrid('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');
+
 try {
     $response = $sendgrid->send($email);
     print $response->statusCode() . "\n";

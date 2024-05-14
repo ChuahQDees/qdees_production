@@ -62,8 +62,13 @@ function getLink($p, $active_page, $str_p) {
   if (isset($_SESSION["isLogin"]) && $_SESSION["isLogin"]==1) {
     include_once("bootstrap.php");
     include_once("uikit.php");
-  } else {
-    include_once("uikit.php");
+  } 
+  else {
+	if ($_GET["TEST"] == "TEST"){
+		include_once("uikit_test.php");
+	}else{
+		include_once("uikit.php");
+	}
   }
 ?>
   <link rel="shortcut icon" href="images/favicon.png" />
@@ -1230,9 +1235,13 @@ if ($_SESSION["UserType"]=="S") {
   case "fee_str_allocate" : include_once ("admin/fee_structure_allocation.php"); break;
   case "declaration_rpt_view" : include_once ("admin/declaration_rpt_view.php"); break;
   case "fee_str_allocate_func" : include_once ("admin/fee_structure_allocation_function.php"); break;
-
   case "student_multitransfer" : include_once("admin/student_multi_transfer.php"); break;
   case "student_multitransfer_function" : include_once("admin/student_multi_transfer_function.php"); break;
+
+  case "rpt_student_no_monitoringCHS" : include_once("admin/rptStudentNoMonitoringCHS.php"); break;
+  case "salesChart" : include_once("admin/sales_Chart.php"); break;
+  case "orderBundle" : include_once("admin/order_bundle.php"); break;
+  case "orderForm1C" : include_once("admin/purchasing.php&category-id=111&term=&sub_sub_category="); break;
 }
 ?>
           </p>
@@ -1247,7 +1256,11 @@ if ($_SESSION["UserType"]=="S") {
   </div>
 <?php
 } else {
-  include_once("login.php");
+	if ($_GET["TEST"] == "TEST"){
+		include_once("qdees login demo.php");
+	}else{
+		include_once("login.php");
+	}
 }
 ?>
 <div id="dlgViewCart"></div>

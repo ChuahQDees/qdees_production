@@ -319,8 +319,20 @@ function saveStudent($table, $form_mode = ''){
        && ($signature!='{\"lines\":[]}' && $signature!="")
      ) {   
 
-		$extend_year = getYearFromMonth(date('Y',strtotime($start_date_at_centre)), date('m',strtotime($start_date_at_centre)));
+		//$extend_year = getYearFromMonth(date('Y',strtotime($start_date_at_centre)), date('m',strtotime($start_date_at_centre)));
     
+  //Set extend_year to the current year because everyone's confused where the new student went lmao
+	$extend_default = "";
+
+  $startDate = strtotime(date('Y-m-d', strtotime($start_date_at_centre) ) );
+  $currentDate = strtotime('2024-03-01'); 
+  
+  if($startDate < $currentDate) {
+    $extend_default = "2023-2024";
+  }else{
+    $extend_default = "2024-2025";
+  }
+
     if ($form_mode == 'qr') {
       $sql="SELECT * from `student` where student_code !='$hidden_student_code' and student_status!='I' and nric_no='$nric_no' ";
    }else{
@@ -412,6 +424,7 @@ $sql="UPDATE `$table` set
         accept_terms='$accept_terms',
         signature='$signature',
         chinese_name='$chinese_name',
+        extend_year = '$extend_default',
 		unique_id='$unique_id'
         $defer_date
 		where student_code='$hidden_student_code'";
@@ -594,15 +607,17 @@ $date_created = date('Y-m-d h:m:i');
 //Remove special characters
 $name = clean($name);
 
-//Set extend_year to the current year because everyone's confused where the new student went lmao
-$extend_default = "";
+	//Set extend_year to the current year because everyone's confused where the new student went lmao
+	$extend_default = "";
 
     $startDate = strtotime(date('Y-m-d', strtotime($start_date_at_centre) ) );
-    $currentDate = strtotime('2023-03-01'); 
+    $currentDate = strtotime('2024-03-01'); 
     
-    //if($startDate < $currentDate) {
+    if($startDate < $currentDate) {
       $extend_default = "2023-2024";
-    //}
+    }else{
+	  $extend_default = "2024-2025";
+	}
 
     $insert_sql="INSERT into `$table` (
        student_code,

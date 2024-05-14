@@ -488,6 +488,17 @@ if ((($_SESSION["UserType"]=="A") || ($_SESSION["UserType"]=="O")) &
                     <span class="menu-title">Centre Monthly<br>Fees Report</span>
                 </a>
             </li>
+			<?php
+        if (($_SESSION["UserType"]=="A") &
+            (hasRightGroupXOR($_SESSION["UserName"], "SalesEdit|SalesView"))) {
+            ?>
+			<li class="nav-item salesChart">
+                <a class="nav-link" href="index.php?p=salesChart" >
+                    <span class="menu-icon"><img src="images/menu_icons/Report.png"></span>
+                    <span class="menu-title">Sales Chart</span>
+                </a>
+            </li>
+			<?php } ?>
             <h3 class="text-center text-white font-weight-bold" style="margin-bottom: 0; padding-bottom: 0;">QR Code Report</h3>
             <li class="nav-item rptStudentTag">
                 <a class="nav-link" href="index.php?p=rptStudentTag">

@@ -202,7 +202,9 @@ function getStatus($order_no) {
                  } else {
                    if ($row["acknowledged_by"]!="" && $row["acknowledged_on"]!="") {
                      return "Acknowledged";
-                   } else {
+                   }else if (!empty($rowxx["cancelled_by"])){ 
+                     return "Cancelled";
+                   }else {
                      return "Pending";
                    }
                  }

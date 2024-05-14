@@ -35,7 +35,7 @@ include_once("mysql.php");
     $i = 0;
 
 	while($i < count($studentArray)){
-		$update_sql = "UPDATE `student` SET extend_year = '2023-2024' WHERE id = '$studentArray[$i]'";
+		$update_sql = "UPDATE `student` SET extend_year = '2024-2025' WHERE id = '$studentArray[$i]'";
 		//echo $update_sql;
 
 		$result= mysqli_query($connection, $update_sql);

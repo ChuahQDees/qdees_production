@@ -114,13 +114,26 @@ session_start();
 			robotic_plus_default='".$_POST['robotic_plus_default']."',
 			robotic_plus_adjust='".$_POST['robotic_plus_adjust']."',
 			robotic_plus_collection='".$_POST['robotic_plus_collection']."',
+
+			stem_programme_default='".$_POST['stem_programme_default']."',
+			stem_programme_default_parent='".$_POST['stem_programme_default_parent']."',
+			stem_programme_adjust='".$_POST['stem_programme_adjust']."',
+			stem_programme_collection='".$_POST['stem_programme_collection']."',
+
+			stem_studentKit_default='".$_POST['stem_studentKit_default']."',
+			stem_studentKit_default_parent='".$_POST['stem_studentKit_default_parent']."',
+			stem_studentKit_adjust='".$_POST['stem_studentKit_adjust']."',
+			stem_studentKit_collection='".$_POST['stem_studentKit_collection']."',
+
 			remarks='".$_POST['remarks']."',
 			adjusted='$adjusted', doc_remarks='$files_filename', remarks_master = '$remarks_master' ";
 			$save_sql .= "where sha1(id)='$get_sha1_fee_id'";
 		}
 		else
 		{
-			$save_sql="update  fee_structure set status='$actionButton', adjusted='$adjusted', doc_remarks='$files_filename', remarks_master = '$remarks_master' ";
+			$time_date= date("Y-m-d H:i:s");
+
+			$save_sql="update  fee_structure set status='$actionButton', adjusted='$adjusted', doc_remarks='$files_filename', remarks_master = '$remarks_master', approval_date = '$time_date'";
 			$save_sql .= "where sha1(id)='$get_sha1_fee_id'";
 		}
             
