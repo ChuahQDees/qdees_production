@@ -320,7 +320,7 @@ function doDeleteRecord(id) {
                                         if($buffer != '')
                                         {
                                             $roleArray = json_decode($buffer,true);
-
+ 
                                             foreach($roleArray as $key => $value)
                                             {
                                     ?>
@@ -550,8 +550,9 @@ $(document).ready(function(){
 
     console.log(state);
 
-    if (country =="" || state ==null || mastertype =="" || user_name =="" || user_type =="" || user_role =="" || password =="" || helpdesk_role=="") {
-
+    //if (country =="" || state ==null || mastertype =="" || user_name =="" || user_type =="" || user_role =="" || password =="" || helpdesk_role=="") {
+        //Temporary remove helpdesk role
+        if (country =="" || state ==null || mastertype =="" || user_name =="" || user_type =="" || user_role =="" || password =="") {
    e.preventDefault();
     //alert("Please fill up mandatory fields marked *");
 
@@ -600,12 +601,13 @@ $(document).ready(function(){
             $('#validationpassword').hide();
         }
 
+        /* Temporary remove helpdesk role
         if (helpdesk_role =="") {
             $('#validationhelpdeskrole').show();
         }else{
             $('#validationhelpdeskrole').hide();
         }
-		
+		*/
         
         
   }

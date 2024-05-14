@@ -349,7 +349,7 @@ if ($_SESSION["isLogin"] == 1) {
                }
                if ($category_name != "") {
                   //$sql .= "and company_name = '$sub_company'";
-                  $sql .= "and (c.category_name like '%$category_name%' or c.category_description like '%$category_name%' OR p.product_name LIKE '%$category_name%') ";
+                  $sql .= "and (c.category_name like '%$category_name%' or c.category_description like '%$category_name%') ";
                }
                if ($term != "") {
                   $sql .= "and p.term = '$term' ";

@@ -35,6 +35,10 @@ if ($num_row>0) {
    $_SESSION["UserName"]=$row["user_name"];
    $_SESSION["Name"]=$row["name"];
    $_SESSION["CentreCode"]=$row["centre_code"];
+   
+   if (!$row["centre_code"] && $row["user_type"] = "S"){ //Center code blank and it's a HQ Account
+	   $_SESSION["CentreCode"]="MYQWESTC1C10001";
+   }
    $_SESSION["Country"]=getCountry($row["centre_code"]);
    $_SESSION["Email"]=$row["email"];
 

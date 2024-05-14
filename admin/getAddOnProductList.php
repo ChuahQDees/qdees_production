@@ -352,7 +352,7 @@ $(document).ready(function () {
    //$selected_year = $_SESSION['Year'];
    $sql1="SELECT ps.id, ps.student_id, s.student_code, fl.fee_id, fl.programme_date, fl.programme_date_end, f.extend_year from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and sha1(s.student_code)='$student_code'";
          
-      $result1=mysqli_query($connection, $sql1);
+   $result1=mysqli_query($connection, $sql1);
    $num_row=mysqli_num_rows($result1);
    $amount = 0;
    $extend_year=0;

@@ -65,6 +65,7 @@ if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "Add
                      <input type="hidden" name="hidden_product_id" id="hidden_product_id" value="<?php echo $edit_row['id']?>">
                      <input type="hidden" name="hidden_id" id="hidden_id" value="<?php echo sha1($edit_row['id'])?>">
 					 <span id="validationProductCode"  style="color: red; display: none;">Please insert File No</span>
+					 
                   </td>
                </tr>
                <tr class="uk-text-small">
@@ -82,7 +83,7 @@ if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "Add
                </tr>
 			   <tr class="uk-text-small">
                   <td class="uk-width-3-10 uk-text-bold">Unit Price : </td>
-                  <td class="uk-width-7-10"><input class="uk-width-1-1" type="number" name="unit_price" id="unit_price" step="0.01" value="0.00" onChange="autoDecimal()" value="<?php echo $edit_row['unit_price']?>">
+                  <td class="uk-width-7-10"><input class="uk-width-1-1" type="number" name="unit_price" id="unit_price" step="0.01" value="<?php echo $edit_row['unit_price']?>">
 				  <span id="validationUnitprice"  style="color: red; display: none;">Please insert Unit Price</span>
 				  </td>
                </tr>
@@ -93,14 +94,6 @@ if (($_SESSION["UserType"]=="A") & (hasRightGroupXOR($_SESSION["UserName"], "Add
                </tr>
             </table>
          </div>
-         <script>
-         function autoDecimal(){
-            var adjustedPrice = document.getElementById("unit_price").value;
-            
-            var newAdjustedPrice = (Math.round(adjustedPrice * 100) / 100).toFixed(2);
-            document.getElementById("unit_price").value = newAdjustedPrice;
-         }
-         </script>
          <div class="uk-width-medium-5-10">
             <table class="uk-table uk-table-small">
 			     <tr class="uk-text-small">

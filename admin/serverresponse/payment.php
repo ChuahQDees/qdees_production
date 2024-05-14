@@ -46,7 +46,7 @@
                         (SELECT `c`.`subject` FROM `allocation` a LEFT JOIN `course` c ON a.course_id = c.id WHERE a.year = '".$_SESSION['Year']."' AND a.student_id = `student`.`id` AND a.deleted = 0 order by a.id desc LIMIT 1) AS `subject`
 
 						FROM `student` WHERE
-                            `centre_code` = '".$_SESSION['CentreCode']."' AND `student`.`student_status` = 'A' AND `student`.`deleted` = 0 AND `student`.`extend_year` >= '".$_SESSION['Year']."' ".$where."
+                            `centre_code` = '".$centre_code."' AND `student`.`student_status` = 'A' AND `student`.`deleted` = 0 AND `student`.`extend_year` >= '".$year."' ".$where."
                         GROUP BY `student`.`name`, `student`.`student_code` ".$having."
 
                         ORDER BY `student`.`start_date_at_centre` DESC

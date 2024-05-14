@@ -123,7 +123,6 @@ if ($_SESSION["isLogin"] == 1) {
             <h2 class="uk-text-center myheader-text-color myheader-text-style">Search</h2>
          </div>
          <div class="uk-overflow-container">
-
             <form name="frmStatus nostyle" style="background: transparent!important; box-shadow: none!important;" id="frmStatus" method="get" class="uk-form">
                <div class="uk-grid">
 				 <div  style="padding-right: 5px; width:14%;" class="uk-width-2-10 uk-text-small">
@@ -134,10 +133,20 @@ if ($_SESSION["isLogin"] == 1) {
                         <option value="">Select Status</option>
                         <option <?php if($_GET["status"]=="Pending") echo "selected" ?> value="Pending">Pending</option>
                         <option <?php if($_GET["status"]=="Acknowledged") echo "selected" ?> value="Acknowledged">Acknowledged</option> 
+						<?php if ($_SESSION["UserType"] != "A"){?>
+						<option style="font-weight: bold;" <?php if($_GET["status"]=="Finance Pending (F)") echo "selected" ?> value="Finance Pending (F)">Finance Pending (F)</option>
+						<option style="font-weight: bold;" <?php if($_GET["status"]=="Logistics Pending (L)") echo "selected" ?> value="Logistics Pending (L)">Logistics Pending (L)</option>
+						<?php } ?>
                         <option <?php if($_GET["status"]=="Packing") echo "selected" ?> value="Packing">Packing</option>
                         <option <?php if($_GET["status"]=="Ready for Collection") echo "selected" ?> value="Ready for Collection">Ready for Collection</option>
-						      <option <?php if($_GET["status"]=="Delivered") echo "selected" ?> value="Delivered">Delivered</option>	
-                        <option <?php if($_GET["status"]=="Cancelled") echo "selected" ?> value="Cancelled">Cancelled</option>					
+						<!--
+                        <option <?php if($_GET["status"]=="Ready for Collection (F)") echo "selected" ?> value="Ready for Collection (F)">Ready for Collection (F)</option>
+						-->
+						<?php if ($_SESSION["UserType"] != "A"){?>
+						      <option style="font-weight: bold;"<?php if($_GET["status"]=="Ready for Collection (S)") echo "selected" ?> value="Ready for Collection (S)">Ready for Collection (S)</option>
+						<?php } ?>
+                        <option <?php if($_GET["status"]=="Delivered") echo "selected" ?> value="Delivered">Delivered</option>	
+                        <option <?php if($_GET["status"]=="Cancelled") echo "selected" ?> value="Cancelled">Cancelled</option>
                      </select>          
 				      </div>
 				  

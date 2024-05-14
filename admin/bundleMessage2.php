@@ -1,10 +1,6 @@
 <?php
-//session_start();
+session_start();
 include_once("../mysql.php");
-
-foreach ($_POST as $key=>$value) {
-   $$key=mysqli_real_escape_string($connection, $value); // $id (sha1)
-}
 ?>
 <!--
 <table class="uk-table">
@@ -64,7 +60,7 @@ function getNoInCart() { //Update the Shopping cart number
    <p style="font-size:15px;">
       Hello!
       <br/>
-      We're really glad to have you on-board! This contains a starter pack for new centers: <?php echo $bundleID ?>
+      We're really glad to have you on-board! This contains a starter pack for new centers:
    </p>
    <ul style="font-size:15px;">
    <li>Uniform</li>

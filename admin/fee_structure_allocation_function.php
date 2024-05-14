@@ -48,25 +48,10 @@ include_once("mysql.php");
 	$enherror = "0";
 if ($student_entry_level != "EDP"){ //If it's not EDP, then it's QF1/QF2/QF3
 	if ($foundation_int_english[0]=="0" && $foundation_iq_math[0]=="0" && $foundation_int_mandarin[0]=="0" && $foundation_int_art[0]=="0" && $pendidikan_islam[0]=="0"){
-		
-		//Search in the new table
-		$entry_find = mysqli_query($connection, "SELECT centre_code FROM `student` WHERE id = '$studentArray[0]'");
-		$centre_code = "";
-
-		if ($row = mysqli_fetch_assoc($entry_find)) {
-			$centre_code = $row['centre_code'];
-		}
-
-		$sqlchk="SELECT COUNT(id) count from enh_foundation_whitelist where centre_code = '$centre_code' AND allowed = 'Y'";
-
-		$resultchk=mysqli_query($connection, $sqlchk);
-		$rowchk=mysqli_fetch_assoc($resultchk);
-		//return $row["id"];
-		
-		if ($rowchk["count"] == '0'){
-			echo '<script>window.location.href = "/index.php?p=fee_str_allocate&status=enerror";</script>';
-			$enherror = "1";
-		}
+		//Temporary disable
+		echo '<script>window.location.href = "/index.php?p=fee_str_allocate&status=enerror";</script>';
+		$enherror = "1";
+		//echo '<script>window.location.href = "/index.php?p=fee_str_allocate&status=completed";</script>';
 	}
 }
 

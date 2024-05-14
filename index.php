@@ -60,8 +60,12 @@ function getLink($p, $active_page, $str_p) {
   <link rel="icon" type="image/ico" href="images/title.png" />
 <?php
   if (isset($_SESSION["isLogin"]) && $_SESSION["isLogin"]==1) {
-    include_once("bootstrap.php");
-    include_once("uikit.php");
+    if ($_GET["TEST"] == "TEST"){
+      include_once("bootstraptest.php");
+    }else{
+      include_once("bootstrap.php");
+    } 
+      include_once("uikit.php");
   } 
   else {
 	if ($_GET["TEST"] == "TEST"){
@@ -1016,7 +1020,7 @@ if (($_GET["p"]=="") & ($_GET["master"]==1)) {
 if ($_SESSION["UserType"]=="S") {
 ?>
                <div class="dropdown-menu setdropdown" aria-labelledby="dropdownMenu1">
-                    <button class="dropdown-item" type="button"><a href="index.php?p=buffer_stock&master=1">Buffer Stock</a></button>
+                    <button class="dropdown-item" type="button"><a href="index.php?p=buffer_stock&master=1">Buffer Stockss</a></button>
                     <button class="dropdown-item" type="button"><a href="index.php?p=centre_category&master=1">Centre Category</a></button>
                     <button class="dropdown-item" type="button"><a href="index.php?p=centre_status&master=1">Centre Status</a></button>
                     <button class="dropdown-item" type="button"><a href="index.php?p=country&master=1">Country</a></button>
@@ -1242,6 +1246,8 @@ if ($_SESSION["UserType"]=="S") {
   case "salesChart" : include_once("admin/sales_Chart.php"); break;
   case "orderBundle" : include_once("admin/order_bundle.php"); break;
   case "orderForm1C" : include_once("admin/purchasing.php&category-id=111&term=&sub_sub_category="); break;
+  case "dianasushi" : include_once("admin/dianaEFReport.php"); break;
+  case "dianaramen" : include_once("admin/dianaStockWatch.php"); break;
 }
 ?>
           </p>

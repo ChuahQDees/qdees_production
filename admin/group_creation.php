@@ -10,6 +10,7 @@
 session_start();
 $year=$_SESSION['Year'];
 $centre_code=$_SESSION["CentreCode"];
+$current_year = $_SESSION['Year'];
 include_once("../mysql.php");
 include_once("functions.php");
 

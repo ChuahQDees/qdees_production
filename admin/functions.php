@@ -599,4 +599,32 @@ function getHalfYearDate($year, $centre_code = '')
    return $halfDate['term_start'];
 }
 
+function AppStudent($student_detail)
+{
+   //api code
+   
+    $cURLConnection = curl_init('https://mobile.q-dees.com/api/StudentStore');
+    curl_setopt($cURLConnection, CURLOPT_POSTFIELDS, $student_detail);
+    curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+    $apiResponse = curl_exec($cURLConnection);
+    curl_close($cURLConnection);
+
+    return $apiResponse;
+}
+
+function AppCentre($centre_detail)
+{
+   //api code
+   
+    $cURLConnection = curl_init('https://mobile.q-dees.com/api/CentreStore');
+    curl_setopt($cURLConnection, CURLOPT_POSTFIELDS, $centre_detail);
+    curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+    $apiResponse = curl_exec($cURLConnection);
+    curl_close($cURLConnection);
+
+    return $apiResponse;
+}
+
 ?>

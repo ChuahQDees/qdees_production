@@ -1,0 +1,4 @@
+Options -Indexes
+RewriteEngine On
+RewriteCond %{SERVER_PORT} 80
+RewriteRule ^(.*)$ https://q-dees.com/$1 [R,L]

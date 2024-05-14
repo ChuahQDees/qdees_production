@@ -47,10 +47,10 @@ function getStrTerm($term) {
 }
 
 function getCurrentHalfYearly($month) {
-	if($month<=6){
+	if($month == 3 || $month == 4 || $month == 5 || $month == 6 || $month == 7 || $month == 8) {
 		return 1;
 	}
-	else if($month<=12){
+	else if($month == 9 || $month == 10 || $month == 11 || $month == 12 || $month == 1 || $month == 2) {
 		return 2;
 	}
 }
@@ -276,11 +276,11 @@ function changeType(subject) {
 	//$sql="SELECT * from fee_structure fs inner join student st on fs.subject = st.student_entry_level and fs.programme_package = st.programme_duration where sha1(st.student_code) ='$student_code'";
 
 //start Monthly
-		$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid'";
+		$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.stem_programme_adjust, f.stem_programme_collection, f.stem_studentKit_adjust, f.stem_studentKit_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid'";
 	
 		$result=mysqli_query($connection, $sql);
-	$num_row=mysqli_num_rows($result);
-	$amount = 0;
+		$num_row=mysqli_num_rows($result);
+		$amount = 0;
 		while ($row=mysqli_fetch_assoc($result)) {
 			$programme_date = $row["programme_date"];
 		$programme_date = date("m",strtotime($programme_date));
@@ -289,7 +289,7 @@ function changeType(subject) {
 		$month = date("m",strtotime($programme_date_end));	
 	?>
 		<div class="<?php echo $row["extend_year"] ?> fees">
-		<?php if($row["integrated_collection"]=="Monthly" || $row["link_collection"]=="Monthly" || $row["mandarin_m_collection"]=="Monthly"){ ?>
+		<?php if($row["integrated_collection"]=="Monthly" || $row["link_collection"]=="Monthly" || $row["mandarin_m_collection"]=="Monthly" || $row["stem_programme_collection"]=="Monthly" || $row["stem_studentKit_collection"]=="Monthly"){ ?>
 			<h2><?php echo $row["subject"]?></h2>
 			<?php	} ?>
 	<table>
@@ -302,7 +302,7 @@ function changeType(subject) {
 
 			$i = $dt->format("m");
 
-			if($row["integrated_collection"]=="Monthly" || $row["link_collection"]=="Monthly" || $row["mandarin_m_collection"]=="Monthly"){
+			if($row["integrated_collection"]=="Monthly" || $row["link_collection"]=="Monthly" || $row["mandarin_m_collection"]=="Monthly" || $row["stem_programme_collection"]=="Monthly" || $row["stem_studentKit_collection"]=="Monthly"){
 			?>
 		<h3 style="margin-bottom: 0px;"><?php echo $dt->format("M Y"); ?></h3>
 		<div>
@@ -436,13 +436,93 @@ function changeType(subject) {
 		}
 	}
 			?>
-				
+
+			<?php if($row["stem_programme_adjust"]!="" && $row["stem_programme_collection"]!=""){
+				if($row["stem_programme_collection"]=="Monthly"){
+				?>
+				<div class="f2 feeItems">
+			<br>
+			<?php 
+				echo "STEM Programme";
+				echo "<br>";
+				$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$i' and c.product_code = 'STEM Programme' group by c.id ) ab group by collection_month, fee_structure_id";
+					
+					$result1=mysqli_query($connection, $sql);
+					$IsRow=mysqli_num_rows($result1);
+					$row_collection=mysqli_fetch_assoc($result1)
+						?> 
+					<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_programme_adjust"]?>" readonly>
+					<input type="text" placeholder="Fee"  name="stem_programme_collection" value="<?php echo $row["stem_programme_collection"]?>" readonly>
+						</label>
+					<?php
+						
+					if($IsRow<1){
+						$amount += $row["stem_programme_adjust"];
+						$item = $row["subject"];
+					?>	
+						
+						<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $row["stem_programme_adjust"]?>', '1','<?php echo $row["id"]?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Monthly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+						<?php
+					}else{
+						if($row["stem_programme_adjust"] > $row_collection["collection"]){
+							$balance = $row["stem_programme_adjust"] - $row_collection["collection"];
+							?>
+							<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+							<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Monthly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+						}else {
+							echo "Paid";
+						}
+					}
+					echo "</div>";
+			}
+		}
+			?>
+
+			<?php if($row["stem_studentKit_adjust"]!="" && $row["stem_studentKit_collection"]!=""){
+				if($row["stem_studentKit_collection"]=="Monthly"){
+				?>
+				<div class="f2 feeItems">
+			<br>
+			<?php 
+			
+				echo "STEM Student Kit";
+				echo "<br>";
+				$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$i' and c.product_code = 'STEM Student Kit' group by c.id ) ab group by collection_month, fee_structure_id";
+					
+					$result1=mysqli_query($connection, $sql);
+					$IsRow=mysqli_num_rows($result1);
+					$row_collection=mysqli_fetch_assoc($result1)
+						?> 
+					<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_studentKit_adjust"]?>" readonly>
+					<input type="text" placeholder="Fee"  name="stem_studentKit_collection" value="<?php echo $row["stem_studentKit_collection"]?>" readonly>
+						</label>
+					<?php
+						
+					if($IsRow<1){
+						$amount += $row["stem_studentKit_adjust"];
+						$item = $row["subject"];
+					?>	
+						
+						<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $row["stem_studentKit_adjust"]?>', '1','<?php echo $row["id"]?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Monthly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+						<?php
+					}else{
+						if($row["stem_studentKit_adjust"] > $row_collection["collection"]){
+							$balance = $row["stem_studentKit_adjust"] - $row_collection["collection"];
+							?>
+							<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+							<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Monthly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+						}else {
+							echo "Paid";
+						}
+					}
+					echo "</div>";
+			}
+		}
+			?>		
 		</div>
 		<?php 
 		}
-		
 			?>
-
 	<!---------------end monthly---------------------------------------------------------------------------------->
 		</td>
 	</tr>
@@ -455,8 +535,8 @@ function changeType(subject) {
 //end Monthly
 
 //start Termly
-	$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid'";
-	//echo $sql;
+	$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.stem_programme_adjust, f.stem_programme_collection, f.stem_studentKit_adjust, f.stem_studentKit_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid'";
+	
 	$result=mysqli_query($connection, $sql);
 	$num_row=mysqli_num_rows($result);
 	$amount = 0;
@@ -470,7 +550,7 @@ function changeType(subject) {
 	$month = date("m",strtotime($programme_date_end));	
 	?>
 	<div class="<?php echo $row["extend_year"] ?> fees">
-	<?php if($row["integrated_collection"]=="Termly" || $row["link_collection"]=="Termly" || $row["mandarin_m_collection"]=="Termly"){ ?>
+	<?php if(($row["integrated_collection"]=="Termly" && $row["integrated_adjust"] > 0) || ($row["link_collection"]=="Termly" && $row["link_adjust"] > 0) || ($row["mandarin_m_collection"]=="Termly" && $row["mandarin_m_adjust"] > 0) || ($row["stem_programme_collection"]=="Termly" && $row["stem_programme_adjust"] > 0) || ($row["stem_studentKit_collection"]=="Termly" && $row["stem_studentKit_adjust"] > 0)){ ?>
 			<h2><?php echo $row["subject"]?></h2>
 			<?php	} ?>
 	<table>
@@ -493,7 +573,7 @@ function changeType(subject) {
 
 	for ($i; $i < $term1; $i++) {
 		
-			if($row["integrated_collection"]=="Termly" || $row["link_collection"]=="Termly" || $row["mandarin_m_collection"]=="Termly"){
+			if(($row["integrated_collection"]=="Termly" && $row["integrated_adjust"] > 0) || ($row["link_collection"]=="Termly" && $row["link_adjust"] > 0) || ($row["mandarin_m_collection"]=="Termly" && $row["mandarin_m_adjust"] > 0) || ($row["stem_programme_collection"]=="Termly" && $row["stem_programme_adjust"] > 0) || ($row["stem_studentKit_collection"]=="Termly" && $row["stem_studentKit_adjust"] > 0)){
 			?>
 			<div>
 	<label>
@@ -623,6 +703,92 @@ function changeType(subject) {
 			echo "</div>";
 		}
 	}
+
+
+	if($row["stem_programme_collection"]=="Termly"){
+		echo '<div class="f2 feeItems">';
+		//$month = $month-1;
+		$term = getTermFromDate(date('Y-m-d',strtotime($row['programme_date'])));
+			
+			$month = $i+1;
+			
+			echo "<br>";
+			echo 'STEM Programme';
+			echo "<br>";
+			$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$month' and c.product_code = 'STEM Programme' group by c.id ) ab group by collection_month, fee_structure_id";
+			
+			$result1=mysqli_query($connection, $sql);
+			$IsRow=mysqli_num_rows($result1);
+			$row_collection=mysqli_fetch_assoc($result1)
+			?>
+			<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_programme_adjust"]?>" readonly>
+			<input type="text" placeholder="Fee"  name="stem_programme_collection" value="<?php echo $row["stem_programme_collection"]?>" readonly>
+				</label>
+			<?php
+				
+			//echo $IsRow; 
+			if($IsRow<1){
+				$amount += $row["stem_programme_adjust"];
+				$item = $row["subject"];
+			?>	
+				<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $row["stem_programme_adjust"]?>', '1', '<?php echo $row["id"]; ?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Termly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+			<?php
+			//}
+		}else{
+			if($row["stem_programme_adjust"] > $row_collection["collection"]){
+				$balance = $row["stem_programme_adjust"] - $row_collection["collection"];
+				?>
+				<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+				<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Termly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+			}else {
+				echo "Paid";
+			}
+		}
+		echo "</div>";
+		}
+
+		if($row["stem_studentKit_collection"]=="Termly"){
+			echo '<div class="f2 feeItems">';
+			//$month = $month-1;
+			$term = getTermFromDate(date('Y-m-d',strtotime($row['programme_date'])));
+				
+				$month = $i+1;
+				
+				echo "<br>";
+				echo 'STEM Student Kit';
+				echo "<br>";
+				$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$month' and c.product_code = 'STEM Student Kit' group by c.id ) ab group by collection_month, fee_structure_id";
+				
+				$result1=mysqli_query($connection, $sql);
+				$IsRow=mysqli_num_rows($result1);
+				$row_collection=mysqli_fetch_assoc($result1)
+				?>
+				<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_studentKit_adjust"]?>" readonly>
+				<input type="text" placeholder="Fee"  name="stem_studentKit_collection" value="<?php echo $row["stem_studentKit_collection"]?>" readonly>
+					</label>
+				<?php
+					
+				//echo $IsRow; 
+				if($IsRow<1){
+					$amount += $row["stem_studentKit_adjust"];
+					$item = $row["subject"];
+				?>	
+					<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $row["stem_studentKit_adjust"]?>', '1', '<?php echo $row["id"]; ?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Termly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+				<?php
+				//}
+			}else{
+				if($row["stem_studentKit_adjust"] > $row_collection["collection"]){
+					$balance = $row["stem_studentKit_adjust"] - $row_collection["collection"];
+					?>
+					<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+					<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Termly')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+				}else {
+					echo "Paid";
+				}
+			}
+			echo "</div>";
+			}
+
 	}
 		?>
 			
@@ -640,7 +806,7 @@ function changeType(subject) {
 //end Termly
 
 //start Half yearly
-	$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid'";
+	$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.stem_programme_adjust, f.stem_programme_collection, f.stem_studentKit_adjust, f.stem_studentKit_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid'";
 	//echo $sql;
 	$result=mysqli_query($connection, $sql);
 	$num_row=mysqli_num_rows($result);
@@ -655,7 +821,7 @@ function changeType(subject) {
 	$month = date("m",strtotime($programme_date_end));	
 	?>
 	<div class="<?php echo $row["extend_year"] ?> fees">
-	<?php if($row["integrated_collection"]=="Half Year" || $row["link_collection"]=="Half Year" || $row["mandarin_m_collection"]=="Half Year"){ ?>
+	<?php if($row["integrated_collection"]=="Half Year" || $row["link_collection"]=="Half Year" || $row["mandarin_m_collection"]=="Half Year" || $row["stem_programme_collection"]=="Half Year" || $row["stem_studentKit_collection"]=="Half Year"){ ?>
 			<h2><?php echo $row["subject"]?></h2>
 			<?php	} ?>
 	<table>
@@ -672,7 +838,7 @@ function changeType(subject) {
 		$i=0;
 	}
 	for ($i; $i < $HearfYearly; $i++) { 
-		if($row["integrated_collection"]=="Half Year" || $row["link_collection"]=="Half Year" || $row["mandarin_m_collection"]=="Half Year"){
+		if($row["integrated_collection"]=="Half Year" || $row["link_collection"]=="Half Year" || $row["mandarin_m_collection"]=="Half Year" || $row["stem_programme_collection"]=="Half Year" || $row["stem_studentKit_collection"]=="Half Year"){
 			?>
 			<div>
 	<label>
@@ -795,6 +961,81 @@ function changeType(subject) {
 		echo "</div>";
 		}
 	}
+
+	if($row["stem_programme_collection"]=="Half Year"){
+		echo '<div class="f2 feeItems">';
+		$month = $i+1;
+			echo "<br>";
+			echo 'STEM Programme';
+			echo "<br>";
+			$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$month' and c.product_code = 'STEM Programme' group by c.id ) ab group by collection_month, fee_structure_id";
+				$result1=mysqli_query($connection, $sql);
+				$IsRow=mysqli_num_rows($result1);
+				$row_collection=mysqli_fetch_assoc($result1)
+			?>
+				<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_programme_adjust"]?>" readonly>
+				<input type="text" placeholder="Fee"  name="stem_programme_collection" value="<?php echo $row["stem_programme_collection"]?>" readonly>
+					</label>
+				<?php
+					
+				if($IsRow<1){
+					$amount += $row["stem_programme_adjust"];
+					$item = $row["subject"];
+				?>	
+					<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $row["stem_programme_adjust"]?>', '1', '<?php echo $row["id"]; ?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Half Year')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+								
+				<?php
+				//}
+			}else{
+				if($row["stem_programme_adjust"] > $row_collection["collection"]){
+					$balance = $row["stem_programme_adjust"] - $row_collection["collection"];
+					?>
+					<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+					<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Half Year')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+				}else {
+					echo "Paid";
+				}
+			}
+			echo "</div>";
+	}
+
+	if($row["stem_studentKit_collection"]=="Half Year"){
+		echo '<div class="f2 feeItems">';
+		$month = $i+1;
+			echo "<br>";
+			echo 'STEM Student Kit';
+			echo "<br>";
+			$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$month' and c.product_code = 'STEM Student Kit' group by c.id ) ab group by collection_month, fee_structure_id";
+				$result1=mysqli_query($connection, $sql);
+				$IsRow=mysqli_num_rows($result1);
+				$row_collection=mysqli_fetch_assoc($result1)
+			?>
+				<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_studentKit_adjust"]?>" readonly>
+				<input type="text" placeholder="Fee"  name="stem_studentKit_collection" value="<?php echo $row["stem_studentKit_collection"]?>" readonly>
+					</label>
+				<?php
+					
+				if($IsRow<1){
+					$amount += $row["stem_studentKit_adjust"];
+					$item = $row["subject"];
+				?>	
+					<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $row["stem_studentKit_adjust"]?>', '1', '<?php echo $row["id"]; ?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Half Year')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+								
+				<?php
+				//}
+			}else{
+				if($row["stem_studentKit_adjust"] > $row_collection["collection"]){
+					$balance = $row["stem_studentKit_adjust"] - $row_collection["collection"];
+					?>
+					<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+					<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i+1; ?>', '<?php echo $row["extend_year"];?>', 'Half Year')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+				}else {
+					echo "Paid";
+				}
+			}
+			echo "</div>";
+	}
+
 	}
 		?> 
 			
@@ -812,8 +1053,8 @@ function changeType(subject) {
 //end Half yearly
 
 //start Annually
-	$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid' group by ps.id";
-	//echo $sql;
+	$sql="SELECT ps.id, ps.student_id, fl.foundation_mandarin, s.student_code, f.integrated_adjust, f.subject, f.integrated_collection, f.link_adjust, f.link_collection, f.stem_programme_adjust, f.stem_programme_collection, f.stem_studentKit_adjust, f.stem_studentKit_collection, f.mandarin_m_adjust, f.mandarin_m_collection, f.extend_year, f.basic_adjust, fl.fee_id, fl.programme_date, fl.programme_date_end from student s, programme_selection ps, student_fee_list fl, fee_structure f  where s.id=ps.student_id and ps.id = fl.programme_selection_id and f.id=fl.fee_id and s.id='$ssid' group by ps.id";
+	
 	$result=mysqli_query($connection, $sql);
 	$num_row=mysqli_num_rows($result);
 	$amount = 0;
@@ -825,7 +1066,7 @@ function changeType(subject) {
 	$month = date("m",strtotime($programme_date_end));	
 	?>
 	<div class="<?php echo $row["extend_year"] ?> fees">
-		<?php if($row["integrated_collection"]=="Annually" || $row["link_collection"]=="Annually" || $row["mandarin_m_collection"]=="Annually"){ ?>
+		<?php if($row["integrated_collection"]=="Annually" || $row["link_collection"]=="Annually" || $row["mandarin_m_collection"]=="Annually" || $row["stem_programme_collection"]=="Annually" || $row["stem_studentKit_collection"]=="Annually"){ ?>
 			<h2><?php echo $row["subject"]?></h2>
 			<?php	} ?>
 	<table>
@@ -836,7 +1077,7 @@ function changeType(subject) {
 
 
 	<?php 
-	if($row["integrated_collection"]=="Annually" || $row["link_collection"]=="Annually" || $row["mandarin_m_collection"]=="Annually"){
+	if($row["integrated_collection"]=="Annually" || $row["link_collection"]=="Annually" || $row["mandarin_m_collection"]=="Annually" || $row["stem_programme_collection"]=="Annually" || $row["stem_studentKit_collection"]=="Annually"){
 		?>
 		<div>
 	<label>
@@ -952,6 +1193,79 @@ function changeType(subject) {
 		echo "</div>";
 	}
 	}
+
+	if($row["stem_programme_collection"]=="Annually"){
+		echo '<div class="f2 feeItems">';
+			echo "<br>";
+			echo 'STEM Programme';
+			echo "<br>";
+			$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$i' and c.product_code = 'STEM Programme' group by c.id ) ab group by collection_month, fee_structure_id";
+			//$sql = "SELECT c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join fee_structure f on f.id= p.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]'";
+				$result1=mysqli_query($connection, $sql);
+				$IsRow=mysqli_num_rows($result1);
+				$row_collection=mysqli_fetch_assoc($result1)
+			?>
+				<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_programme_adjust"]?>" readonly>
+				<input type="text" placeholder="Fee"  name="stem_programme_collection" value="<?php echo $row["stem_programme_collection"]?>" readonly>
+					</label>
+				<?php
+				
+				if($IsRow<1){
+					$amount += $row["stem_programme_adjust"];
+					$item = $row["subject"];
+				?>	
+					<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $row["stem_programme_adjust"]?>', '1', '<?php echo $row["id"]; ?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Annually')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+					
+				<?php
+				}else{
+					if($row["stem_programme_adjust"] > $row_collection["collection"]){
+						$balance = $row["stem_programme_adjust"] - $row_collection["collection"];
+						?>
+						<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+						<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Programme'?>', '<?php echo $student_code ?>', 'stem-programme', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Annually')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+					}else {
+						echo "Paid";
+					}
+			}
+			echo "</div>";
+		}
+
+		if($row["stem_studentKit_collection"]=="Annually"){
+			echo '<div class="f2 feeItems">';
+				echo "<br>";
+				echo 'STEM Student Kit';
+				echo "<br>";
+				$sql = "select sum(amount) + sum(discount) as collection,collection_month, fee_structure_id from ( SELECT c.amount, c.discount, c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]' and  c.year = f.extend_year and c.void = 0 and c.collection_month = '$i' and c.product_code = 'STEM Student Kit' group by c.id ) ab group by collection_month, fee_structure_id";
+				//$sql = "SELECT c.`collection_month`, f.id as fee_structure_id FROM `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join fee_structure f on f.id= p.fee_id where c.void=0 and c.student_id = '$ssid' and f.id = '$row[fee_id]'";
+					$result1=mysqli_query($connection, $sql);
+					$IsRow=mysqli_num_rows($result1);
+					$row_collection=mysqli_fetch_assoc($result1)
+				?>
+					<input class="<?php if($IsRow<1){ echo "fee_amounts3";} ?>" type="number" placeholder="Fee" step="0.01" name="" value="<?php echo $row["stem_studentKit_adjust"]?>" readonly>
+					<input type="text" placeholder="Fee"  name="stem_studentKit_collection" value="<?php echo $row["stem_studentKit_collection"]?>" readonly>
+						</label>
+					<?php
+					
+					if($IsRow<1){
+						$amount += $row["stem_studentKit_adjust"];
+						$item = $row["subject"];
+					?>	
+						<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $row["stem_studentKit_adjust"]?>', '1', '<?php echo $row["id"]; ?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Annually')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>
+						
+					<?php
+					}else{
+						if($row["stem_studentKit_adjust"] > $row_collection["collection"]){
+							$balance = $row["stem_studentKit_adjust"] - $row_collection["collection"];
+							?>
+							<input class="fee_amounts3" type="hidden" value="<?php echo $balance?>">
+							<a class="uk-form-small uk-width-1-1" data-uk-tooltip="{pos:top}" title="Add to Basket" onclick="add2TempBusketMaterial('<?php echo 'STEM Student Kit'?>', '<?php echo $student_code ?>', 'stem-student-kit', '<?php echo $balance; ?>', '1', '<?php echo $row["id"]?>', '<?php echo $i; ?>', '<?php echo $row["extend_year"];?>', 'Annually')"><i class="uk-icon-hover uk-icon-medium uk-icon-cart-plus"></i></a>	<?php echo "Collected: " . $row_collection["collection"]; 
+						}else {
+							echo "Paid";
+						}
+				}
+				echo "</div>";
+			}
+
 	?> 
 		
 	</div>

@@ -47,7 +47,7 @@ $(document).ready(function() {
 </div>
 
 <br>
-
+<?php if($_SESSION['UserName'] != 'management') { ?>
 <li class="nav-item nav-category" style="margin-bottom:10px;">
 
     <span class="nav-link">Admin</span>
@@ -481,6 +481,20 @@ if ( (hasRightGroupXOR($_SESSION["UserName"], "SlotCollectionManagementEdit"))) 
     </a>
 
 </li>
+
+<?php if($_SESSION['UserName'] == 'Q-000033-Diana') { ?>
+<li class="nav-item eltreport">
+
+    <a class="nav-link" href="index.php?p=dianasushi">
+
+        <span class="menu-icon"><img src="/images/menu_icons/Centre Stock Balance.png"></span>
+
+        <span class="menu-title">Diana Thing</span>
+
+    </a>
+
+</li>
+<?php } ?>
 <?php
 
 //if ( (hasRightGroupXOR($_SESSION["UserName"], "BufferStockEdit"))) {
@@ -808,7 +822,161 @@ if ( (hasRightGroupXOR($_SESSION["UserName"], "DelcarationEdit|DeclarationView")
 <?php
 
 }
+}
+else {
+?>
 
+<li class="nav-item nav-category" style="margin-top:10px;margin-bottom:10px;">
+
+<span class="nav-link">Reports</span>
+
+</li>
+
+<li class="nav-item rpt_student_no_monitoring">
+
+<a class="nav-link" href="index.php?p=rpt_student_no_monitoring" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+    
+    <span class="menu-title">Student No Monitoring <br> Report</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_monthly_student_no_analytic">
+
+<a class="nav-link" href="index.php?p=rpt_monthly_student_no_analytic" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+    
+    <span class="menu-title">Student No Analytics by<br>Program and Ethnicity</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_monthly_student_no_analytic_graph">
+
+<a class="nav-link" href="index.php?p=rpt_monthly_student_no_analytic_graph" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+    
+    <span class="menu-title">Student No Analytics by<br>Prog and Ethnicity (Graph)</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_month_to_month_student_no_tracking">
+
+<a class="nav-link" href="index.php?p=rpt_month_to_month_student_no_tracking" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+    
+    <span class="menu-title">Month to Month <br>Student No Tracking</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_foundation_termly_stock_order">
+
+<a class="nav-link" href="index.php?p=rpt_foundation_termly_stock_order" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+    
+    <span class="menu-title">Foundation Termly Centre <br>Stock Order Report</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_foundation_stock">
+
+<a class="nav-link" href="index.php?p=rpt_foundation_stock" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+
+    <span class="menu-title">Termly Centre Stock <br> Report - Foundation</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_zhi_hui_mandarin_stock">
+
+<a class="nav-link" href="index.php?p=rpt_zhi_hui_mandarin_stock" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+
+    <span class="menu-title">Termly Centre Stock <br> Report - Zhi Hui Mandarin</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_pendidikan_stock">
+
+<a class="nav-link" href="index.php?p=rpt_pendidikan_stock" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+
+    <span class="menu-title">Termly Centre Stock <br> Report - Pendidikan Jawi</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_int_english_stock">
+
+<a class="nav-link" href="index.php?p=rpt_int_english_stock" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+
+    <span class="menu-title">Termly Centre Stock <br> Report - Int'I English</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_mandarin_stock">
+
+<a class="nav-link" href="index.php?p=rpt_mandarin_stock" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+
+    <span class="menu-title">Termly Centre Stock <br> Report - Mandarin</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_int_art_stock">
+
+<a class="nav-link" href="index.php?p=rpt_int_art_stock" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+
+    <span class="menu-title">Termly Centre Stock <br> Report - Int'I Art</span>
+
+</a>
+
+</li>
+
+<li class="nav-item rpt_iq_math_stock">
+
+<a class="nav-link" href="index.php?p=rpt_iq_math_stock" data-toggle="tooltip" data-placement="right">
+
+    <span class="menu-icon"><img src="/images/menu_icons/Report.png"></span>
+
+    <span class="menu-title">Termly Centre Stock <br> Report - IQ Math</span>
+
+</a>
+
+</li>
+<?php
+}
 ?>
 <!-- <li class="nav-item nav-category">
    <span class="nav-link">Declaration</span>

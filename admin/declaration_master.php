@@ -3504,6 +3504,9 @@ if ($_SESSION["isLogin"] == 1) {
                                                 <option value="Pending" <?php if ($row_edit['form_1_status'] == 'Pending') {
                                                                             echo 'selected';
                                                                         } ?>>Pending</option>
+                                                <option value="N/A" <?php if ($row_edit['form_1_status'] == 'N/A') {
+                                                    echo 'selected';
+                                                } ?>>N/A</option>
                                             </select>
 
                                         </td>
@@ -5766,6 +5769,9 @@ if ($_SESSION["isLogin"] == 1) {
                                                 <option value="Pending" <?php if ($row_edit['form_2_status'] == 'Pending') {
                                                                             echo 'selected';
                                                                         } ?>>Pending</option>
+                                                <option value="N/A" <?php if ($row_edit['form_1_status'] == 'N/A') {
+                                                    echo 'selected';
+                                                } ?>>N/A</option>
                                             </select>
                                             <?php  //echo $row_edit['form_2_status']; 
                                             ?>
@@ -5843,6 +5849,10 @@ if ($_SESSION["isLogin"] == 1) {
                                                     echo 'selected';
                                                 } ?>>Pending
                         </option>
+                        <option value="N/A" <?php if ($_GET["sb"] == 'N/A') {
+                                                    echo 'selected';
+                                                } ?>>N/A
+                        </option>
                     </select>
                 </div>
                 <div class="uk-width-2-10 uk-text-small">
@@ -5856,6 +5866,10 @@ if ($_SESSION["isLogin"] == 1) {
                         <option value="Pending" <?php if ($_GET["st"] == 'Pending') {
                                                     echo 'selected';
                                                 } ?>>Pending
+                        </option>
+                        <option value="N/A" <?php if ($_GET["sb"] == 'N/A') {
+                                                    echo 'selected';
+                                                } ?>>N/A
                         </option>
                     </select>
 

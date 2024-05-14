@@ -10,6 +10,9 @@ $message="";
 $centre_code = $_SESSION["CentreCode"];
 $year = $_SESSION['Year']; //MYQWESTC1C10001
 $date = date('Y-m-d');
+$isBlackListedCenter = "";
+$allowOrder = "Y";
+
 foreach ($id as $key=>$value) {
 
    $sql="SELECT product_code from cart where id='$value' ";
@@ -20,6 +23,36 @@ foreach ($id as $key=>$value) {
    } else {
       $product_code = $row["product_code"];
    }
+  
+	if ($isBlackListedCenter == ""){ //Run this only one time
+		//Check the Module first
+		
+		$sqlChkBlacklistModule="SELECT centre_code from `order_blocklist` where centre_code='$centre_code'"; //Check the STEM module
+		
+		$resultChkBlacklistModule=mysqli_query($connection, $sqlChkBlacklistModule);
+		$rowChkBlkModule=mysqli_fetch_assoc($resultChkBlacklistModule);
+
+		if ($rowChkBlkModule["centre_code"]==$centre_code) { //Check if Center is in blacklist table	
+			$isBlackListedCenter = "Y";
+		}else{
+			//No need to check anymore to prevent SQL overload
+			$isBlackListedCenter = "N";
+		}
+		
+	}
+	
+	if ($isBlackListedCenter == "Y"){ 
+		//Check if they are trying to order the banned item
+		$sqlChkBlacklistModule="SELECT id from `order_blocklist` where centre_code='$centre_code' and product_code='$product_code' and locked = 'Y'"; 
+				
+		$resultChkBlacklistModule=mysqli_query($connection, $sqlChkBlacklistModule);
+        
+		while ($browse_row=mysqli_fetch_assoc($resultChkBlacklistModule)) {
+			//Look there's a record! Block it
+			$allowOrder = "N";
+		}
+	}
+	
 
 
       // $sql="SELECT product_name, sub_sub_category FROM `product` where sub_sub_category!='' and product_code ='$product_code' and category_id in (74, 75, 76, 47, 48, 49, 52)";
@@ -76,12 +109,17 @@ foreach ($id as $key=>$value) {
          
 
       // } else {
-         $sql="UPDATE cart set qty='$qty[$key]' where id='$value'";
-         $result=mysqli_query($connection, $sql);
-         if (!$result) {
-            $success=false;
-           // $message ="Cart updated successfully";
-         }
+		 if ($allowOrder == "Y"){
+			 $sql="UPDATE cart set qty='$qty[$key]' where id='$value'";
+			 $result=mysqli_query($connection, $sql);
+			 if (!$result) {
+				$success=false;
+			   // $message ="Cart updated successfully";
+			 }
+		 }else{
+			 $success=false;
+		 }
+		 
       // }
 }
 if ($message!="") {

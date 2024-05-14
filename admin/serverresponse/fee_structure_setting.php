@@ -195,7 +195,7 @@
                     src="images/duplicate.jpg" style="width: 25px;"></a> &nbsp; &nbsp; ';
 
                     $id = $aRow["id"];
-                    $sql3="SELECT * from `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id=f.id where f.id = '$id' limit 1";
+                    $sql3="SELECT COUNT(id) from `collection` c inner join programme_selection p on p.id = c.`allocation_id` and p.student_id = c.`student_id` inner join student_fee_list fl on p.id = fl.programme_selection_id inner join fee_structure f on fl.fee_id=f.id where f.id = '$id' limit 1";
 
                     $result3=mysqli_query($connection, $sql3);
                     $num_row3=mysqli_num_rows($result3);

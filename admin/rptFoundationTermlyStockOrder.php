@@ -45,22 +45,17 @@ if ($_SESSION["isLogin"]==1) {
             $sql = "SELECT * from centre order by centre_code";
             $result = mysqli_query($connection, $sql);
         ?>
-            <input list="centre_name" id="screens.screenid" name="centre_name" value="">
+            <select name="centre_name" class="select2" >
+                <option value="ALL" <?php echo $centreCode == 'ALL' ? 'selected' : '' ?> >All Centres</option>
+                <?php
+                    while ($row = mysqli_fetch_assoc($result)) {
+                ?>
+                        <option value="<?php echo $row['centre_code'] ?>" <?php echo $row['centre_code'] == $centreCode ? 'selected' : '' ?>><?php echo $row["company_name"] ?></option>
+                <?php
+                    }
+                ?>
 
-            <datalist class="form-control" id="centre_name" style="display: none;">
-
-            <option value="ALL" <?php echo $centreCode == 'ALL' ? 'selected' : '' ?> >All Centres</option>
-
-            <?php
-                while ($row = mysqli_fetch_assoc($result)) {
-            ?>
-                    <option value="<?php echo $row['centre_code'] ?>" <?php echo $row['centre_code'] == $centreCode ? 'selected' : '' ?>><?php echo $row["company_name"] ?></option>
-
-            <?php
-                }
-            ?>
-
-            </datalist>
+            </select>
         </div>
         <div class="uk-width-medium-2-10">
         Term<br>

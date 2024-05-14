@@ -243,12 +243,12 @@ function generateReport(method) {
          <input type="text" name="student" id="student" class="uk-width-medium-1-1" placeholder="Student Code/Name">
       </div>
       <div style="width: 25%;" class="uk-width-medium-2-10">
-         From Date<br>
-         <input class="uk-width-medium-1-1" data-uk-datepicker="{format:'DD/MM/YYYY', minDate: '<?php echo date('d/m/Y',strtotime($year_start_date)); ?>', maxDate: '<?php echo date('d/m/Y',strtotime($year_end_date)); ?>'}" placeholder="From Date" name="df" id="df" type="text" value="" autocomplete="off" readonly>
+         From Date<br> <!-- echo date('d/m/Y',strtotime($year_start_date)); -->
+         <input class="uk-width-medium-1-1" data-uk-datepicker="{format:'DD/MM/YYYY', minDate: '<?php echo date('d/m/Y',strtotime("01-01-2023")); ?>', maxDate: '<?php echo date('d/m/Y',strtotime($year_end_date)); ?>'}" placeholder="From Date" name="df" id="df" type="text" value="" autocomplete="off" readonly>
       </div>
       <div style="width: 25%;" class="uk-width-medium-2-10">
          To Date<br>
-         <input class="uk-width-medium-1-1" data-uk-datepicker="{format:'DD/MM/YYYY', minDate: '<?php echo date('d/m/Y',strtotime($year_start_date)); ?>', maxDate: '<?php echo date('d/m/Y',strtotime($year_end_date)); ?>'}" placeholder="To Date" name="dt" id="dt" type="text" value="" autocomplete="off" readonly>
+         <input class="uk-width-medium-1-1" data-uk-datepicker="{format:'DD/MM/YYYY', minDate: '<?php echo date('d/m/Y',strtotime("01-01-2023")); ?>', maxDate: '<?php echo date('d/m/Y',strtotime($year_end_date)); ?>'}" placeholder="To Date" name="dt" id="dt" type="text" value="" autocomplete="off" readonly>
       </div>
       <div style="width: 50%;margin-top:20px; padding-right:0px;" class="uk-width-medium-2-10">
          <button onclick="generateReport('screen');" id="btnGenerate" class="uk-button" >Show on screen</button>

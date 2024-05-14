@@ -271,20 +271,17 @@ if ($company_num_row > 0) {
                         <td><?php echo $row["product_name"] ?>
                      <?php 
                         //Not working why
-                     
-                     if ($row["remarks_invoice"] != ""){
-                        echo "<i><br />";
-                        echo $row["remarks_invoice"]; 
-                        echo "</i>";
-                     }
                      /*
+                     if ($row["remarks_invoice"] != ""){
+                        echo "<i><br />".$row["remarks_invoice"]."</i>";
+                     }
+                     */
                      
                      if ($product_code == "MY-MATHS.HANDS-ON-BATCH"){
                         echo "<br /> <i>All sets are to be fully returned at the end of the franchise tenure, failing which a penalty of RM8,000 will be charged.</i>";
                      }else if ($product_code == "MY-MATHS.HANDS-ON"){
                         echo "<br /> <i>This marketing set is to be returned at the end of the franchise tenure, failing which a penalty of RM1,000 will be charged.</i>";
                      }
-                     */
                      
                      ?>
                         </td>

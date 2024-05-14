@@ -879,7 +879,7 @@ $row_exists=mysqli_num_rows($result3);
 					<tr class="">
 					   <td style="margin-top:50px; border:none;" class="uk-width-1-10 uk-text-bold">STEM Student Kit<span class="text-danger">*</span>:</td>
 					  <td style="border:none;text-align:center;" class="uk-width-1-10">							
-						 <input class="int_default view-data" style="font-weight:bold;border:none;" type="number" step="0.01" name="stem_studentKit_default" id="stem_studentKit_default" value="<?php echo $edit_row['stem_programme_default'] ?>" readonly><br>
+						 <input class="int_default view-data" style="font-weight:bold;border:none;" type="number" step="0.01" name="stem_studentKit_default" id="stem_studentKit_default" value="<?php echo $edit_row['stem_studentKit_default'] ?>" readonly><br>
 						 <span id="validationmm"  style="color: red; display: none;font-size:11px;margin-left: -17px;">Please select Student Entry Level</span>
 					  </td>
 					  <td style="border:none;" class="uk-width-1-10">

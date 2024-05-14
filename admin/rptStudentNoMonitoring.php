@@ -27,13 +27,16 @@ if ($_SESSION["isLogin"]==1) {
         display: block;
     }
     
+    
 </style>
 <div class="overlay"></div>
 <a id="back_stock" href="/">                 
          <!-- <span class="btn-qdees"><i class="fa fa-arrow-left" style="margin-right: 20px;"></i>Back</span> -->
 </a>
-  <span class="page_title"><img src="/images/title_Icons/Student Population-1.png">Student No Monitoring Report</span>
-
+<span style="position: absolute;right: 35px;">
+    <span class="page_title"><img src="/images/title_Icons/Student Population-1.png">Student No Monitoring Report</span>
+</span>
+<br /><br />
 <!-- <div class="uk-margin-right uk-margin-top uk-form"> -->
    <div class="uk-width-1-1 myheader">
       <h2 class="uk-text-center myheader-text-color myheader-text-style">SEARCHING</h2>
@@ -47,7 +50,7 @@ if ($_SESSION["isLogin"]==1) {
             $result = mysqli_query($connection, $sql);
         ?>
 
-            <select name="centre_name" class="select2" >
+            <select id="centre_name" name="centre_name" class="select2" onChange="visibleNone()">
                 <option value="ALL" <?php echo $centreCode == 'ALL' ? 'selected' : '' ?> >All Centres</option>
                 <?php
                     while ($row = mysqli_fetch_assoc($result)) {
@@ -61,6 +64,7 @@ if ($_SESSION["isLogin"]==1) {
 
         </div>
 
+        <!--
         <div style="display:none;" class="uk-width-medium-2-10">
         Term<br>
             <select name="term" id="term"  class="uk-width-medium-1-1">
@@ -77,10 +81,16 @@ if ($_SESSION["isLogin"]==1) {
                 ?>
             </select>
         </div>
-        <div class="uk-width-medium-3-10"><br>
+                -->
+        <div class="uk-child-width-1-4" uk-grid><br>
             <button class="uk-button" onclick="generateBalReport('',1)">Show on screen</button>
+        </div>
+        <div class="uk-child-width-1-4" uk-grid><br>
             <button onclick="printint('')" style="display:none;" target="_blank" class="uk-button">Print</button> 
             <button onclick="exportexcel()" id="btnGenerate" class="uk-button" >Export CSV</button>
+        </div>
+        <div id="centerDiv" class="uk-child-width-1-4" uk-grid><br>
+            <input type="checkbox" id="centerAll" name="centerAll" value="centerCheck" onclick="generateBalReport('',1)"><label for="centerAll"> Show all centres in one page</label>
         </div>
         
     </div>
@@ -90,6 +100,7 @@ if ($_SESSION["isLogin"]==1) {
    <input type="hidden" id="frmPrintSubCategory" name="sub_category" value="">
    <input type="hidden" id="frmPrintTerm" name="term" value="">
    <input type="hidden" id="frmPrintCentreCode" name="centre_code" value="">
+   <input type="hidden" id="frmCheckAll" name="checkbox_all" value="">
 </form>
 
     <form id="frmExcel" action="admin/export_rptStudentNoMonitoring.php" method="post" style="background: none!important; box-shadow: none!important; padding: 0;">
@@ -102,9 +113,11 @@ if ($_SESSION["isLogin"]==1) {
         function printint(sub_category) {
             var term=$("#term").val();
             var centre_code=$("[name='centre_name']").val();
+
             //window.open('admin/a_rptStockBalReport.php?term='+term+'&sub_category='+sub_category);
             $("#frmPrintSubCategory").val(sub_category);
             $("#frmPrintTerm").val(term);
+
             $("#frmPrintCentreCode").val(centre_code);
             $("#frmPrint").submit();
         }
@@ -117,15 +130,35 @@ if ($_SESSION["isLogin"]==1) {
             $("#frmExcel").submit();
         }
 
+        function visibleNone(){
+            var x = document.getElementById("centerDiv");
+            var y = document.getElementById("centre_name");
+            
+            if (y.value != "ALL"){
+                x.style.visibility = 'hidden';
+            }else{
+                x.removeAttribute("style");       
+            }
+        }
+
         function generateBalReport(sub_category,page_no) {
             $("body").addClass("loading");
+
             var term=$("#term").val();
             var centre_code=$("[name='centre_name']").val();
+
+            var chkAll = document.getElementById("centerAll");
+            var chked = 0;
+            if (chkAll.checked == true){
+                chked = 1;
+            }
+
+            $("#frmCheckAll").val(chkAll);
            
             $.ajax({
                 url : "admin/a_rptStudentNoMonitoring.php",
                 type : "POST",
-                data : "term="+term+"&sub_category="+sub_category+"&centre_code="+centre_code+"&page_no="+page_no,
+                data : "term="+term+"&sub_category="+sub_category+"&centre_code="+centre_code+"&page_no="+page_no+"&chked="+chked,
                 dataType : "text",
                 success : function(response, status, http) {						
                     if(sub_category!=""){							

@@ -1,7 +1,6 @@
 <?php
 //include_once("uikit.php");
 include_once("bootstrap.php");
-include_once("uikit.php");
 ?>
 <script>
 $(document).ready(function () {

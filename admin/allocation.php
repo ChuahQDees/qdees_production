@@ -493,8 +493,8 @@ $(document).ready(function () {
    </div>
 <div class="nice-form">
 <?php
-$date_from=$_GET['date_from'];
-$date_to=$_GET['date_to'];
+$date_from=isset($_GET['date_from']) ? $_GET['date_from'] : '';
+$date_to=isset($_GET['date_to']) ? $_GET['date_to'] : '';
 $todayDate = date("Y-m-d");
    $sql = "SELECT g.*, c.subject from `group` g, course c where g.course_id=c.id and g.`year`='$year'";
 if (isset($_GET['filter_course_id']) && $_GET['filter_course_id'] != '') {

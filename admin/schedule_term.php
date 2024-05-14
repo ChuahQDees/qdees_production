@@ -1,7 +1,7 @@
 <?php
 
 if ($_SESSION["isLogin"] == 1) {
-  // if ($_SESSION["UserType"] != "S") {
+   if ($_SESSION["UserType"] == "S") {
       include_once("mysql.php");
       include_once("lib/pagination/pagination.php");
       $p = $_GET["p"];
@@ -14,7 +14,7 @@ if ($_SESSION["isLogin"] == 1) {
       //echo $module;
       $str_module = "Schedule Term";
       $p_module = "schedule_term";
-
+   
       if ($mode == "") {
          $mode = "ADD";
       }
@@ -173,9 +173,9 @@ if ($_SESSION["isLogin"] == 1) {
       if ($msg != "") {
          echo "<script>UIkit.notify('$msg')</script>";
       }
-   /* } else {
+    } else {
       echo "<div class='uk-margin-top uk-margin-right'><div class='uk-alert uk-alert-danger uk-text-large uk-text-bold uk-text-center'>Unauthorised access denied</div></div>";
-   } */
+   } 
 } else {
    header("Location: index.php");
 }

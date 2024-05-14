@@ -1245,6 +1245,51 @@ function getStatus($order_no) {
    }
 	}else{   
    if ($result) {
+    $row = mysqli_fetch_assoc($result);
+
+    if ($row["cancelled_by"] != "") {
+        return "Cancelled";
+    } else {
+        if ($row["delivered_to_logistic_by"] != "") {
+            if ($row["finance_payment_paid_by"] != "") {
+            
+                return ($_SESSION["UserType"] == "S") ? "Delivered" : "Delivered";
+            } else {
+            
+                return ($_SESSION["UserType"] == "S") ? "Delivered" : "Delivered"; 
+            }
+        } else {
+            if ($row["packed_by"] != "") {
+                if ($row["finance_payment_paid_by"] != "") {
+                
+                return ($_SESSION["UserType"] == "S") ? "Ready for Collection" : "Ready for Collection";
+                } else {
+                
+                return ($_SESSION["UserType"] == "S") ? "Ready for Collection" : "Ready for Collection";  
+                }
+            } else {
+                if ($row["finance_approved_by"] != "") {
+                if ($row["finance_payment_paid_by"] != "") {
+                    return ($_SESSION["UserType"] == "S") ? "Finance Approved (Paid)" : "Finance Approved";
+                } else {
+                    return ($_SESSION["UserType"] == "S") ? "Finance Approved (Pending Payment)" : "Finance Approved";
+                }
+                } else {
+                if ($row["logistic_approved_by"] != "") {
+                    return "Packing";
+                } else {
+                    if ($row["acknowledged_by"] != "") {
+                        return "Acknowledged";
+                    } else {
+                        return "Pending";
+                    }
+                }
+                }
+                
+            }
+        }
+    }
+    /*
       $row=mysqli_fetch_assoc($result);
 
       if ($row["cancelled_by"]!="") {
@@ -1285,6 +1330,7 @@ function getStatus($order_no) {
             }
          }
       }
+      */
    }
 }
 }
@@ -1583,8 +1629,117 @@ jQuery(document).ready(function() {
 </script>
 
 <?php 
+//Warning Dialogue noooo why 
+
 $totalAmt = 0;
 
+$centerBanList = array("MYQWESTC1C10011",
+"MYQWESTC1C10013",
+"MYQWESTC1C10016",
+"MYQWESTC1C10021",
+"MYQWESTC1C10022",
+"MYQWESTC1C10026",
+"MYQWESTC1C10030",
+"MYQWESTC1C10031",
+"MYQWESTC1C10032",
+"MYQWESTC1C10037",
+"MYQWESTC1C10040",
+"MYQWESTC1C10044",
+"MYQWESTC1C10045",
+"MYQWESTC1C10046",
+"MYQWESTC1C10048",
+"MYQWESTC1C10051",
+"MYQWESTC1C10052",
+"MYQWESTC1C10054",
+"MYQWESTC1C10057",
+"MYQWESTC1C10061",
+"MYQWESTC1C10062",
+"MYQWESTC1C10064",
+"MYQWESTC1C10067",
+"MYQWESTC1C10069",
+"MYQWESTC1C10070",
+"MYQWESTC1C10073",
+"MYQWESTC1C10076",
+"MYQWESTC1C10077",
+"MYQWESTC1C10080",
+"MYQWESTC1C10083",
+"MYQWESTC1C10086",
+"MYQWESTC1C10089",
+"MYQWESTC1C10090",
+"MYQWESTC1C10093",
+"MYQWESTC1C10094",
+"MYQWESTC1C10096",
+"MYQWESTC1C10099",
+"MYQWESTC1C10100",
+"MYQWESTC1C10109",
+"MYQWESTC1C10110",
+"MYQWESTC1C10111",
+"MYQWESTC1C10112",
+"MYQWESTC1C10114",
+"MYQWESTC1C10117",
+"MYQWESTC1C10123",
+"MYQWESTC1C10124",
+"MYQWESTC1C10126",
+"MYQWESTC1C10127",
+"MYQWESTC1C10128",
+"MYQWESTC1C10131",
+"MYQWESTC1C10132",
+"MYQWESTC1C10133",
+"MYQWESTC1C10134",
+"MYQWESTC1C10141",
+"MYQWESTC1C10142",
+"MYQWESTC1C10143",
+"MYQWESTC1C10145",
+"MYQWESTC1C10146",
+"MYQWESTC1C10149",
+"MYQWESTC1C10150",
+"MYQWESTC1C10153",
+"MYQWESTC1C10161",
+"MYQWESTC1C10163",
+"MYQWESTC1C10166",
+"MYQWESTC1C10167",
+"MYQWESTC1C10168",
+"MYQWESTC1C10170",
+"MYQWESTC1C10173",
+"MYQWESTC1C10175",
+"MYQWESTC1C10176",
+"MYQWESTC1C10261",
+"MYQWESTC1C10183",
+"MYQWESTC1C10184",
+"MYQWESTC1C10186",
+"MYQWESTC1C10189",
+"MYQWESTC1C10190",
+"MYQWESTC1C10191",
+"MYQWESTC1C10193",
+"MYQWESTC1C10195",
+"MYQWESTC1C10197",
+"MYQWESTC1C10199",
+"MYQWESTC1C10201",
+"MYQWESTC1C10210",
+"MYQWESTC1C10212",
+"MYQWESTC1C10213",
+"MYQWESTC1C10215",
+"MYQWESTC1C10252",
+"MYQWESTC1C10253",
+"MYQWESTC1C10266",
+"MYQWESTC1C10268",
+"MYQWESTC1C10273",
+"MYQWESTC1C10274",
+"MYQWESTC1C10284",
+"MYQWESTC1C10287",
+"MYQWESTC1C10289",
+"MYQWESTC1C10292",
+"MYQWESTC1C10297",
+"MYQWESTC1C10298",
+"MYQWESTC1C10302",
+"MYQWESTC1C10309",
+"MYQWESTC1C10310",
+"MYQWESTC1C10320",
+"MYQWESTC1C10321",
+"MYQWESTC1C10325");
+
+if (in_array($_SESSION["CentreCode"], $centerBanList)){
+	
 $sql = "SELECT count(id) total
 			FROM (
 SELECT DISTINCT ps.student_entry_level, s.id
@@ -1592,11 +1747,11 @@ SELECT DISTINCT ps.student_entry_level, s.id
 				INNER JOIN programme_selection ps ON ps.student_id = s.id
 				INNER JOIN student_fee_list fl ON fl.programme_selection_id = ps.id
 				INNER JOIN fee_structure f ON f.id = fl.fee_id
-				WHERE (fl.programme_date >= '2023-03-01' AND fl.programme_date <= '2024-02-29') 
+				WHERE (fl.programme_date >= '2024-03-01' AND fl.programme_date <= '2025-01-31') 
 				AND ps.student_entry_level != '' AND s.student_status = 'A' 
 				AND s.centre_code='".$_SESSION["CentreCode"]."'
-				AND ((fl.programme_date >= '2023-04-01' AND fl.programme_date <= '2023-04-30') OR (fl.programme_date_end >= '2023-04-01' 
-				AND fl.programme_date_end >= '2023-04-30')) AND s.deleted = '0' 
+				AND ((fl.programme_date >= '2024-04-01' AND fl.programme_date <= '2024-04-30') OR (fl.programme_date_end >= '2024-02-01' 
+				AND fl.programme_date_end >= '2024-02-30')) AND s.deleted = '0' 
 			) ab ";
   $result=mysqli_query($connection, $sql);
   $sub_categories = array();
@@ -1607,6 +1762,8 @@ SELECT DISTINCT ps.student_entry_level, s.id
   }
   
 if ($totalAmt < 10){
+    
+//if (false){
 ?>
 <script>
 $(document).ready(function(){
@@ -1631,7 +1788,8 @@ $(document).ready(function(){
    });
 });
 </script>
-<?php } ?>
+<?php } 
+}?>
 
 <style>
 .home {

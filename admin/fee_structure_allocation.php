@@ -60,15 +60,34 @@ global $connection;
         <input type="hidden" name="name" id="name" value="<?php echo $name; ?>">
         <input type="hidden" name="programme_selection_id" id="programme_selection_id" value="<?php echo $row3["id"]; ?>">
 -->
+
+	<?php
+	$enh_chkValue = "N";
+	$sqlenhchk="SELECT allowed FROM enh_foundation_whitelist 
+	WHERE centre_code = '".$_SESSION['CentreCode']."'"; 
+	$resultenhchk=mysqli_query($connection, $sqlenhchk);
+	//$num_row=mysqli_num_rows($result);
+
+	//echo $sql;
+	
+	if ($rowenhchk=mysqli_fetch_assoc($resultenhchk)) {
+		$enh_chkValue = $rowenhchk['allowed'];
+	}
+		?>
+		
+	<input name="enh_whitelist" id="enh_whitelist" hidden value="<?php echo $enh_chkValue ?>">
     <script>
     function enhFoundationDefault(){ //By default, need to have at least one enhanced foundation
         d = document.getElementById("student_entry_level").value;
-
-        if (d != "EDP"){
-            document.getElementById("foundation_int_english").value = "1";
-        }else{
-            document.getElementById("foundation_int_english").value = "0";
-        }
+		e = document.getElementById("enh_whitelist").value;
+		
+		if (e == "N"){
+			if (d != "EDP"){
+				document.getElementById("foundation_int_english").value = "1";
+			}else{
+				document.getElementById("foundation_int_english").value = "0";
+			}
+		}
     }
     </script>
         <input type="text" id="studentIDArray" name="studentIDArray" hidden>
@@ -167,17 +186,53 @@ global $connection;
                             <span id="validationCheckbox3" style="color: red; display: none;">Please tick any checkbox</span>
                         </td>
                         <td class="uk-width-1-10">
-                            <input class="uk-width-1-1 programme_date" type="text" data-uk-datepicker="{format: 'YYYY/MM/DD'}" name="programme_date[]" id="programme_date" value=""><br>
+                            <input class="uk-width-1-1 programme_date" onChange="compareDateBefore(this.value, 'before')" type="text" data-uk-datepicker="{format: 'YYYY/MM/DD'}" name="programme_date[]" id="programme_date" value=""><br>
                             <span id="validationCommencement" style="color: red; display: none;">Please select Commencement Date</span>
+                            <input hidden id="programme_date_original">
                         </td>
                         <td class="uk-width-1-10">
-                            <input class="uk-width-1-1 programme_date_end" type="text" data-uk-datepicker="{format: 'YYYY/MM/DD'}" name="programme_date_end[]" id="programme_date_end" value="" style="width: 90px"><br>
+                            <input class="uk-width-1-1 programme_date_end" onChange="compareDateBefore(this.value, 'after')" type="text" data-uk-datepicker="{format: 'YYYY/MM/DD'}" name="programme_date_end[]" id="programme_date_end" value="" style="width: 90px"><br>
                             <span id="validationCommencementEndDate" style="color: red; display: none;">Please select Commencement Date</span>
+                            <input hidden id="programme_date_end_original">
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <script>
+            function compareDateBefore(value, type){
+                var fee_id = document.getElementById("fee_id").value;
+
+                var selectedDate = new Date(value);
+
+                if (type == "before"){
+                    var original_StartDate = new Date(document.getElementById("programme_date_original").value);
+
+                    if (original_StartDate > selectedDate){
+                        alert("Date chosen cannot be earlier than Fee Structure's Commencement Date!");
+
+                        var today = new Date();
+                        var programme_date = "";
+
+                        var dd = String(today.getDate()).padStart(2, '0');
+                        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                        var yyyy = today.getFullYear();
+
+                        programme_date = yyyy + '/' + mm + '/' + dd;
+
+                        document.getElementById("programme_date").value = programme_date;
+                    }
+                }else{
+                    var original_EndDate = new Date(document.getElementById("programme_date_end_original").value);
+                    if (original_EndDate < selectedDate){
+                        alert("Date chosen cannot be later than Fee Structure's End Date!");
+
+                        document.getElementById("programme_date_end").value = document.getElementById("programme_date_end_original").value;
+                    }
+                }
+            }
+        </script>
         <div class="uk-width-medium-10-10 uk-text-center">
             <br>
             <button type="submit" id="submit" name="submit" class="uk-button uk-button-primary form_btn uk-text-center" disabled>Save</button>
@@ -446,11 +501,12 @@ global $connection;
                 var month       = programme_date_compare.substring(4,6);
                 var day         = programme_date_compare.substring(6,8);
 
-                var feeStructureDate        = new Date(year, month-1, day);
+                var feeStructureDate        = new Date(year, month-1, day); //Convert date to fee structure format
 
                 //Get Today Date
                 var today = new Date();
                 var programme_date = "";
+                var orgDate = usefulResponse.programme_date.replace(/-/g, '/');
 
                 if (feeStructureDate < today){
                     //alert("Today is later than Fee Structure Date. Use today's date instead.");
@@ -468,6 +524,9 @@ global $connection;
 
                 document.getElementById("programme_date").value = programme_date;
                 document.getElementById("programme_date_end").value = programme_date_end;
+                
+                document.getElementById("programme_date_original").value = orgDate;
+                document.getElementById("programme_date_end_original").value = programme_date_end;
             },
             error: function(http, status, error) {
 

@@ -179,38 +179,38 @@ function getStatus($order_no) {
             }
 
          } else {
-         if ($row["packed_by"]!="") {
-            if ($row["finance_payment_paid_by"]!="") {
-              return ($_SESSION["UserType"]=="S") ? "Packed (Paid)" : "Ready for Collection";
-            } else {
-              return ($_SESSION["UserType"]=="S") ? "Packed (Pending Payment)" : "Ready for Collection";
-            }
-         } else {
+			 if ($row["packed_by"]!="") {
+				if ($row["finance_payment_paid_by"]!="") {
+				  return ($_SESSION["UserType"]=="S") ? "Packed (Paid)" : "Ready for Collection";
+				} else {
+				  return ($_SESSION["UserType"]=="S") ? "Packed (Pending Payment)" : "Ready for Collection";
+				}
+			 } else {
             /*if ($row["assigned_to_by"]!="") {
                return "Assigned";
             }
             else{*/
-               if ($row["finance_approved_by"]!="") {
-                 if ($row["finance_payment_paid_by"]!="") {
-                   return ($_SESSION["UserType"]=="S") ? "Finance Approved (Paid)" : "Finance Approved";
-                 } else {
-                   return ($_SESSION["UserType"]=="S") ? "Finance Approved (Pending Payment)" : "Finance Approved";
-                 }
-               } else {
-                 if ($row["logistic_approved_by"]!="" && $row["acknowledged_by"]!="") {
-                   return "Packing";
-                 } else {
-                   if ($row["acknowledged_by"]!="" && $row["acknowledged_on"]!="") {
-                     return "Acknowledged";
-                   }else if (!empty($rowxx["cancelled_by"])){ 
-                     return "Cancelled";
-                   }else {
-                     return "Pending";
-                   }
-                 }
-               }
-            //}
-         }
+				   if ($row["finance_approved_by"]!="") {
+					 if ($row["finance_payment_paid_by"]!="") {
+					   return ($_SESSION["UserType"]=="S") ? "Finance Approved (Paid)" : "Finance Approved";
+					 } else {
+					   return ($_SESSION["UserType"]=="S") ? "Finance Approved (Pending Payment)" : "Finance Approved";
+					 }
+				   } else {
+					 if ($row["logistic_approved_by"]!="" && $row["acknowledged_by"]!="") {
+					   return "Packing";
+					 } else {
+					   if ($row["acknowledged_by"]!="" && $row["acknowledged_on"]!="") {
+						 return "Acknowledged";
+					   }else if (!empty($rowxx["cancelled_by"])){ 
+						 return "Cancelled";
+					   }else {
+						 return "Pending";
+					   }
+					 }
+				   }
+				//}
+			 }
          }
       }
 
@@ -833,17 +833,51 @@ if (!isset($mode) && $mode != 'defective') {
       }
       ?>
       <?php
-      if (($row["acknowledged_by"]!="") & ($row["logistic_approved_by"]=="") & ($cancelCounter == "0") & ($_SESSION["isLogin"]==1)
-         & ($_SESSION["UserType"]=="S") & (hasRight($_SESSION["UserName"], "LogisticApproveEdit"))) {
+      if (($row["acknowledged_by"]!="") & 
+	  
+	  ($row["logistic_approved_by"]=="") & 
+	  ($cancelCounter == "0") & 
+	  
+	  ($_SESSION["isLogin"]==1)
+       & ($_SESSION["UserType"]=="S") 
+	   & (hasRight($_SESSION["UserName"], "LogisticApproveEdit"))) {
       ?>
                   <a style="color: white;" onclick="doLogisticApprove('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class="uk-button uk-button-small form_btn"><i class="fa fa-check-circle-o"></i> Logistic Approve</a>
       <?php
       }
       ?>
       <?php
-      if (($row["acknowledged_by"]!="") & ($row["logistic_approved_by"]!="") & ($row["finance_approved_by"]=="") & ($row["packed_by"]!="") &
-         ($cancelCounter == "0") & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S")
-         & (hasRight($_SESSION["UserName"], "FinanceApproveEdit"))) {
+	  /*
+      if (($row["acknowledged_by"]!="") & 
+	  
+	  ($row["logistic_approved_by"]!="") & 
+	  ($row["finance_approved_by"]=="") & 
+	  ($row["packed_by"]!="") &
+      ($cancelCounter == "0") & 
+	  
+	  ($_SESSION["isLogin"]==1) & 
+	  ($_SESSION["UserType"]=="S")
+       & (hasRight($_SESSION["UserName"], "FinanceApproveEdit"))) {
+	*/
+	/*
+	if (($row["acknowledged_by"]!="") & 
+	  
+	  ($row["logistic_approved_by"]!="") & 
+	  ($row["finance_approved_by"]=="") & 
+	  ($row["packed_by"]!="") &
+      ($cancelCounter == "0") & 
+	  
+	  ($_SESSION["isLogin"]==1) & 
+	  ($_SESSION["UserType"]=="S")
+       & (hasRight($_SESSION["UserName"], "FinanceApproveEdit"))) {
+		   */
+		   	if (($row["acknowledged_by"]!="") & 
+	  ($row["finance_approved_by"]=="") & 
+      ($cancelCounter == "0") & 
+	  
+	  ($_SESSION["isLogin"]==1) & 
+	  ($_SESSION["UserType"]=="S")
+       & (hasRight($_SESSION["UserName"], "FinanceApproveEdit"))) {
       ?>
                   <a style="color: white;" onclick="doFinanceApproved('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class='uk-button uk-button-small form_btn'><i class="fa fa-check-square-o"></i> Finance Approved</a>
       <?php
@@ -858,7 +892,11 @@ if (!isset($mode) && $mode != 'defective') {
       }
       ?>
       <?php
+	  /*
       if (($row["acknowledged_by"]!="") & ($row["finance_approved_by"]=="") & ($row["packed_by"]=="") & ($row["logistic_approved_by"]!="") & ($cancelCounter == "0") & ($row["assigned_to_by"]!="")
+         & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S") & (hasRight($_SESSION["UserName"], "PackedEdit"))) {
+			 */
+		if (($row["acknowledged_by"]!="") & ($row["packed_by"]=="") & ($row["logistic_approved_by"]!="") & ($cancelCounter == "0") & ($row["assigned_to_by"]!="")
          & ($_SESSION["isLogin"]==1) & ($_SESSION["UserType"]=="S") & (hasRight($_SESSION["UserName"], "PackedEdit"))) {
       ?>
                   <a style="color: white;" onclick="doPacked('<?php echo $sha_id?>', '<?php echo $sOrderNo?>')" class='uk-button uk-button-small form_btn'><i class="fa fa-barcode"></i> Packed</a>
@@ -1323,9 +1361,10 @@ if ($_SESSION["UserType"]=="S") { ?>
 <?php
 }
 // this one is for order status icon
-if ((isDelivered($row['id'])) & (hasRightGroupXOR($_SESSION["UserName"], "DefectiveProductEdit"))) {
+// if ((isDelivered($row['id'])) & (hasRightGroupXOR($_SESSION["UserName"], "DefectiveProductEdit"))) { Defective order is now enabled everywhere because we can't have nice things. Thanks, Finance :(
+if ((hasRightGroupXOR($_SESSION["UserName"], "DefectiveProductEdit"))) {
 ?>
-            <a onclick="dlgReportDefective('<?php echo sha1($row['id']); ?>', '<?php echo $row['product_code'] ?>');" data-uk-tooltip title="Report Defective"><i style="color: #30d2d6" class="fas fa-flag"></i></a> 
+            <a onclick="dlgReportDefective('<?php echo sha1($row['id']); ?>', '<?php echo $row['product_code'] ?>');" title="Report Defective"><i style="color: #30d2d6" class="fas fa-flag"></i></a> 
   <?php
   if (isset($mode) && $mode == 'defective') {
   ?>

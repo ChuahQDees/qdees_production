@@ -751,7 +751,6 @@ $base_sql .=" ) rpt ";
    $result=mysqli_query($connection, $base_sql);
    $row=mysqli_fetch_assoc($result);
 
-   echo $base_sql;
    // if($student=="1140"){
    //   echo number_format($row["fees"], 2); //die; 
    //  }

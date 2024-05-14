@@ -18,7 +18,7 @@ function notification($data) {
 function curlCall($url_param)
 {
 	$ch = curl_init();
-	$urla = "http://helpdesk.q-dees.com/".$url_param;
+	$urla = "https://helpdesk.q-dees.com/".$url_param;
 	curl_setopt($ch, CURLOPT_URL,$urla);
 	curl_setopt($ch, CURLOPT_POST, 0);
 	//curl_setopt($ch, CURLOPT_POSTFIELDS,'');

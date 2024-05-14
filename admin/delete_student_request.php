@@ -66,7 +66,14 @@ if (isset($_REQUEST["request"]) && $_REQUEST["request"] == 'send_request') {
       notification($n_data);
   
       if ($result) {
-          echo "1|Approved successful";
+		  //CHS: Hide Notification from List
+		  $sqlUpdateNotification = "UPDATE notifications set hide_from_view = '1' WHERE id = '".$_GET['notification_id']."'";
+		  
+		  $result2=mysqli_query($connection, $sqlUpdateNotification);  
+		   
+		if ($result2) {
+			echo "1|Approved successful";
+		}
       } else {
           echo "0|Failed";
       }
@@ -88,7 +95,14 @@ if (isset($_REQUEST["request"]) && $_REQUEST["request"] == 'send_request') {
       notification($n_data);
   
       if ($result) {
-          echo "1|Rejected successful";
+         //CHS: Hide Notification from List
+		  $sqlUpdateNotification = "UPDATE notifications set hide_from_view = '1' WHERE id = '".$_GET['notification_id']."'";
+		  
+		  $result2=mysqli_query($connection, $sqlUpdateNotification);  
+		   
+		if ($result2) {
+			echo "1|Approved successful";
+		}
       } else {
           echo "0|Failed";
       }

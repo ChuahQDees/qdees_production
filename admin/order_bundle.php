@@ -84,12 +84,10 @@ $level_type=$_GET["level_type"];
 ?>
 
 <script>
-   function bundleMessage(bundleID){
+   function bundleMessage(){
       $.ajax({ url: "admin/bundleMessage2.php",
-         type : "POST", 
-	      data : "bundleID="+bundleID,
-         dataType : "text",
-         beforeSend : function(http) {
+        dataType : "text",
+        beforeSend : function(http) {
       },
       async: false,
       success : function(response, status, http) {

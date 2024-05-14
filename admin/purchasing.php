@@ -550,6 +550,7 @@ if ($_SESSION["isLogin"] == 1) {
                }
 			   
                if ($_GET["category-id"] == "112"){
+               $final_sql .= " AND (`product_code` NOT LIKE 'MY-STEM-S.KIT-MOD%' AND `product_code` NOT LIKE 'MY-STEM-MOD %')";
                //echo $final_sql;
                }
                $result = mysqli_query($connection, $final_sql);
@@ -578,6 +579,9 @@ if ($_SESSION["isLogin"] == 1) {
                         <?php
                         if ($_GET["category-id"] == "112"){
                            echo '<h3 style="width:100%"><center><b>Notice:</b> STEM Bundle includes: Student Kit + Materials. For marketing set book purchases, please navigate to <b><a href="index.php?p=purchasing&category-id=111&term=&sub_sub_category=">Form 1C</a></b> instead.</center></h3>';
+                        }else if ($_GET["category-id"] == "1"){
+                           echo '<h3 style="width:100%"><b>Notice:</b><div id="chgtext"><a href="#" onclick="changeBundleTextSofrwareAccess()"> Please click here to view items in Software Access (Bundle Set)</div></h3>';
+                           //echo '<h3 style="width:100%"><b>Notice:</b> Software Access (Bundle Set) contains the following items: <br/><b>Foundation Programmes:</b><br/>iQLiT Bahasa Melaysia, Mandarin, Maths, Science, English, Thematic English, Thematic Phonics, Character Building, Music, and EDP Programmes<br/><br /><b>Enhanced Programme:</b><br/>International English, International Art, IQ Math, and Mandarin</h3>';
                         }
                         while ($row = mysqli_fetch_assoc($final_result)) {
                            if ($level == '') {
@@ -592,6 +596,12 @@ if ($_SESSION["isLogin"] == 1) {
                            }
 
                         ?>
+
+                        <script>
+                           function changeBundleTextSofrwareAccess(){
+                              document.getElementById('chgtext').innerHTML='Software Access (Bundle Set) contains the following items: <br/><b>Foundation Programmes:</b><br/>iQLiT Bahasa Melaysia, Mandarin, Maths, Science, English, Thematic English, Thematic Phonics, Character Building, Music, and EDP Programmes<br/><br /><b>Enhanced Programme:</b><br/>International English, International Art, IQ Math, and Mandarin';
+                           }
+                        </script>
 
                            <div class="col-xl-3 col-lg-4 col-md-6 qdees-4-element">
                               <div class="qdees-product <?php echo getLevelCss($row["sub_sub_category"]); ?>">

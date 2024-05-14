@@ -151,9 +151,13 @@ include_once("admin/declaration_func.php");
         class="uk-button">Print</button>
 </div>
 
-<div class="uk-margin-right" style="height:1000px;width:100%;padding-bottom:25px;<?php if($pdf_name == '') { echo 'display:none;'; } ?>" >
-    <iframe src="admin/declaration_pdf/<?php echo $pdf_name; ?>" height="100%" width="100%"></iframe>
-</div>
+<?php if($pdf_name != '') { ?>
+
+    <div class="uk-margin-right" style="height:1000px;width:100%;padding-bottom:25px;" >
+        <iframe src="admin/declaration_pdf/<?php echo $pdf_name; ?>" height="100%" width="100%"></iframe>
+    </div>
+
+<?php } ?>
 
 <div id="print_1" class="uk-margin-right">
 
@@ -496,6 +500,7 @@ include_once("admin/declaration_func.php");
                                             $sql="SELECT ps.student_entry_level, s.id from student s inner join programme_selection ps on ps.student_id=s.id inner join student_fee_list fl on fl.programme_selection_id = ps.id inner join fee_structure f on f.id=fl.fee_id where (fl.programme_date BETWEEN '".$year_start_date."' AND '".$year_end_date."') and ps.student_entry_level != '' and s.student_status = 'A' and s.start_date_at_centre <= '$current_date' and s.centre_code='$centre_code' and s.deleted='0' and ps.student_entry_level ='QF2' and f.fees_structure='".mysqli_real_escape_string($connection,$row['fees_structure'])."'  ";
 
                                             $sql .= " and '$monthyear' BETWEEN DATE_FORMAT(fl.programme_date, '%Y-%m') AND DATE_FORMAT(fl.programme_date_end, '%Y-%m') ";
+											
                                             // $sql .= " and case when f.school_collection='Monthly' then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'  
                                             // when f.school_collection='Termly' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$term_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
                                             // when f.school_collection='Half Year' and ((DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and $month in (".$half_year_array.") or DATE_FORMAT(fl.programme_date, '%Y-%m')='$monthyear')) then  DATE_FORMAT(fl.programme_date, '%Y-%m')<='$monthyear' and DATE_FORMAT(fl.programme_date_end, '%Y-%m')>='$monthyear'
@@ -506,6 +511,8 @@ include_once("admin/declaration_func.php");
                                             
                                             $resultt=mysqli_query($connection, $sql);
                                             
+											echo $sql; 
+											
                                             $student_id_array = array();
 
                                             $level_count=mysqli_num_rows($resultt);

@@ -2748,7 +2748,7 @@ span.edp_eq2 {
                                 <td class="uk-width-1-10">
                                     <input class="total_s" type="number" step="0.01" name="school_total_f"
                                         id="school_total_f"
-                                        value="<?php echo $total_mandarin_student = $total_EDP_mandarin_student + $total_QF1_mandarin_student + $total_QF2_mandarin_student + $total_QF3_mandarin_student; $total_student_B =+ $total_mandarin_student; ?>"
+                                        value="<?php echo $total_mandarin_student = $total_EDP_mandarin_student + $total_QF1_mandarin_student + $total_QF2_mandarin_student + $total_QF3_mandarin_student; $total_student_B += $total_mandarin_student; ?>"
                                         readonly>
                                 </td>
                                 <td style="text-align:center;" class="uk-width-1-10">
@@ -2766,9 +2766,566 @@ span.edp_eq2 {
                                     <?php $total_b += $total_mandarin_m_adjust; ?>
                                 </td>
                             </tr>
+
+
+
+                        <?php if($monthyear >= '2024-03') { ?>
                             <tr class="">
                                 <td style=" margin-top:50px;border:none; font-size:18px;"
-                                    class="uk-width-6-10 uk-text-bold">(iii) Registration Fee</td>
+                                    class="uk-width-6-10 uk-text-bold">(iii) STEM Programme</td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">EDP</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='EDP'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            //$total_student = 0;
+                            $total_EDP_stem_programme_adjust = 0;
+                            $total_EDP_stem_programme_student = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_EDP_stem_programme_adjust +=  $row['amount'];
+                                        $total_EDP_stem_programme_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_EDP_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total EDP" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_EDP_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF1</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='QF1'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF1_stem_programme_student = 0;
+							$total_QF1_stem_programme_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_QF1_stem_programme_adjust +=  $row['amount'];
+                                        $total_QF1_stem_programme_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF1_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF1" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF1_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF2</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='QF2'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF2_stem_programme_student = 0;
+							$total_QF2_stem_programme_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_QF2_stem_programme_adjust +=  $row['amount'];
+                                        $total_QF2_stem_programme_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo  number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF2_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF2" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF2_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF3</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_programme_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Programme' and subject='QF3'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF3_stem_programme_student = 0;
+							$total_QF3_stem_programme_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_QF3_stem_programme_adjust +=  $row['amount'];
+                                        $total_QF3_stem_programme_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_programme_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_programme_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF3_stem_programme_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF3" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF3_stem_programme_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            </tr>
+
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student (iii)</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php echo $total_stem_programme_student = $total_EDP_stem_programme_student + $total_QF1_stem_programme_student + $total_QF2_stem_programme_student + $total_QF3_stem_programme_student; $total_student_B += $total_stem_programme_student; ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total (iii)" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php  $total_stem_programme_adjust = $total_EDP_stem_programme_adjust + $total_QF1_stem_programme_adjust  + $total_QF2_stem_programme_adjust + $total_QF3_stem_programme_adjust; 
+                                        echo  number_format((float)$total_stem_programme_adjust, 2, '.', '')?>"
+                                        readonly>
+                                    <?php $total_b += $total_stem_programme_adjust; ?>
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none; font-size:18px;"
+                                    class="uk-width-6-10 uk-text-bold">(iv) STEM Student Kit</td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">EDP</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='EDP'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            //$total_student = 0;
+                            $total_EDP_stem_studentKit_adjust = 0;
+                            $total_EDP_stem_studentKit_student = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_EDP_stem_studentKit_adjust +=  $row['amount'];
+                                        $total_EDP_stem_studentKit_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_EDP_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total EDP" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_EDP_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF1</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='QF1'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF1_stem_studentKit_student = 0;
+							$total_QF1_stem_studentKit_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_QF1_stem_studentKit_adjust +=  $row['amount'];
+                                        $total_QF1_stem_studentKit_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF1_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF1" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF1_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF2</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='QF2'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF2_stem_studentKit_student = 0;
+							$total_QF2_stem_studentKit_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_QF2_stem_studentKit_adjust +=  $row['amount'];
+                                        $total_QF2_stem_studentKit_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo  number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF2_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF2" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF2_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+
+                            <tr class="">
+                                <td style=" margin-top:200px;border:none; font-size:16px;"
+                                    class="uk-width-6-10 uk-text-bold">QF3</td>
+                            </tr>
+                            <?php
+                                $sql="SELECT programme_package as fees_structure, active_student, fee_rate as stem_studentKit_adjust, amount from `declaration_child` where master_id=$master_id and form='Form1' and fee_structure_mame='STEM Student Kit' and subject='QF3'";
+							
+							$result=mysqli_query($connection, $sql);
+							$num_row = mysqli_num_rows($result);
+                            $total_QF3_stem_studentKit_student = 0;
+							$total_QF3_stem_studentKit_adjust = 0;
+							if ($num_row>0) {
+								while ($row=mysqli_fetch_assoc($result)) {
+						  ?>
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none;" class="uk-width-6-10 uk-text-bold">
+                                    <?php echo $row['fees_structure']?><span class="text-danger"></span>:</td>
+                                
+                                <td style="border:none; text-align:center;white-space:nowrap;" class="uk-width-1-10">
+                                    <?php
+                                        $level_count = $row['active_student'];
+                                        $total_QF3_stem_studentKit_adjust +=  $row['amount'];
+                                        $total_QF3_stem_studentKit_student += $level_count;
+                                ?>
+                                    <input class="edp_tsd multimedia" type="number" step="0.01" name="active_student[]"
+                                        id="active_student" value="<?php echo $level_count ?>" readonly> <span
+                                        class="edp_eq">✕ </span>
+                                </td>
+                                <td style="border:none;white-space:nowrap;" class="uk-width-1-10">
+                                    <input class="edp_tsd multimedia" type="number" name="fee_rate[]" id="fee_rate"
+                                        value="<?php echo number_format((float)$row['stem_studentKit_adjust'], 2, '.', ''); ?>" readonly> <span class="edp_eq2">=
+                                    </span>
+                                </td>
+                                <td style="border:none; text-align:center;" class="uk-width-1-10">
+                                    <input class="school_adjust" type="number" step="0.01" name="amount[]" id="amount"
+                                        value="<?php echo number_format((float)$level_count * $row['stem_studentKit_adjust'], 2, '.', '');  ?>" readonly><br>
+                                </td>
+                            </tr>
+                            <?php } }?>
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo $total_QF3_stem_studentKit_student;  ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total QF3" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f" value="<?php echo number_format((float)$total_QF3_stem_studentKit_adjust, 2, '.', '');  ?>"
+                                        readonly>
+                                </td>
+                            </tr>
+                            </tr>
+
+                            <tr class="">
+                                <td style="margin-top:50px; padding-top: 11px; text-align: right;"
+                                    class="uk-width-1-10">Total Student (iv)</td>
+                                <td class="uk-width-1-10">
+                                    <input class="total_s" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php echo $total_stem_studentKit_student = $total_EDP_stem_studentKit_student + $total_QF1_stem_studentKit_student + $total_QF2_stem_studentKit_student + $total_QF3_stem_studentKit_student; $total_student_B += $total_stem_studentKit_student; ?>"
+                                        readonly>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+                                    <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
+                                        placeholder="Total (iv)" readonly> <span style="font-size:14px;"
+                                        class="edp_eq">RM</span>
+                                </td>
+                                <td style="text-align:center;" class="uk-width-1-10">
+
+                                    <input class="total_a" type="number" step="0.01" name="school_total_f"
+                                        id="school_total_f"
+                                        value="<?php  $total_stem_studentKit_adjust = $total_EDP_stem_studentKit_adjust + $total_QF1_stem_studentKit_adjust  + $total_QF2_stem_studentKit_adjust + $total_QF3_stem_studentKit_adjust; 
+                                        echo  number_format((float)$total_stem_studentKit_adjust, 2, '.', '')?>"
+                                        readonly>
+                                    <?php $total_b += $total_stem_studentKit_adjust; ?>
+                                </td>
+                            </tr>
+
+                        <?php } ?>
+
+
+
+
+                            <tr class="">
+                                <td style=" margin-top:50px;border:none; font-size:18px;"
+                                    class="uk-width-6-10 uk-text-bold">(<?php echo ($monthyear >= '2024-03') ? 'v' : 'iii'; ?>) Registration Fee</td>
                             </tr>
 
                             <tr class="">
@@ -3012,7 +3569,7 @@ span.edp_eq2 {
                             </tr>
                             <tr class="">
                                 <td style="margin-top:50px; padding-top: 11px; text-align: right;"
-                                    class="uk-width-1-10">Total Student (iii)</td>
+                                    class="uk-width-1-10">Total Student (<?php echo ($monthyear >= '2024-03') ? 'v' : 'iii'; ?>)</td>
                                 <td class="uk-width-1-10">
                                     <input class="total_s" type="number" step="0.01" name="school_total_f"
                                         id="school_total_f"
@@ -3021,7 +3578,7 @@ span.edp_eq2 {
                                 </td>
                                 <td style="text-align:center;" class="uk-width-1-10">
                                     <input class="edp_tsd" type="number" step="0.01" name="total_a" id="total_a"
-                                        placeholder="Total (iii)" readonly> <span style="font-size:14px;"
+                                        placeholder="Total (<?php echo ($monthyear >= '2024-03') ? 'v' : 'iii'; ?>)" readonly> <span style="font-size:14px;"
                                         class="edp_eq">RM</span>
                                 </td>
                                 <td style="text-align:center;" class="uk-width-1-10">

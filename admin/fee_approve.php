@@ -989,6 +989,25 @@ if ($edit_row["doc_remarks"]!="") {
 }
 ?>
                   </td> 
+				  <?php
+				//Search whether the center is in Enhanced Foundation Whitelist or not
+				
+				$sql_whitelist = "SELECT * FROM `enh_foundation_whitelist` WHERE centre_code = '".$edit_row['centre_code']."'";
+				
+				$result_whitelist=mysqli_query($connection, $sql_whitelist);
+				//$num_row=mysqli_num_rows($result_whitelist);
+				//if ($num_row>0) {
+				if ($row=mysqli_fetch_assoc($result_whitelist)) {
+				?>
+				<tr class="uk-text-small">
+					<td class="uk-width-1-10 uk-text-bold" style="border:none;font-size: 15px;">Note :</td>
+					<?php if ($row["remarks"] != ""){ ?>
+					<td  style="border:none;font-size:15px;">This center has optional subjects: <?php echo $row["remarks"] ?></td>
+					<?php }else{ ?>
+					<td  style="border:none;font-size:15px;">This Center is not offering Enhanced Foundation and is in the Enhanced Foundation Whitelist! (Referenced from MF's center list)</td>
+					<?php } ?>
+				</tr>
+				<?php } ?>
 
 						</tr>
 			</table>

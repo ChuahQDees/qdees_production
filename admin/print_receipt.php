@@ -311,6 +311,8 @@ table {
                case "pendidikan" : echo $row["subject"] ? "Pendidikan Islam - ".$row["subject"] : "Pendidikan Islam"; break;
                case "integrated" : echo $row["subject"] ? "Integrated Module - ".$row["subject"] : "Integrated Module"; break;
                case "link" : echo $row["subject"] ? "Link & Think - ".$row["subject"] : "Link & Think"; break;
+               case "stem-programme" : echo $row["subject"] ? "STEM Programme - ".$row["subject"] : "STEM Programme"; break;
+               case "stem-student-kit" : echo $row["subject"] ? "STEM Student Kit - ".$row["subject"] : "STEM Student Kit"; break;
                case "mandarinmodules" : echo $row["subject"] ? "Mandarin Modules - ".$row["subject"] : "Mandarin Modules"; break;
                case "uniform" : echo $row["subject"] ? "Uniform - ".$row["subject"] : "Uniform"; break;
                case "gymwear" : echo $row["subject"] ? "Gymwear - ".$row["subject"] : "Gymwear"; break;

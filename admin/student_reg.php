@@ -1,9 +1,3 @@
-<?php 
-    /* ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL); */
-?>
-
 <?php if($_GET['p'] == "student_reg" && isset($_GET['visitor']) ){ ?>
 <a href="/index.php?p=visitor_qr_list">                 
              <span class="d_n btn-qdees"><i class="fa fa-arrow-left" style="margin-right: 20px;"></i>Back</span>
@@ -65,7 +59,6 @@ if ($_SESSION["isLogin"]==1) {
                 unset($_SESSION["StudentCodeTaken"]);
             }
         }
-        
         
     } else {
         echo "<div class='uk-margin-top uk-margin-right'><div class='uk-alert uk-alert-danger uk-text-large uk-text-bold uk-text-center'>Unauthorised access denied</div></div>";

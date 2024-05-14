@@ -137,6 +137,22 @@ $row3=mysqli_fetch_assoc($result3);
     <div class="uk-width-1-1 myheader">
         <h2 class="uk-text-center myheader-text-color myheader-text-style">PROGRAMME SELECTION</h2>
     </div>
+	<?php
+	$enh_chkValue = "N";
+	$sqlenhchk="SELECT allowed FROM enh_foundation_whitelist 
+	WHERE centre_code = '".$_SESSION['CentreCode']."'"; 
+	$resultenhchk=mysqli_query($connection, $sqlenhchk);
+	//$num_row=mysqli_num_rows($result);
+
+	//echo $sql;
+	
+	if ($rowenhchk=mysqli_fetch_assoc($resultenhchk)) {
+		$enh_chkValue = $rowenhchk['allowed'];
+	}
+		?>
+		
+	<input name="enh_whitelist" id="enh_whitelist" hidden value="<?php echo $enh_chkValue ?>">
+	
     <form name="" id="entryLevel" method="post" class="uk-form uk-form-small"
         action="index.php?p=student_list_func&ssid=<?php echo $ssid?>">
         <div style="margin-left: 0;" class="uk-overflow-container uk-grid uk-grid-small"> 
@@ -155,12 +171,15 @@ $row3=mysqli_fetch_assoc($result3);
                         <script>
                         function enhFoundationDefault(){ //By default, need to have at least one enhanced foundation
                             d = document.getElementById("student_entry_level").value;
-
-                            if (d != "EDP"){
-                                document.getElementById("foundation_int_english").value = "1";
-                            }else{
-                                document.getElementById("foundation_int_english").value = "0";
-                            }
+							e = document.getElementById("enh_whitelist").value;
+							
+							if (e == "N"){
+								if (d != "EDP"){
+									document.getElementById("foundation_int_english").value = "1";
+								}else{
+									document.getElementById("foundation_int_english").value = "0";
+								}
+							}
                         }
                         </script>
                         <td class="uk-width-3-10">
@@ -506,7 +525,7 @@ $row3=mysqli_fetch_assoc($result3);
                     }else if (suffix == "Mother"){
                         suffixtitle = "Ms.";
                     }
-                    window.location.href = "mailto:"+email+"?subject=Q-Dees Receipt "+batch_no+"&body=Dear "+suffixtitle+""+full_name+",%0D%0A%0DThe following enclosed is the link to the receipt for review, totalling up to RM"+total_amount+".%0D%0A%0Dhttps://starters.q-dees.com/"+url+"%26display%3D1 %0D%0A%0DThank you!%0D%0A%0DBest Regards,%0D%0AQ-Dees "+centre_name;
+                    window.location.href = "mailto:"+email+"?subject=Q-Dees Receipt "+batch_no+"&body=Dear "+suffixtitle+""+full_name+",%0D%0A%0DThe following enclosed is the link to the receipt for your review, totalling up to RM"+total_amount+".%0D%0A%0Dhttps://starters.q-dees.com/"+url+"%26display%3D1 %0D%0A%0DThank you!%0D%0A%0DBest Regards,%0D%0A"+centre_name;
                 }
             },
             error: function(http, status, error) {

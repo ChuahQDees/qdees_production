@@ -69,8 +69,24 @@ function validateAttachment($attachment){
 	}
   }
 
+function isRecordFound($centre_code, $year, $month) {
+	global $connection;
+	$sql_check="SELECT * from `declaration` where centre_code='$centre_code' and year='$year' and month=$month";
+	$result_check=mysqli_query($connection, $sql_check);
+	$num_row_check=mysqli_num_rows($result_check);
+ 
+	if ($num_row_check>0) {
+	   return true;
+	} else {
+	   return false;
+	}
+}
+
+
 if (isset($mode) and $mode=="SAVE") {
 	
+	if(!isRecordFound($centre_code, $year, $month)) {	
+
 	//$declaration=mysqli_real_escape_string($connection, $_POST['declaration']);
 	 if(isset($fee_structure_mame,$subject,$programme_package,$programme_package)) {
 
@@ -153,14 +169,13 @@ if (isset($mode) and $mode=="SAVE") {
 
 			$result=mysqli_query($connection, $save_sql);
 		}
-		
+
 		$nm = date('d-M-Y')."-".$centre_code."-".time().".pdf";
 
 		mysqli_query($connection,"UPDATE `declaration` SET `declaration_pdf` = '".$nm."' WHERE `id` = '".$master_id."'");
 
-		$purl = "http://178.128.87.243/admin/declaration_pdf.php?declaration_id=".$master_id."&CentreCode=".$centre_code."&monthyear=".$monthyear;
-		
-		exec("export PATH='/usr/bin:/bin' && wkhtmltopdf '$purl' /var/www/html/admin/declaration_pdf/$nm", $output);
+		$purl = "https://starters.q-dees.com/admin/declaration_pdf.php?declaration_id=".$master_id."&CentreCode=".$centre_code."&monthyear=".$monthyear;
+		exec("export PATH='/usr/bin:/bin' && wkhtmltopdf '$purl' /var/www/html/starters.q-dees.com/admin/declaration_pdf/$nm", $output);
 
   if($result){
 	  //echo "<script type='text/javascript'>window.top.location='index.php?p=declaration_setting&msg=Record saved';</script>";
@@ -170,6 +185,10 @@ if (isset($mode) and $mode=="SAVE") {
 	  $msg="Failed to save data";
   }
 	 }
+	}
+	else{
+		$msg="Declaration already submitted for this month.";
+	}
 }
 
 if (isset($mode) and $mode=="EDIT") {

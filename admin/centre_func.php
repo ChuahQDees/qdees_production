@@ -170,7 +170,8 @@ $subject = implode(', ', $subject);
          '$franchisor_company_name', '$centre_franchisee_company_id', '$centre_franchisee_name_id', '$registration_fee', '$status_center', '$pic','$bank_detail')";
 
          $result=mysqli_query($connection, $insert_sql);
-		 
+         $centre_id = mysqli_insert_id($connection);
+         
          $schedule_term_data = mysqli_query($connection,"SELECT * FROM `schedule_term` WHERE `centre_code` = 'MYQWESTC1C10001' AND `deleted` = '0' ORDER BY `id` ASC");
 
          while($schedule_term_row = mysqli_fetch_array($schedule_term_data))
@@ -194,6 +195,10 @@ $subject = implode(', ', $subject);
             mysqli_query($connection, $sql);
          }
 		 
+         $centre_detail=mysqli_fetch_assoc(mysqli_query($connection,"SELECT * FROM `centre` WHERE `id` = '".$centre_id."'"));
+
+         AppCentre($centre_detail);
+
          $msg="Record inserted";
  
       } else {

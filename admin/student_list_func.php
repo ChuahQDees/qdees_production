@@ -37,8 +37,20 @@ function getssid($student_code) {
 	$enherror = "0";
 	if ($student_entry_level != "EDP"){ //If it's not EDP, then it's QF1/QF2/QF3
 		if ($foundation_int_english[0]=="0" && $foundation_iq_math[0]=="0" && $foundation_int_mandarin[0]=="0" && $foundation_int_art[0]=="0" && $pendidikan_islam[0]=="0"){
-			echo '<script>window.location.href = "/index.php?p=student_info&ssid='.sha1($student_id).'&status=enerror";</script>';
-			$enherror = "1";
+			
+			//Search in the new table
+			$centre_code = strtok($student_code, '-');
+
+			$sqlchk="SELECT COUNT(id) count from enh_foundation_whitelist where centre_code = '$centre_code' AND allowed = 'Y'";
+   
+		    $resultchk=mysqli_query($connection, $sqlchk);
+		    $rowchk=mysqli_fetch_assoc($resultchk);
+		    //return $row["id"];
+			
+			if ($rowchk["count"] == '0'){
+				echo '<script>window.location.href = "/index.php?p=student_info&ssid='.sha1($student_id).'&status=enerror";</script>';
+				$enherror = "1";
+			}
 		}
 	}
 

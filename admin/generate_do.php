@@ -171,9 +171,9 @@ if ($company_num_row > 0) {
                   ?>
                      <img src="../images/MindSpectrum.png" alt="logo" style="width:150px;"><br>
                   <?php } elseif ($company_name == "Q-DEES HOLDINGS SDN. BHD.") { ?>
-                     <img src="../images/Logo Qdees Starter.png" alt="logo" style="width:150px;"><br>
+                     <img src="../images/Qdees-logo-n.png" alt="logo" style="width:150px;"><br>
                   <?php } elseif ($company_name == "Q-DEES GLOBAL PTE. LTD.") { ?>
-                     <img src="../images/Logo Qdees Starter.png" alt="logo" style="width:150px;"><br>
+                     <img src="../images/Qdees-logo-n.png" alt="logo" style="width:150px;"><br>
                   <?php } else { ?>
                      <img src="../images/Tenations.png" alt="logo" style="width:150px;"><br>
                   <?php } ?>

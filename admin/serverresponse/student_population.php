@@ -210,7 +210,11 @@
 
 							$action .= '<a href="index.php?p=student_reg&m='.$m.'&id='.sha1($aRow['id']).'&mode=EDIT" data-uk-tooltip title="Edit '.$aRow['name'].'"><i class="fas fa-user-edit" style="font-size: 1.4em;"></i></a><a href="index.php?p=dropout&student_sid='.sha1($aRow['id']).'" data-uk-tooltip title="Dropout '.$aRow['name'].'" id="btnDelete"><i style="font-size: 1.4em; color: #FF6e6e;" class="fas fa-box-open"></i></a>';
 
-							$action .= '<a onclick=\'doTransferStudent("'.sha1($aRow['id']).'")\'  data-uk-tooltip title="Transfer Student to '.getNextYear().'"><i style="font-size: 1.4em; color: #FF6e6e;" class="fas fa-exchange-alt text-success"></i></a>';
+							$checkYear = getNextYear();
+
+							if ($checkYear != ""){
+								$action .= '<a onclick=\'doTransferStudent("'.sha1($aRow['id']).'")\'  data-uk-tooltip title="Transfer Student to '.getNextYear().'"><i style="font-size: 1.4em; color: #FF6e6e;" class="fas fa-exchange-alt text-success"></i></a>';
+							}
 						}
 					}
 					if($aRow['delete_request'] == 0 || $aRow['delete_request'] == 2) 

@@ -55,7 +55,7 @@ $(document).ready(function() {
    
    if($("#selected_month").val() == '' || $("#selected_month").val() == null) { $("#selected_month").val('13'); }
    
-   //generateReport('screen');
+   generateReport('screen');
    $("#btnGenerate").click(function(){
 	   $("#back_stock").attr("href", window.location.href);
    })

@@ -6,13 +6,13 @@
 	
     if (($_SESSION["UserType"] == "S") || ($_SESSION["UserType"] == "H") || ($_SESSION["UserType"] == "C") || ($_SESSION["UserType"] == "R") || ($_SESSION["UserType"] == "CM") || ($_SESSION["UserType"] == "T")) 
     {
-        $aColumns = array("company_name","order_no","ordered_by","ordered_on","status","courier","action","id","delivered_to_logistic_by","order_number");
+        $aColumns = array("company_name","order_no","ordered_by","ordered_on","status","courier","action","id","delivered_to_logistic_by","order_number", "acknowledged_by", "finance_approved_by", "packed_by", "logistic_approved_by");
 
         $where = "";
     }
     else
     {
-        $aColumns = array("order_no","ordered_by","ordered_on","status","courier","action","id","delivered_to_logistic_by","order_number");
+        $aColumns = array("order_no","ordered_by","ordered_on","status","courier","action","id","delivered_to_logistic_by","order_number", "acknowledged_by", "finance_approved_by", "packed_by", "logistic_approved_by");
 
         $where = " AND `order`.`centre_code` = '".$_SESSION["CentreCode"]."' ";
     }
@@ -64,6 +64,20 @@
 		$where .= " AND IFNULL(`order`.`finance_payment_paid_by`, '') !='' AND IFNULL(`order`.`cancelled_by`, '') = '' AND IFNULL(`order`.`acknowledged_by`, '') !='' ";
 	} else if($status == "Ready for Collection") {
 		$where .= " AND IFNULL(`order`.`cancelled_by`, '') ='' AND IFNULL(`order`.`delivered_to_logistic_by`, '') ='' AND IFNULL(`order`.`packed_by`, '') !='' ";
+	} else if($status == "Ready for Collection (F)") {
+		$where .= " AND IFNULL(`order`.`cancelled_by`, '') ='' AND IFNULL(`order`.`acknowledged_by`, '') !='' AND IFNULL(`order`.`logistic_approved_by`, '') !='' AND IFNULL(`order`.`packed_by`, '') !='' AND IFNULL(`order`.`finance_approved_by`, '') ='' ";
+		//if (($aRow["acknowledged_by"]!="") & ($aRow["logistic_approved_by"]!="") & ($aRow["finance_approved_by"]=="") & ($aRow["packed_by"]!="")){
+	} else if($status == "Ready for Collection (S)") {
+		$where .= " AND IFNULL(`order`.`cancelled_by`, '') ='' AND IFNULL(`order`.`acknowledged_by`, '') !='' AND IFNULL(`order`.`finance_approved_by`, '') !='' AND IFNULL(`order`.`packed_by`, '') !='' AND IFNULL(`order`.`delivered_to_logistic_by`, '') ='' ";
+		//($aRow["acknowledged_by"]!="") & ($aRow["finance_approved_by"]!="") & ($aRow["delivered_to_logistic_by"]=="") & ($aRow["packed_by"]!="")){
+	} else if($status == "Logistics Pending (L)") {
+		$where .= " AND IFNULL(`order`.`cancelled_by`, '') ='' AND IFNULL(`order`.`acknowledged_by`, '') !='' 
+		AND IFNULL(`order`.`packed_by`, '') =''";
+		//($aRow["acknowledged_by"]!="") & ($aRow["finance_approved_by"]!="") & ($aRow["delivered_to_logistic_by"]=="") & ($aRow["packed_by"]!="")){
+	} else if($status == "Finance Pending (F)") {
+		$where .= " AND IFNULL(`order`.`cancelled_by`, '') ='' AND IFNULL(`order`.`finance_approved_by`, '') = ''
+		AND IFNULL(`order`.`acknowledged_by`, '') != ''";
+		//($aRow["acknowledged_by"]!="") & ($aRow["finance_approved_by"]!="") & ($aRow["delivered_to_logistic_by"]=="") & ($aRow["packed_by"]!="")){
 	} else if($status == "Packing") {
 		$where .= " AND IFNULL(`order`.`packed_by`, '') = '' AND IFNULL(`order`.`logistic_approved_by`, '') != '' AND IFNULL(`order`.`finance_approved_by`, '') ='' AND IFNULL(`order`.`cancelled_by`, '') = '' ";
 	} else if($status == "Acknowledged") {
@@ -87,6 +101,10 @@
                         `order`.`courier`,
                         `centre`.`company_name`,
 						`order`.`delivered_to_logistic_by`,
+						`order`.`acknowledged_by`,
+						`order`.`finance_approved_by`,
+						`order`.`logistic_approved_by`,
+						`order`.`packed_by`,
 
 						`order`.`order_no` AS `order_number`,
 
@@ -230,7 +248,50 @@
 				{
 					$status = getStatus($aRow["order_number"]);
 
+					//if (($aRow["acknowledged_by"]!="") & ($aRow["finance_approved_by"]!="") & ($aRow["packed_by"]!="") & ($aRow["delivered_to_logistic_by"]=="")){
+					//if (($aRow["acknowledged_by"]!="") & ($aRow["logistic_approved_by"]!="") & ($aRow["finance_approved_by"]=="") & ($aRow["packed_by"]!="" & $_SESSION["UserType"] != "A")){
+						
+					/*Status Rewrite*/
+					
+					$statusString = $status;
+					
+					if (($aRow["acknowledged_by"]!="") &  ($aRow["finance_approved_by"]=="") & ($_SESSION["UserType"] != "A")){
+						$status .= " (F)";
+					}
+					
+					if (($aRow["acknowledged_by"]!="") & ($aRow["finance_approved_by"]!="") & ($aRow["delivered_to_logistic_by"]=="") & ($aRow["packed_by"]!="" & $_SESSION["UserType"] != "A")){
+						$status .= " (S)";
+					}
+					
+					if (($aRow["acknowledged_by"]!="") & ($aRow["packed_by"]=="" & $_SESSION["UserType"] != "A")){
+						$status .= " (L)";
+					}
+					
 					$aRow[ $aColumns[$i] ] = $status;
+					//
+					/*
+					if (($aRow["acknowledged_by"]!="") &  ($aRow["finance_approved_by"]=="") & ($_SESSION["UserType"] != "A")){
+						$aRow[ $aColumns[$i] ] = $status . " (F)";
+					}
+					else if (($aRow["acknowledged_by"]!="") & ($aRow["finance_approved_by"]!="") & ($aRow["delivered_to_logistic_by"]=="") & ($aRow["packed_by"]!="" & $_SESSION["UserType"] != "A")){
+						//if (($row["acknowledged_by"]!="") & ($row["finance_approved_by"]!="") & ($row["packed_by"]!="") & ($row["delivered_to_logistic_by"]=="")
+						$aRow[ $aColumns[$i] ] = $status . " (S)";
+					}else{
+						$aRow[ $aColumns[$i] ] = $status;
+					}
+					*/
+					
+					/*
+					if (($aRow["acknowledged_by"]!="") &  ($aRow["finance_approved_by"]=="") & ($_SESSION["UserType"] != "A")){
+						$aRow[ $aColumns[$i] ] = $status . " (F)";
+					}
+					else if (($aRow["acknowledged_by"]!="") & ($aRow["finance_approved_by"]!="") & ($aRow["delivered_to_logistic_by"]=="") & ($aRow["packed_by"]!="" & $_SESSION["UserType"] != "A")){
+						//if (($row["acknowledged_by"]!="") & ($row["finance_approved_by"]!="") & ($row["packed_by"]!="") & ($row["delivered_to_logistic_by"]=="")
+						$aRow[ $aColumns[$i] ] = $status . " (S)";
+					}else{
+						$aRow[ $aColumns[$i] ] = $status;
+					}
+					*/
 				}
 
 				if($aColumns[$i] !='id' && $aColumns[$i] != 'delivered_to_logistic_by' && $aColumns[$i] != 'order_number')

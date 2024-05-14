@@ -11,6 +11,8 @@ function run_background_process()
 	$submited_date= date("d-m-Y_H-i");
   //  echo "<pre>  foreground start time = " . time() . "</pre>";
     exec("php ".FCPATH."admin/declaration_auto_submit_cron.php > ".FCPATH."cron_log/output_$submited_date.php 2>&1 & echo $!", $output);
+
+  // exec("php ".FCPATH."admin/generate_pdf.php > ".FCPATH."cron_log/pdf_output_$submited_date.php 2>&1 & echo $!", $output);
     //echo "<pre>  foreground end time = " . time() . "</pre>";
    // file_put_contents("".FCPATH."cron_log/testprocesses_$submited_date.php","foreground end time = " . time() . "\n", FILE_APPEND);
     return $output;
